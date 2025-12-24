@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { Jost, League_Spartan, Open_Sans } from "next/font/google";
 import "./globals.css";
-import { Inter } from "next/font/google";
 import { Toaster } from "sonner";
+import { dbConnect } from "../service/mongo";
+import { log } from "console";
 
 /* Google Fonts */
 const jost = Jost({
@@ -28,11 +29,13 @@ export const metadata: Metadata = {
 	description: "Empowering Education Through Technology",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
 	children,
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
+	const conn = await dbConnect();
+
 	return (
 		<html lang="en">
 			<body
