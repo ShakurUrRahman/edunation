@@ -3,8 +3,11 @@ import { Course } from "@/model/course-model";
 import { Module } from "@/model/module.model";
 import { Testimonial } from "@/model/testimonial-model";
 import { User } from "@/model/user-model";
+import { dbConnect } from "@/service/mongo";
 
 export async function getCourses() {
+	await dbConnect();
+
 	const courses = await Course.find({})
 		.populate({
 			path: "category",

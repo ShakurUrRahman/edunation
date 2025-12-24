@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Jost, League_Spartan, Open_Sans } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
-import { dbConnect } from "../service/mongo";
 import { log } from "console";
 
 /* Google Fonts */
@@ -34,8 +33,6 @@ export default async function RootLayout({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
-	await dbConnect();
-
 	return (
 		<html lang="en">
 			<body
