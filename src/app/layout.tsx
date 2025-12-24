@@ -34,7 +34,7 @@ export default async function RootLayout({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
-	const conn = await dbConnect();
+	await dbConnect();
 
 	return (
 		<html lang="en">
