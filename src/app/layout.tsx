@@ -3,6 +3,7 @@ import { Jost, League_Spartan, Open_Sans } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
 import { log } from "console";
+import { dbConnect } from "@/service/mongo";
 
 /* Google Fonts */
 const jost = Jost({
@@ -33,6 +34,8 @@ export default async function RootLayout({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
+	await dbConnect();
+
 	return (
 		<html lang="en">
 			<body
