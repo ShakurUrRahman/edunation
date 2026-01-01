@@ -18,21 +18,24 @@ import {
 } from "./ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { useSession, signOut } from "next-auth/react";
+import { redirect } from "next/navigation";
 
 export function MainNav({ items, children }) {
 	const { data: session } = useSession();
 	const [loginSession, setLoginSession] = useState(null);
 	const [showMobileMenu, setShowMobileMenu] = useState(false);
+	console.log(session);
+
+	if (session?.error === "RefreshAccessTokenError") {
+		redirect("/login");
+	}
 
 	const [open, setOpen] = useState(false);
 	const [openRegistrar, setOpenRegistrar] = useState(false);
 	const avatarRef = useRef<HTMLDivElement>(null);
 	const registerRef = useRef<HTMLDivElement>(null);
 
-	console.log(loginSession);
-
 	useEffect(() => {
-		console.log("test");
 		setLoginSession(session);
 	}, [session]);
 
