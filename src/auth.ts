@@ -57,13 +57,13 @@ export const {
 	providers: [
 		CredentialsProvider({
 			async authorize(credentials) {
-				if (!credentials?.email || !credentials?.password) return null;
+				if (credentials == null) return null;
 
 				try {
 					const user = await User.findOne({
 						email: credentials?.email,
 					});
-					console.log(user);
+					// console.log(user);
 
 					if (user) {
 						const isMatch = await bcrypt.compare(
