@@ -1,29 +1,31 @@
-import mongoose, {Schema} from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 const enrollmentSchema = new Schema({
-  enrollment_date: {
-    required: true,
-    type: Date
-  },
+	enrollment_date: {
+		required: true,
+		type: Date,
+	},
 
-  status: {
-    required: true,
-    type: String
-  },
+	status: {
+		required: true,
+		type: String,
+	},
 
-  completion_date: {
-    required: true,
-    type: Date
-  },
+	completion_date: {
+		required: false,
+		type: Date,
+	},
 
-  method: {
-    required: true,
-    type: String
-  },
+	method: {
+		required: true,
+		type: String,
+	},
 
-  course: { type: Schema.ObjectId, ref: "Course" },
+	course: { type: Schema.ObjectId, ref: "Course" },
 
-  student: { type: Schema.ObjectId, ref: "User" },
+	student: { type: Schema.ObjectId, ref: "User" },
 });
 
-export const Enrollment = mongoose.models.Enrollment ?? mongoose.model("Enrollment", enrollmentSchema);
+export const Enrollment =
+	mongoose.models.Enrollment ??
+	mongoose.model("Enrollment", enrollmentSchema);

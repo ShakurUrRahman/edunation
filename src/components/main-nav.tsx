@@ -24,7 +24,7 @@ export function MainNav({ items, children }) {
 	const { data: session } = useSession();
 	const [loginSession, setLoginSession] = useState(null);
 	const [showMobileMenu, setShowMobileMenu] = useState(false);
-	console.log(session);
+	// console.log(session);
 
 	if (session?.error === "RefreshAccessTokenError") {
 		redirect("/login");
