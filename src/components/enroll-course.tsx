@@ -6,20 +6,14 @@ import { ArrowRight } from "lucide-react";
 import { createCheckoutSession } from "@/app/actions/stripe";
 import React from "react";
 
-interface CourseData {
-	id: string;
-	title?: string;
-	price?: number;
-}
-
 interface EnrollCourseProps {
 	asLink?: boolean;
-	courseData: CourseData;
+	courseId: string;
 }
 
 export const EnrollCourse = (React.FC<EnrollCourseProps> = ({
 	asLink,
-	courseData,
+	courseId,
 }) => {
 	const formAction = async (data) => {
 		const { url } = await createCheckoutSession(data);
@@ -29,17 +23,8 @@ export const EnrollCourse = (React.FC<EnrollCourseProps> = ({
 	return (
 		<>
 			<form action={formAction}>
-				<input type="hidden" name="courseId" value={courseData?.id} />
-				<input
-					type="hidden"
-					name="courseName"
-					value={courseData?.title}
-				/>
-				<input
-					type="hidden"
-					name="coursePrice"
-					value={courseData?.price}
-				/>
+				<input type="hidden" name="courseId" value={courseId} />
+
 				{asLink ? (
 					<Button
 						type="submit"

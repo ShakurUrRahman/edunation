@@ -36,7 +36,7 @@ export async function sendEmails(emailInfo: EmailInfo[]) {
 
 			// ✅ ALWAYS return sendMail
 			const sendInfo = transporter.sendMail({
-				from: "Edunation <shakururrahman@gmail.com>",
+				from: "EduNation <shakururrahman@gmail.com>",
 				to: to,
 				subject: subject,
 				html: message,

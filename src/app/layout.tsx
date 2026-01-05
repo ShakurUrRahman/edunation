@@ -44,7 +44,7 @@ export default async function RootLayout({
 					${spartan.variable}`}
 			>
 				{children}
-				<Toaster position="bottom-right" richColors />
+				<Toaster position="top-center" richColors />
 			</body>
 		</html>
 	);
