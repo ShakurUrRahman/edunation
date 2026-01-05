@@ -24,13 +24,7 @@ const CourseDetailsIntro = ({ course }) => {
 							</p>
 
 							<div className="mt-6 flex items-center justify-center flex-wrap gap-3">
-								<EnrollCourse
-									courseData={{
-										id: course.id,
-										title: course.title,
-										price: course.price,
-									}}
-								/>
+								<EnrollCourse courseId={course.id} />
 								<Link
 									href=""
 									className={cn(
