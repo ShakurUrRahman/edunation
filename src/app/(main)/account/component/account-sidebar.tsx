@@ -15,6 +15,24 @@ const AccountSidebar = async () => {
 
 	const loggedInUser = await getUserByEmail(session?.user?.email);
 
+	const getInitials = (firstName?: string, lastName?: string) => {
+		if (!firstName && !lastName) return "U";
+		return `${firstName?.[0] ?? ""}${lastName?.[0] ?? ""}`.toUpperCase();
+	};
+
+	const avatarColors = [
+		"from-indigo-500 to-purple-600",
+		"from-emerald-500 to-teal-600",
+		"from-orange-500 to-pink-600",
+		"from-sky-500 to-blue-600",
+	];
+
+	const getAvatarGradient = (email?: string) => {
+		if (!email) return avatarColors[0];
+		const index = email.charCodeAt(0) % avatarColors.length;
+		return avatarColors[index];
+	};
+
 	return (
 		<div className="lg:w-1/4 md:px-3">
 			<div className="relative">
@@ -25,23 +43,42 @@ const AccountSidebar = async () => {
 							name="profile-image"
 							type="file"
 							className="hidden"
-							onchange="loadFile(event)"
+							// onchange=""
 						/>
 						<div>
-							<div className="relative size-28 mx-auto">
-								<Image
-									src={loggedInUser?.profilePicture}
-									className="rounded-full shadow dark:shadow-gray-800 ring-4 ring-slate-50 dark:ring-slate-800"
-									id="profile-banner"
-									alt={`${loggedInUser?.firstName} ${loggedInUser?.lastName}`}
-									width={112}
-									height={112}
-								/>
-								<label
-									className="absolute inset-0 cursor-pointer"
-									htmlFor="pro-img"
-								/>
-							</div>
+							{loggedInUser?.profilePicture ? (
+								<div className="relative size-28 mx-auto">
+									<Image
+										src={loggedInUser?.profilePicture}
+										className="rounded-full shadow dark:shadow-gray-800 ring-4 ring-slate-50 dark:ring-slate-800"
+										id="profile-banner"
+										alt={`${loggedInUser?.firstName} ${loggedInUser?.lastName}`}
+										width={112}
+										height={112}
+									/>
+									<label
+										className="absolute inset-0 cursor-pointer"
+										htmlFor="pro-img"
+									/>
+								</div>
+							) : (
+								<div className="relative mx-auto w-fit">
+									<div
+										className={`size-28 rounded-full flex items-center justify-center
+										bg-gradient-to-br ${getAvatarGradient(loggedInUser?.email)}
+										text-white text-3xl font-semibold shadow ring-4 ring-slate-50 dark:ring-slate-800`}
+									>
+										{getInitials(
+											loggedInUser?.firstName,
+											loggedInUser?.lastName
+										)}
+									</div>
+									<label
+										htmlFor="pro-img"
+										className="absolute inset-0 cursor-pointer"
+									/>
+								</div>
+							)}
 							<div className="mt-4">
 								<h5 className="text-lg font-semibold">{`${loggedInUser?.firstName} ${loggedInUser?.lastName}`}</h5>
 								<p className="text-slate-400">
