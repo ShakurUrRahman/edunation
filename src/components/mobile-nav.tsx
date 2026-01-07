@@ -1,4 +1,3 @@
-import * as React from "react";
 import Link from "next/link";
 
 import { cn } from "@/lib/utils";
@@ -10,7 +9,7 @@ import {
 	DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { Button, buttonVariants } from "./ui/button";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { redirect } from "next/navigation";
 

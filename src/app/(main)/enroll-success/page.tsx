@@ -62,7 +62,7 @@ const Success = async ({ searchParams }: Props) => {
 			loggedInUser?.id,
 			"stripe"
 		);
-		console.log(enrolled);
+		// console.log(enrolled);
 
 		// Send Emails to the instructor, student,and the person
 		// who paid

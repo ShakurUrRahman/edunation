@@ -36,7 +36,7 @@ const AccountSidebar = async () => {
 	return (
 		<div className="lg:w-1/4 md:px-3">
 			<div className="relative">
-				<div className="p-6 rounded-md shadow hero border border-primary/40 rounded-lg">
+				<div className="p-6 rounded-lg shadow hero border border-primary/40">
 					<div className="profile-pic text-center mb-5">
 						<Input
 							id="pro-img"

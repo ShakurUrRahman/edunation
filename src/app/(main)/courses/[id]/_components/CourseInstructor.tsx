@@ -5,6 +5,9 @@ import { Star } from "lucide-react";
 
 import { getCourseDetailsByInstructor } from "@/queries/courses";
 import Image from "next/image";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/button";
 
 const CourseInstructor = async ({ course }) => {
 	const instructor = course?.instructor;
@@ -19,7 +22,7 @@ const CourseInstructor = async ({ course }) => {
 	return (
 		<div className="bg-gray-50 rounded-md p-8">
 			<div className="md:flex md:gap-x-5 mb-8">
-				<div className="h-77.5 w-67.5 max-w-full  flex-none rounded mb-5 md:mb-0">
+				<div className="h-77.5 w-67.5 max-w-full flex-none rounded mb-5 md:mb-0">
 					<Image
 						src={instructor?.profilePicture}
 						alt={fullName}
@@ -40,7 +43,7 @@ const CourseInstructor = async ({ course }) => {
 							<li className="flex items-center space-x-3">
 								<Presentation className="text-gray-600" />
 								<div>
-									{courseDetailsByInstructor?.courses}{" "}
+									{courseDetailsByInstructor?.courses?.length}{" "}
 									Course(s)
 								</div>
 							</li>
@@ -64,6 +67,12 @@ const CourseInstructor = async ({ course }) => {
 									Rating
 								</div>
 							</li>
+							<Link
+								href={`/instructor-profile/${instructor?._id}`}
+								className={cn(buttonVariants({ size: "lg" }))}
+							>
+								Instructor details
+							</Link>
 						</ul>
 					</div>
 				</div>
