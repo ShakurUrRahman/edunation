@@ -3,7 +3,9 @@ import { replaceMongoIdInObject } from "@/lib/convertData";
 import bcrypt from "bcryptjs";
 
 export async function getUserByEmail(email) {
-	const user = await User.findOne({ email: email }).lean();
+	const user = await User.findOne({ email: email })
+		.select("-password")
+		.lean();
 	return replaceMongoIdInObject(user);
 }
 

@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
+import { Combobox } from "@/components/ui/combobox";
 import {
 	Form,
 	FormControl,
@@ -19,44 +20,20 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 const formSchema = z.object({
-	categoryId: z.string().min(1),
+	quizSetId: z.string().min(1),
 });
 
-export const CategoryForm = ({
+export const QuizSetForm = ({
 	initialData,
 	courseId,
 	options = [
 		{
-			value: "design",
-			label: "Design",
+			value: "quiz_set_1",
+			label: "Quiz Set 1",
 		},
 		{
-			value: "development",
-			label: "Development",
-		},
-		{
-			value: "marketing",
-			label: "Marketing",
-		},
-		{
-			value: "it_software",
-			label: "IT & Software",
-		},
-		{
-			value: "personal_development",
-			label: "Personal Development",
-		},
-		{
-			value: "business",
-			label: "Business",
-		},
-		{
-			value: "photography",
-			label: "Photography",
-		},
-		{
-			value: "music",
-			label: "Music",
+			value: "2",
+			label: "Quiz Set 2",
 		},
 	],
 }) => {
@@ -68,7 +45,7 @@ export const CategoryForm = ({
 	const form = useForm({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
-			categoryId: initialData?.categoryId || "",
+			quizSetId: initialData?.quizSetId || "",
 		},
 	});
 
@@ -84,21 +61,17 @@ export const CategoryForm = ({
 		}
 	};
 
-	const selectedOptions = options.find(
-		(option) => option.value === initialData.categoryId
-	);
-
 	return (
 		<div className="mt-6 border bg-gray-50 rounded-md p-4">
 			<div className="font-medium flex items-center justify-between">
-				Course Category
+				Quiz Set
 				<Button variant="ghost" onClick={toggleEdit}>
 					{isEditing ? (
 						<>Cancel</>
 					) : (
 						<>
 							<Pencil className="h-4 w-4 mr-2" />
-							Edit Category
+							Edit Quiz Set
 						</>
 					)}
 				</Button>
@@ -107,10 +80,10 @@ export const CategoryForm = ({
 				<p
 					className={cn(
 						"text-sm mt-2",
-						!initialData.categoryId && "text-slate-500 italic"
+						!initialData.quizSetId && "text-slate-500 italic"
 					)}
 				>
-					{selectedOptions?.label || "No category"}
+					{"No quiz set selected"}
 				</p>
 			)}
 			{console.log({ options })}
@@ -122,7 +95,7 @@ export const CategoryForm = ({
 					>
 						<FormField
 							control={form.control}
-							name="categoryId"
+							name="quizSetId"
 							render={({ field }) => (
 								<FormItem>
 									<FormControl>
