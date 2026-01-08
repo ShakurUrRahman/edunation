@@ -87,6 +87,17 @@ export async function getCourseDetailsByInstructor(instructorId) {
 		})
 	);
 
+	const groupedByCourses = Object.groupBy(
+		enrollments.flat(),
+		({ course }) => course
+	);
+
+	const totalRevenue = courses.reduce((acc, course) => {
+		return acc + groupedByCourses[course._id].length * course.price;
+	}, 0);
+
+	// console.log(totalRevenue);
+
 	const totalEnrollments = enrollments.reduce(function (acc, obj) {
 		return acc + obj.length;
 	}, 0);
@@ -113,5 +124,6 @@ export async function getCourseDetailsByInstructor(instructorId) {
 		enrollments: totalEnrollments,
 		reviews: totalTestimonials.length,
 		ratings: avgRating.toPrecision(2),
+		revenue: totalRevenue,
 	};
 }

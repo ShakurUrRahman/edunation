@@ -24,6 +24,7 @@ export function MainNav({ items, children }) {
 	const { data: session } = useSession();
 	const [loginSession, setLoginSession] = useState(null);
 	const [showMobileMenu, setShowMobileMenu] = useState(false);
+	const [loggedInUser, setLoggedInUser] = useState(null);
 	// console.log(session);
 
 	if (session?.error === "RefreshAccessTokenError") {
@@ -37,6 +38,18 @@ export function MainNav({ items, children }) {
 
 	useEffect(() => {
 		setLoginSession(session);
+		async function fetchMe() {
+			try {
+				const response = await fetch("/api/me");
+				const data = await response.json();
+				console.log(data);
+				setLoggedInUser(data);
+			} catch (err) {
+				console.log(err);
+			}
+		}
+
+		fetchMe();
 	}, [session]);
 
 	useEffect(() => {
@@ -79,16 +92,8 @@ export function MainNav({ items, children }) {
 
 	return (
 		<>
-			<div>
-				<Link
-					className="flex justify-center items-center gap-4"
-					href="/"
-				>
-					<Logo className="size-12" />
-					<p className="text-3xl font-semibold text-primary mb-2">
-						Edu<span className="font-light">Nation</span>
-					</p>
-				</Link>
+			<div className="size-14 text-3xl">
+				<Logo />
 			</div>
 			<div>
 				{items?.length ? (
