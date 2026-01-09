@@ -42,7 +42,7 @@ export function MainNav({ items, children }) {
 			try {
 				const response = await fetch("/api/me");
 				const data = await response.json();
-				console.log(data);
+				// console.log(data);
 				setLoggedInUser(data);
 			} catch (err) {
 				console.log(err);
@@ -51,6 +51,8 @@ export function MainNav({ items, children }) {
 
 		fetchMe();
 	}, [session]);
+
+	console.log("Logged in user:", loggedInUser);
 
 	useEffect(() => {
 		const handleClickOutside = (event: MouseEvent) => {
@@ -166,7 +168,10 @@ export function MainNav({ items, children }) {
 				<div className="relative" ref={avatarRef}>
 					<div className="cursor-pointer" onClick={handleOnOff}>
 						<Avatar>
-							<AvatarImage src="https://github.com/shadcn.png" />
+							<AvatarImage
+								src={loggedInUser?.profilePicture}
+								alt={loggedInUser?.profilePicture}
+							/>
 							<AvatarFallback>CN</AvatarFallback>
 						</Avatar>
 					</div>
@@ -184,17 +189,24 @@ export function MainNav({ items, children }) {
 							className="block px-4 py-2 hover:bg-primary-light rounded-t-lg"
 							onClick={() => setOpen(false)}
 						>
-							{" "}
-							Profile{" "}
-						</Link>{" "}
+							Profile
+						</Link>
+						{loggedInUser?.role === "instructor" && (
+							<Link
+								href="/dashboard"
+								className="block px-4 py-2 hover:bg-primary-light"
+								onClick={() => setOpen(false)}
+							>
+								Dashboard
+							</Link>
+						)}
 						<Link
 							href="/account/enrolled-courses"
 							className="block px-4 py-2 hover:bg-primary-light"
 							onClick={() => setOpen(false)}
 						>
-							{" "}
-							My Courses{" "}
-						</Link>{" "}
+							My Courses
+						</Link>
 						<Link
 							href="/account/testimonials"
 							className={cn(
@@ -202,9 +214,8 @@ export function MainNav({ items, children }) {
 								!loginSession && "rounded-b-lg"
 							)}
 						>
-							{" "}
-							Testimonials & Certificates{" "}
-						</Link>{" "}
+							Testimonials & Certificates
+						</Link>
 						{loginSession && (
 							<Link
 								href="#"
@@ -213,8 +224,7 @@ export function MainNav({ items, children }) {
 									signOut();
 								}}
 							>
-								{" "}
-								Logout{" "}
+								Logout
 							</Link>
 						)}
 					</div>
