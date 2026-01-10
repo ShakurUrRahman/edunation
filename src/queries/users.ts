@@ -11,7 +11,7 @@ export async function getUserByEmail(email) {
 
 export async function getUserDetailsById(userId) {
 	try {
-		const user = await User.findById(userId).lean();
+		const user = await User.findById(userId).select("-password").lean();
 		return user;
 	} catch (error) {
 		throw new Error(error);

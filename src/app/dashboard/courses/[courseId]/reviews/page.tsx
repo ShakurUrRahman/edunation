@@ -1,22 +1,11 @@
 import { getCourseDetails } from "@/queries/courses";
 import { columns } from "./_components/columns";
 import { DataTable } from "./_components/data-table";
-import { getInstructorDashboardData } from "@/lib/dashboard-helper";
-
-const reviews = [
-	{
-		id: 1,
-		student: { name: "John Doe" },
-		review: "Nice Course, Thanks for the help",
-		rating: 5,
-	},
-	{
-		id: 1,
-		student: { name: "John Smilga" },
-		review: "Nice Course, Thanks for the help",
-		rating: 5,
-	},
-];
+import {
+	getInstructorDashboardData,
+	REVIEW_DATA,
+} from "@/lib/dashboard-helper";
+import { StarRating } from "@/components/star-rating";
 
 type PageProps = {
 	params: Promise<{ courseId: string }>;
@@ -25,13 +14,25 @@ type PageProps = {
 const ReviewsPage = async ({ params }: PageProps) => {
 	const { courseId } = await params;
 	const course = await getCourseDetails(courseId);
+	const reviews = await getInstructorDashboardData(REVIEW_DATA);
 
-	console.log(courseId);
+	const reviewDataForCourse = reviews.filter(
+		(review) => review?.courseId.toString() == courseId
+	);
+
+	const reviewData = reviewDataForCourse.map((review) => ({
+		id: review.id,
+		content: review.content,
+		rating: review.rating,
+		studentName: review.studentName,
+	}));
+
+	// console.log(reviewDataForCourse);
 
 	return (
 		<div className="p-6">
 			<h2>{course?.title}</h2>
-			<DataTable columns={columns} data={reviews} />
+			<DataTable columns={columns} data={reviewData} />
 		</div>
 	);
 };

@@ -1,14 +1,26 @@
-import { getInstructorDashboardData } from "@/lib/dashboard-helper";
+import {
+	COURSE_DATA,
+	getInstructorDashboardData,
+} from "@/lib/dashboard-helper";
 import { columns } from "./_components/columns";
 import { DataTable } from "./_components/data-table";
 
 const CoursesPage = async () => {
-	const courses = await getInstructorDashboardData();
+	const courses = await getInstructorDashboardData(COURSE_DATA);
+
+	const courseList = courses.map((course) => ({
+		id: course._id.toString(),
+		title: course.title,
+		description: course.description,
+		price: course.price,
+		active: course.active,
+	}));
+
 	// console.log(courses);
 
 	return (
 		<div className="p-6">
-			<DataTable columns={columns} data={courses?.courses} />
+			<DataTable columns={columns} data={courseList} />
 		</div>
 	);
 };

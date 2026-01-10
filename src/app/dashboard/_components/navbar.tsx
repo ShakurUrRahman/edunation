@@ -30,9 +30,9 @@ export const Navbar = () => {
 	}, []);
 
 	return (
-		<div className="p-4 border-b h-full flex items-center bg-white shadow-sm">
+		<div className="p-4 border-b h-full flex items-center bg-white shadow-sm hero">
 			<MobileSidebar />
-			<div className="flex items-center justify-end  w-full">
+			<div className="flex items-center justify-end w-full">
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
 						<div className="cursor-pointer">
