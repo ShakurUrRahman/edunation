@@ -1,10 +1,9 @@
 "use client";
 
+import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
 
-import { Button } from "@/components/ui/button";
 import {
 	Form,
 	FormControl,
@@ -12,54 +11,21 @@ import {
 	FormItem,
 	FormMessage,
 } from "@/components/ui/form";
-import { cn } from "@/lib/utils";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { updateCourse } from "@/app/actions/course";
 import { toast } from "sonner";
 
 const formSchema = z.object({
-	categoryId: z.string().min(1),
+	title: z.string().min(1, {
+		message: "Title is required",
+	}),
 });
 
-export const CategoryForm = ({
-	initialData,
-	courseId,
-	options = [
-		{
-			value: "design",
-			label: "Design",
-		},
-		{
-			value: "development",
-			label: "Development",
-		},
-		{
-			value: "marketing",
-			label: "Marketing",
-		},
-		{
-			value: "it_software",
-			label: "IT & Software",
-		},
-		{
-			value: "personal_development",
-			label: "Personal Development",
-		},
-		{
-			value: "business",
-			label: "Business",
-		},
-		{
-			value: "photography",
-			label: "Photography",
-		},
-		{
-			value: "music",
-			label: "Music",
-		},
-	],
-}) => {
+export const TitleForm = ({ initialData = {}, courseId }) => {
 	const router = useRouter();
 	const [isEditing, setIsEditing] = useState(false);
 
@@ -67,53 +33,38 @@ export const CategoryForm = ({
 
 	const form = useForm({
 		resolver: zodResolver(formSchema),
-		defaultValues: {
-			categoryId: initialData?.categoryId || "",
-		},
+		defaultValues: initialData,
 	});
 
 	const { isSubmitting, isValid } = form.formState;
 
 	const onSubmit = async (values) => {
 		try {
-			toast.success("Course updated");
+			await updateCourse(courseId, values);
 			toggleEdit();
 			router.refresh();
+			toast.success("Course title has been updated.");
 		} catch (error) {
 			toast.error("Something went wrong");
 		}
 	};
 
-	const selectedOptions = options.find(
-		(option) => option.value === initialData.categoryId
-	);
-
 	return (
 		<div className="mt-6 border bg-gray-50 rounded-md p-4">
 			<div className="font-medium flex items-center justify-between">
-				Course Category
+				Course title
 				<Button variant="ghost" onClick={toggleEdit}>
 					{isEditing ? (
 						<>Cancel</>
 					) : (
 						<>
 							<Pencil className="h-4 w-4 mr-2" />
-							Edit Category
+							Edit Title
 						</>
 					)}
 				</Button>
 			</div>
-			{!isEditing && (
-				<p
-					className={cn(
-						"text-sm mt-2",
-						!initialData.categoryId && "text-slate-500 italic"
-					)}
-				>
-					{selectedOptions?.label || "No category"}
-				</p>
-			)}
-			{console.log({ options })}
+			{!isEditing && <p className="text-sm mt-2">{initialData.title}</p>}
 			{isEditing && (
 				<Form {...form}>
 					<form
@@ -122,12 +73,13 @@ export const CategoryForm = ({
 					>
 						<FormField
 							control={form.control}
-							name="categoryId"
+							name="title"
 							render={({ field }) => (
 								<FormItem>
 									<FormControl>
-										<Combobox
-											options={options}
+										<Input
+											disabled={isSubmitting}
+											placeholder="e.g. 'Advanced web development'"
 											{...field}
 										/>
 									</FormControl>

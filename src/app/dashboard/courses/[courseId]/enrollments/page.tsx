@@ -28,7 +28,7 @@ const EnrollmentsPage = async ({ params }: PageProps) => {
 		quizMark: enrollment.quizMark,
 	}));
 
-	console.log(enrollments);
+	// console.log(enrollments);
 
 	return (
 		<div className="p-6">

@@ -22,7 +22,7 @@ const ChangePassword = ({ email }) => {
 		setPasswordState({ ...passwordState, [key]: value });
 	}
 
-	async function doPassowrdChange(event) {
+	async function doPasswordChange(event) {
 		event.preventDefault();
 		console.log(passwordState);
 
@@ -43,7 +43,7 @@ const ChangePassword = ({ email }) => {
 	return (
 		<div>
 			<h5 className="text-lg font-semibold mb-4">Change password :</h5>
-			<form onSubmit={doPassowrdChange}>
+			<form onSubmit={doPasswordChange}>
 				<div className="grid grid-cols-1 gap-5">
 					<div>
 						<Label className="mb-2 block">Old password :</Label>

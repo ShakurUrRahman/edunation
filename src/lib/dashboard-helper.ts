@@ -45,10 +45,10 @@ const populateEnrollmentData = async (enrollments) => {
 			if (report) {
 				// Calculate progress
 				const course = await getCourseDetails(enrollment?.course?._id);
-				const totalModeules = course?.modules?.length;
+				const totalModules = course?.modules?.length;
 				const totalCompletedModules =
-					report?.totalCompletedModeules?.length;
-				const progress = (totalCompletedModules / totalModeules) * 100;
+					report?.totalCompletedModules?.length;
+				const progress = (totalCompletedModules / totalModules) * 100;
 				enrollment["progress"] = progress;
 
 				// Calculate Quiz Marks

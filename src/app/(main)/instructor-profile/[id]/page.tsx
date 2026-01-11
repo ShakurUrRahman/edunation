@@ -19,7 +19,7 @@ const InstructorProfile = async ({ params }: PageProps) => {
 	const instructorDetails = await getUserDetailsById(id);
 	const courseDetailsByInstructor = await getCourseDetailsByInstructor(id);
 
-	console.log(instructorDetails);
+	// console.log(instructorDetails);
 
 	return (
 		<section
