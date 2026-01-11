@@ -1,6 +1,5 @@
-import { Course } from "@/model/course-model";
 import { Category } from "@/model/category-model";
-import { User } from "@/model/user-model";
+import { User } from "@/model/user.model";
 import { Testimonial } from "@/model/testimonial-model";
 import { Module } from "@/model/module.model";
 
@@ -11,9 +10,10 @@ import {
 
 import { getEnrollmentsForCourse } from "./enrollments";
 import { getTestimonialsForCourse } from "./testimonials";
+import { Course } from "@/model/course-model";
 
 export async function getCourseList() {
-	const courses = await Course.find({})
+	const courses = await Course.find({ active: true })
 		.select([
 			"title",
 			"subtitle",
@@ -71,7 +71,10 @@ export async function getCourseDetails(id) {
 }
 
 export async function getCourseDetailsByInstructor(instructorId, expand) {
-	const courses = await Course.find({ instructor: instructorId })
+	const courses = await Course.find({
+		instructor: instructorId,
+		active: true,
+	})
 		.populate({
 			path: "category",
 			model: Category,
@@ -119,8 +122,12 @@ export async function getCourseDetailsByInstructor(instructorId, expand) {
 
 	//console.log("testimonials", totalTestimonials, avgRating);
 	if (expand) {
+		const allCourses = await Course.find({
+			instructor: instructorId,
+		}).lean();
+
 		return {
-			courses: courses?.flat(),
+			courses: allCourses?.flat(),
 			enrollments: enrollments?.flat(),
 			reviews: totalTestimonials,
 		};
@@ -132,4 +139,13 @@ export async function getCourseDetailsByInstructor(instructorId, expand) {
 		ratings: avgRating.toPrecision(2),
 		revenue: totalRevenue,
 	};
+}
+
+export async function create(courseData) {
+	try {
+		const course = await Course.create(courseData);
+		return JSON.parse(JSON.stringify(course));
+	} catch (err) {
+		throw new Error(err);
+	}
 }

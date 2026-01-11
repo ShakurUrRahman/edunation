@@ -1,6 +1,6 @@
 "use server";
 
-import { User } from "@/model/user-model";
+import { User } from "@/model/user.model";
 import { revalidatePath } from "next/cache";
 import bcrypt from "bcryptjs";
 import { validatePassword } from "@/queries/users";

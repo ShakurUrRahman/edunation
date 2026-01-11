@@ -81,7 +81,7 @@ export const columns = [
 		},
 	},
 	{
-		accessorKey: "date",
+		accessorKey: "enrollmentDate",
 		header: ({ column }) => {
 			return (
 				<Button
@@ -95,7 +95,7 @@ export const columns = [
 			);
 		},
 		cell: ({ row }) => {
-			const enrollmentDate = row.getValue("enrollment_date");
+			const enrollmentDate = row.getValue("enrollmentDate");
 			return formatMyDate(enrollmentDate);
 		},
 	},

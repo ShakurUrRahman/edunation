@@ -19,30 +19,7 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover";
 
-export interface ComboboxItem {
-	value: string;
-	label: string;
-}
-
-interface ComboboxProps {
-	items: ComboboxItem[];
-	value?: string;
-	onValueChange: (value: string) => void;
-	placeholder?: string;
-	searchPlaceholder?: string;
-	emptyText?: string;
-	className?: string;
-}
-
-export function Combobox({
-	items,
-	value,
-	onValueChange,
-	placeholder = "Select item...",
-	searchPlaceholder = "Search...",
-	emptyText = "No item found.",
-	className,
-}: ComboboxProps) {
+export const Combobox = ({ options, value, onChange }) => {
 	const [open, setOpen] = React.useState(false);
 
 	return (
@@ -52,42 +29,43 @@ export function Combobox({
 					variant="outline"
 					role="combobox"
 					aria-expanded={open}
-					className={cn("w-full justify-between", className)}
+					className="w-full justify-between"
 				>
 					{value
-						? items.find((item) => item.value === value)?.label
-						: placeholder}
+						? options.find((option) => option.value === value)
+								?.label
+						: "Select options..."}
 					<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
 				</Button>
 			</PopoverTrigger>
-			<PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
+			<PopoverContent className="w-full p-0">
 				<Command>
-					<CommandInput placeholder={searchPlaceholder} />
+					<CommandInput placeholder="Search options..." />
 					<CommandList>
-						<CommandEmpty>{emptyText}</CommandEmpty>
+						<CommandEmpty>No options found.</CommandEmpty>
 						<CommandGroup>
-							{items.map((item) => (
+							{options.map((option) => (
 								<CommandItem
-									key={item.value}
-									value={item.value}
-									onSelect={(currentValue) => {
-										onValueChange(
-											currentValue === value
+									key={option.value}
+									onSelect={() => {
+										onChange(
+											option.value === value
 												? ""
-												: currentValue
+												: option.value
 										);
 										setOpen(false);
 									}}
+									className="cursor-pointer"
 								>
 									<Check
 										className={cn(
 											"mr-2 h-4 w-4",
-											value === item.value
+											value === option.value
 												? "opacity-100"
 												: "opacity-0"
 										)}
 									/>
-									{item.label}
+									{option.label}
 								</CommandItem>
 							))}
 						</CommandGroup>
@@ -96,4 +74,4 @@ export function Combobox({
 			</PopoverContent>
 		</Popover>
 	);
-}
+};
