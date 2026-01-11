@@ -16,6 +16,7 @@ import AlertBanner from "@/components/alert-banner";
 import { QuizSetForm } from "./_components/quiz-set-form";
 import { getCourseDetails } from "@/queries/courses";
 import { getCategories } from "@/queries/categories";
+import { replaceMongoIdInArray } from "@/lib/convertData";
 
 type PageProps = {
 	params: Promise<{ courseId: string }>;
@@ -33,7 +34,19 @@ const EditCourse = async ({ params }: PageProps) => {
 			id: c.id,
 		};
 	});
-	console.log(mappedCategories);
+	// console.log(mappedCategories);
+
+	const modules = replaceMongoIdInArray(course?.modules).sort(
+		(a, b) => a.order - b.order
+	);
+
+	const moduleData = modules.map((module) => ({
+		id: module.id,
+		active: module.active,
+		order: module.order,
+		title: module.title,
+		slug: module.slug,
+	}));
 
 	return (
 		<>
@@ -80,8 +93,10 @@ const EditCourse = async ({ params }: PageProps) => {
 								<IconBadge icon={ListChecks} />
 								<h2 className="text-xl">Course Modules</h2>
 							</div>
-
-							<ModulesForm initialData={[]} courseId={[]} />
+							<ModulesForm
+								initialData={moduleData}
+								courseId={courseId}
+							/>
 						</div>
 						<div>
 							<div className="flex items-center gap-x-2">
