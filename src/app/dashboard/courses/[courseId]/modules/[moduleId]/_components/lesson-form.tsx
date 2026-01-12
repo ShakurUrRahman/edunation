@@ -18,23 +18,34 @@ import { Loader2, PlusCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
-import { ModuleList } from "./module-list";
-
-import { createModule } from "@/app/actions/module";
+import { LessonList } from "./lesson-list";
+import { LessonModal } from "./lesson-modal";
 import { getSlug } from "@/lib/convertData";
-import { reOrderModules } from "@/app/actions/module";
+import { createLesson } from "@/app/actions/lesson";
 
 const formSchema = z.object({
 	title: z.string().min(1),
 });
-
-export const ModulesForm = ({ initialData, courseId }) => {
-	const [modules, setModules] = useState(initialData);
+const initialModules = [
+	{
+		id: "1",
+		title: "Module 1",
+		isPublished: true,
+	},
+	{
+		id: "2",
+		title: "Module 2",
+	},
+];
+export const LessonForm = ({ initialData, moduleId }) => {
+	const [isEditing, setIsEditing] = useState(false);
+	const [lessons, setLessons] = useState(initialData);
 	const router = useRouter();
 	const [isCreating, setIsCreating] = useState(false);
 	const [isUpdating, setIsUpdating] = useState(false);
 
 	const toggleCreating = () => setIsCreating((current) => !current);
+	const toggleEditing = () => setIsEditing((current) => !current);
 
 	const form = useForm({
 		resolver: zodResolver(formSchema),
@@ -46,23 +57,25 @@ export const ModulesForm = ({ initialData, courseId }) => {
 	const { isSubmitting, isValid } = form.formState;
 
 	const onSubmit = async (values) => {
+		console.log(values);
 		try {
 			const formData = new FormData();
-			formData.append("title", values?.title);
-			formData.append("slug", getSlug(values?.title));
-			formData.append("courseId", courseId);
-			formData.append("order", modules.length);
 
-			const module = await createModule(formData);
+			formData.append("title", values.title);
+			formData.append("slug", getSlug(values.title));
+			formData.append("moduleId", moduleId);
+			formData.append("order", lessons.length);
 
-			setModules((modules) => [
-				...modules,
+			const lesson = await createLesson(formData);
+
+			setLessons((lessons) => [
+				...lessons,
 				{
-					id: module?._id.toString(),
+					id: lesson?._id.toString(),
 					title: values.title,
 				},
 			]);
-			toast.success("Module created");
+			toast.success("Lesson created");
 			toggleCreating();
 			router.refresh();
 		} catch (error) {
@@ -73,10 +86,9 @@ export const ModulesForm = ({ initialData, courseId }) => {
 	const onReorder = async (updateData) => {
 		console.log({ updateData });
 		try {
-			reOrderModules(updateData);
 			setIsUpdating(true);
 
-			toast.success("Chapters reordered");
+			toast.success("Lesson reordered");
 			router.refresh();
 		} catch {
 			toast.error("Something went wrong");
@@ -86,7 +98,7 @@ export const ModulesForm = ({ initialData, courseId }) => {
 	};
 
 	const onEdit = (id) => {
-		router.push(`/dashboard/courses/${courseId}/modules/${id}`);
+		setIsEditing(true);
 	};
 
 	return (
@@ -97,14 +109,14 @@ export const ModulesForm = ({ initialData, courseId }) => {
 				</div>
 			)}
 			<div className="font-medium flex items-center justify-between">
-				Course Modules
+				Module Lessons
 				<Button variant="ghost" onClick={toggleCreating}>
 					{isCreating ? (
 						<>Cancel</>
 					) : (
 						<>
 							<PlusCircle className="h-4 w-4 mr-2" />
-							Add a module
+							Add a chapter
 						</>
 					)}
 				</Button>
@@ -145,22 +157,23 @@ export const ModulesForm = ({ initialData, courseId }) => {
 				<div
 					className={cn(
 						"text-sm mt-2",
-						!modules?.length && "text-slate-500 italic"
+						!lessons?.length && "text-slate-500 italic"
 					)}
 				>
-					{!modules?.length && "No module"}
-					<ModuleList
+					{!lessons?.length && "No lesson"}
+					<LessonList
 						onEdit={onEdit}
 						onReorder={onReorder}
-						items={modules || []}
+						items={lessons || []}
 					/>
 				</div>
 			)}
 			{!isCreating && (
 				<p className="text-xs text-muted-foreground mt-4">
-					Drag & Drop to reorder the modules
+					Drag & Drop to reorder the lessons
 				</p>
 			)}
+			<LessonModal open={isEditing} setOpen={setIsEditing} />
 		</div>
 	);
 };
