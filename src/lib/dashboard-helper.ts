@@ -65,8 +65,8 @@ const populateEnrollmentData = async (enrollments) => {
 					})
 					.filter((elem) => elem.length > 0)
 					.flat();
-				const marksFromQuizees = totalCorrect.length * 5;
-				enrollment["quizMark"] = marksFromQuizees;
+				const marksFromQuizzes = totalCorrect.length * 5;
+				enrollment["quizMark"] = marksFromQuizzes;
 			}
 			return enrollment;
 		})
