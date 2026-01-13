@@ -75,6 +75,7 @@ const Module = async ({ params }: PageProps) => {
 							<LessonForm
 								initialData={lessons}
 								moduleId={moduleId}
+								courseId={courseId}
 							/>
 						</div>
 					</div>
