@@ -22,13 +22,22 @@ import { VideoPlayer } from "@/components/video-player";
 import { updateLesson } from "@/app/actions/lesson";
 import { formatDuration } from "@/lib/date";
 
+const durationRegex = /^(\d+):([0-5]?\d):([0-5]?\d)$/;
+
 const formSchema = z.object({
-	url: z.string().min(1, {
-		message: "Required",
-	}),
-	duration: z.string().min(1, {
-		message: "Required",
-	}),
+	url: z
+		.string()
+		.min(1, { message: "Video URL is required" })
+		.url({ message: "Invalid URL format" })
+		.refine((val) => val.includes("embed"), {
+			message: "Please provide an embed URL (must contain 'embed')",
+		}),
+	duration: z
+		.string()
+		.min(1, { message: "Duration is required" })
+		.regex(durationRegex, {
+			message: "Duration must follow HH:MM:SS (example: 00:33:00)",
+		}),
 });
 
 export const VideoUrlForm = ({ initialData, courseId, lessonId }) => {
@@ -48,10 +57,11 @@ export const VideoUrlForm = ({ initialData, courseId, lessonId }) => {
 	const { isSubmitting, isValid } = form.formState;
 
 	const onSubmit = async (values) => {
-		console.log(values);
+		// console.log(values);
 		try {
 			const payload = {};
 			payload["video_url"] = values?.url;
+
 			console.log(payload);
 			const duration = values?.duration;
 			const splitted = duration.split(":");
