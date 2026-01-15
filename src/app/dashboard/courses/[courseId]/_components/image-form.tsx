@@ -23,6 +23,8 @@ export const ImageForm = ({ initialData, courseId }) => {
 	const router = useRouter();
 	const [isEditing, setIsEditing] = useState(false);
 
+	const [imageUrl, setImageUrl] = useState(initialData?.imageUrl ?? null);
+
 	useEffect(() => {
 		if (file) {
 			async function uploadFile() {
@@ -41,7 +43,7 @@ export const ImageForm = ({ initialData, courseId }) => {
 					const result = await response.text();
 					// console.log(result);
 					if (response.status === 200) {
-						initialData.imageUrl = `/assets/images/courses/${file[0].path}`;
+						setImageUrl(`/assets/images/courses/${file[0].path}`);
 						toast.success(result);
 						toggleEdit();
 						router.refresh();
@@ -73,13 +75,13 @@ export const ImageForm = ({ initialData, courseId }) => {
 				Course Image
 				<Button variant="ghost" onClick={toggleEdit}>
 					{isEditing && <>Cancel</>}
-					{!isEditing && !initialData.imageUrl && (
+					{!isEditing && !imageUrl && (
 						<>
 							<PlusCircle className="h-4 w-4 mr-2" />
 							Add an image
 						</>
 					)}
-					{!isEditing && initialData.imageUrl && (
+					{!isEditing && imageUrl && (
 						<>
 							<Pencil className="h-4 w-4 mr-2" />
 							Edit image
