@@ -14,17 +14,20 @@ import { TitleForm } from "./_components/title-form";
 import { CourseActions } from "./_components/course-action";
 import AlertBanner from "@/components/alert-banner";
 import { QuizSetForm } from "./_components/quiz-set-form";
-import { getCourseDetails } from "@/queries/courses";
+
 import { getCategories } from "@/queries/categories";
+import { getCourseDetails } from "@/queries/courses";
+
 import { replaceMongoIdInArray } from "@/lib/convertData";
 
+import { getAllQuizSets } from "@/queries/quizzes";
+
 type PageProps = {
-	params: Promise<{ courseId: string }>;
+	params: Promise<{ quizSetId: string }>;
 };
 
 const EditCourse = async ({ params }: PageProps) => {
 	const { courseId } = await params;
-
 	const course = await getCourseDetails(courseId);
 	const categories = await getCategories();
 	const mappedCategories = categories.map((c) => {
@@ -34,7 +37,6 @@ const EditCourse = async ({ params }: PageProps) => {
 			id: c.id,
 		};
 	});
-	// console.log(mappedCategories);
 
 	const modules = replaceMongoIdInArray(course?.modules).sort(
 		(a, b) => a.order - b.order
@@ -47,6 +49,17 @@ const EditCourse = async ({ params }: PageProps) => {
 		title: module.title,
 		slug: module.slug,
 	}));
+
+	const allQuizSets = await getAllQuizSets(true);
+	let mappedQuizSet = [];
+	if (allQuizSets && allQuizSets.length > 0) {
+		mappedQuizSet = allQuizSets.map((quizSet) => {
+			return {
+				value: quizSet.id,
+				label: quizSet.title,
+			};
+		});
+	}
 
 	return (
 		<>
@@ -90,7 +103,14 @@ const EditCourse = async ({ params }: PageProps) => {
 							courseId={courseId}
 							options={mappedCategories}
 						/>
-						<QuizSetForm initialData={{}} courseId={1} />
+
+						<QuizSetForm
+							initialData={{
+								quizSetId: course?.quizSet?._id.toString(),
+							}}
+							courseId={courseId}
+							options={mappedQuizSet}
+						/>
 					</div>
 					<div className="space-y-6">
 						<div>
@@ -98,6 +118,7 @@ const EditCourse = async ({ params }: PageProps) => {
 								<IconBadge icon={ListChecks} />
 								<h2 className="text-xl">Course Modules</h2>
 							</div>
+
 							<ModulesForm
 								initialData={moduleData}
 								courseId={courseId}
