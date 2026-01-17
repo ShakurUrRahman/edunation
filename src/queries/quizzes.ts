@@ -1,6 +1,5 @@
-import { Quizset } from "@/model/quizset-model";
-import { Quiz } from "@/model/quizzes-model";
-
+import { Quizset } from "@/model/quizsets.model";
+import { Quiz } from "@/model/quizzes.model";
 import {
 	replaceMongoIdInArray,
 	replaceMongoIdInObject,

@@ -1,11 +1,10 @@
 "use client";
 
+import * as z from "zod";
+// import axios from "axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
 
-import { Button } from "@/components/ui/button";
-import { Combobox } from "@/components/ui/combobox";
 import {
 	Form,
 	FormControl,
@@ -13,38 +12,35 @@ import {
 	FormItem,
 	FormMessage,
 } from "@/components/ui/form";
-import { cn } from "@/lib/utils";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { toast } from "sonner";
-import { updateQuizSetForCourse } from "@/app/actions/course";
+import { useRouter } from "next/navigation";
+import { updateQuizSet } from "@/app/actions/quiz";
 
 const formSchema = z.object({
-	quizSetId: z.string().min(1),
+	title: z.string().min(1, {
+		message: "Title is required",
+	}),
 });
 
-export const QuizSetForm = ({ initialData, courseId, options }) => {
+export const TitleForm = ({ initialData = {}, quizSetId }) => {
 	const router = useRouter();
 	const [isEditing, setIsEditing] = useState(false);
-	const foundMatch = options.find((o) => o.value === initialData.quizSetId);
 
 	const toggleEdit = () => setIsEditing((current) => !current);
 
 	const form = useForm({
 		resolver: zodResolver(formSchema),
-		defaultValues: {
-			quizSetId: initialData?.quizSetId || "",
-		},
+		defaultValues: initialData,
 	});
 
 	const { isSubmitting, isValid } = form.formState;
 
 	const onSubmit = async (values) => {
 		try {
-			console.log(values);
-			await updateQuizSetForCourse(courseId, values);
-			toast.success("Course updated");
+			await updateQuizSet(quizSetId, values);
 			toggleEdit();
 			router.refresh();
 		} catch (error) {
@@ -55,33 +51,19 @@ export const QuizSetForm = ({ initialData, courseId, options }) => {
 	return (
 		<div className="mt-6 border bg-gray-50 rounded-md p-4">
 			<div className="font-medium flex items-center justify-between">
-				Quiz Set
+				Quiz set title
 				<Button variant="ghost" onClick={toggleEdit}>
 					{isEditing ? (
 						<>Cancel</>
 					) : (
 						<>
 							<Pencil className="h-4 w-4 mr-2" />
-							Edit Quiz Set
+							Edit Title
 						</>
 					)}
 				</Button>
 			</div>
-			{!isEditing && (
-				<p
-					className={cn(
-						"text-sm mt-2",
-						!initialData.quizSetId && "text-slate-500 italic"
-					)}
-				>
-					{foundMatch ? (
-						<span>{foundMatch.label}</span>
-					) : (
-						<span>"No quiz set selected"</span>
-					)}
-				</p>
-			)}
-			{console.log({ options })}
+			{!isEditing && <p className="text-sm mt-2">{initialData.title}</p>}
 			{isEditing && (
 				<Form {...form}>
 					<form
@@ -90,12 +72,13 @@ export const QuizSetForm = ({ initialData, courseId, options }) => {
 					>
 						<FormField
 							control={form.control}
-							name="quizSetId"
+							name="title"
 							render={({ field }) => (
 								<FormItem>
 									<FormControl>
-										<Combobox
-											options={options}
+										<Input
+											disabled={isSubmitting}
+											placeholder="e.g. 'Advanced web development'"
 											{...field}
 										/>
 									</FormControl>
