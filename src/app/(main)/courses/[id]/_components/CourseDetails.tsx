@@ -2,7 +2,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { formatMyDate } from "@/lib/date";
 
 import CourseOverview from "./CourseOverview";
-import CourseCurriculam from "./CourseCurriculam";
+import CourseCurriculum from "./CourseCurriculum";
 import CourseInstructor from "./CourseInstructor";
 import Image from "next/image";
 
@@ -60,7 +60,7 @@ const CourseDetails = ({ course }) => {
 							<CourseOverview course={course} />
 						</TabsContent>
 						<TabsContent value="curriculum">
-							<CourseCurriculam course={course} />
+							<CourseCurriculum course={course} />
 						</TabsContent>
 						<TabsContent value="instructor">
 							<CourseInstructor course={course} />

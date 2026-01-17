@@ -20,9 +20,17 @@ import { cn } from "@/lib/utils";
 import CourseModuleList from "./module/CourseModuleList";
 
 const CourseCurriculum = ({ course }) => {
-	const totalDuration = course?.modules.reduce(function (acc, obj) {
-		return acc + obj.duration;
-	}, 0);
+	const totalDuration = course?.modules
+		.map((item) => {
+			return item.lessonIds.reduce(function (acc, obj) {
+				return acc + obj.duration;
+			}, 0);
+		})
+		.reduce(function (acc, obj) {
+			return acc + obj;
+		}, 0);
+
+	console.log({ totalDuration });
 	return (
 		<>
 			<div className="flex gap-x-5 items-center justify-center flex-wrap mt-4 mb-6 text-gray-600 text-sm">
