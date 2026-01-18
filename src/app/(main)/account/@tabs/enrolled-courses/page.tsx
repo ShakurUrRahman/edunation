@@ -7,6 +7,7 @@ import { redirect } from "next/navigation";
 
 import { getUserByEmail } from "@/queries/users";
 import EnrolledCourseCard from "../../component/enrolled-course-card";
+import Link from "next/link";
 
 async function EnrolledCourses() {
 	const session = await auth();
@@ -26,10 +27,12 @@ async function EnrolledCourses() {
 			{enrollments && enrollments.length > 0 ? (
 				<>
 					{enrollments.map((enrollment) => (
-						<EnrolledCourseCard
+						<Link
 							key={enrollment?.id}
-							enrollment={enrollment}
-						/>
+							href={`/courses/${enrollment.course._id.toString()}/lesson`}
+						>
+							<EnrolledCourseCard enrollment={enrollment} />
+						</Link>
 					))}
 				</>
 			) : (
