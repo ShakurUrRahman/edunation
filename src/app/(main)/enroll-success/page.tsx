@@ -23,7 +23,7 @@ const Success = async ({ searchParams }: Props) => {
 
 	if (!session_id)
 		throw new Error(
-			"Please provide a valid session id that starts with cs_"
+			"Please provide a valid session id that starts with cs_",
 		);
 
 	const userSession = await auth();
@@ -38,7 +38,7 @@ const Success = async ({ searchParams }: Props) => {
 		session_id,
 		{
 			expand: ["line_items", "payment_intent"],
-		}
+		},
 	);
 
 	//console.log(checkoutSession);
@@ -60,7 +60,7 @@ const Success = async ({ searchParams }: Props) => {
 		const enrolled = await enrollForCourse(
 			course?.id,
 			loggedInUser?.id,
-			"stripe"
+			"stripe",
 		);
 		// console.log(enrolled);
 
@@ -105,7 +105,7 @@ const Success = async ({ searchParams }: Props) => {
 						<Link href="/courses">Browse Courses</Link>
 					</Button>
 					<Button asChild variant="outline" size="sm">
-						<Link href="/think-in-a-redux-way/introduction">
+						<Link href={`/courses/${courseId}/lesson`}>
 							Play Course
 						</Link>
 					</Button>
