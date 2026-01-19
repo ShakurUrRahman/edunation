@@ -11,6 +11,7 @@ import {
 import { getEnrollmentsForCourse } from "./enrollments";
 import { getTestimonialsForCourse } from "./testimonials";
 import { Course } from "@/model/course-model";
+import { Lesson } from "@/model/lesson.model";
 
 export async function getCourseList() {
 	const courses = await Course.find({ active: true })
@@ -64,6 +65,10 @@ export async function getCourseDetails(id) {
 		.populate({
 			path: "modules",
 			model: Module,
+			populate: {
+				path: "lessonIds",
+				model: Lesson,
+			},
 		})
 		.lean();
 
@@ -84,15 +89,15 @@ export async function getCourseDetailsByInstructor(instructorId, expand) {
 	const enrollments = await Promise.all(
 		courses.map(async (course) => {
 			const enrollment = await getEnrollmentsForCourse(
-				course._id.toString()
+				course._id.toString(),
 			);
 			return enrollment;
-		})
+		}),
 	);
 
 	const groupedByCourses = Object.groupBy(
 		enrollments.flat(),
-		({ course }) => course
+		({ course }) => course,
 	);
 
 	const totalRevenue = courses.reduce((acc, course) => {
@@ -111,10 +116,10 @@ export async function getCourseDetailsByInstructor(instructorId, expand) {
 	const testimonials = await Promise.all(
 		courses.map(async (course) => {
 			const testimonial = await getTestimonialsForCourse(
-				course._id.toString()
+				course._id.toString(),
 			);
 			return testimonial;
-		})
+		}),
 	);
 
 	const totalTestimonials = testimonials.flat();

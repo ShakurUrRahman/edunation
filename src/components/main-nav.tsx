@@ -52,7 +52,7 @@ export function MainNav({ items, children }) {
 		fetchMe();
 	}, [session]);
 
-	console.log("Logged in user:", loggedInUser);
+	// console.log("Logged in user:", loggedInUser);
 
 	useEffect(() => {
 		const handleClickOutside = (event: MouseEvent) => {
@@ -105,7 +105,7 @@ export function MainNav({ items, children }) {
 								key={index}
 								href={item.disabled ? "#" : item.href}
 								className={cn(
-									"relative flex items-center tracking-wide text-lg font-medium sm:text-sm transition-colors text-primary hover:text-primary/80	after:absolute after:left-0 after:-bottom-1 after:h-0.5 after:w-full	after:bg-current after:origin-left after:scale-x-0	after:transition-transform after:duration-600 after:ease-out			hover:after:scale-x-100"
+									"relative flex items-center tracking-wide text-lg font-medium sm:text-sm transition-colors text-primary hover:text-primary/80	after:absolute after:left-0 after:-bottom-1 after:h-0.5 after:w-full	after:bg-current after:origin-left after:scale-x-0	after:transition-transform after:duration-600 after:ease-out			hover:after:scale-x-100",
 								)}
 							>
 								{item.title}
@@ -125,7 +125,7 @@ export function MainNav({ items, children }) {
 							href="/login"
 							className={cn(
 								buttonVariants({ size: "sm" }),
-								"px-4"
+								"px-4",
 							)}
 						>
 							Login
@@ -144,7 +144,7 @@ export function MainNav({ items, children }) {
 									"absolute right-0 mt-4 w-56 rounded-lg border text-white bg-primary shadow-lg origin-top-right transform transition-all duration-200 ease-out",
 									openRegistrar
 										? "scale-100 opacity-100 translate-y-0 pointer-events-auto"
-										: "scale-95 opacity-0 -translate-y-2 pointer-events-none"
+										: "scale-95 opacity-0 -translate-y-2 pointer-events-none",
 								)}
 							>
 								<Link
@@ -181,7 +181,7 @@ export function MainNav({ items, children }) {
 							"absolute right-0 mt-4 w-56 rounded-lg border text-white bg-primary shadow-lg origin-top-right transform transition-all duration-200 ease-out",
 							open
 								? "scale-100 opacity-100 translate-y-0 pointer-events-auto"
-								: "scale-95 opacity-0 -translate-y-2 pointer-events-none"
+								: "scale-95 opacity-0 -translate-y-2 pointer-events-none",
 						)}
 					>
 						<Link
@@ -211,7 +211,7 @@ export function MainNav({ items, children }) {
 							href="/account/testimonials"
 							className={cn(
 								"block px-4 py-2 hover:bg-primary-light",
-								!loginSession && "rounded-b-lg"
+								!loginSession && "rounded-b-lg",
 							)}
 						>
 							Testimonials & Certificates
