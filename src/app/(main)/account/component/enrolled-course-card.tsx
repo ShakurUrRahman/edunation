@@ -11,7 +11,7 @@ import { getCourseDetails } from "@/queries/courses";
 
 const EnrolledCourseCard = async ({ enrollment }) => {
 	const courseCategory = await getCategoryDetails(
-		enrollment?.course?.category?._id
+		enrollment?.course?.category?._id,
 	);
 
 	const filter = {
@@ -63,7 +63,7 @@ const EnrolledCourseCard = async ({ enrollment }) => {
 	const totalMarks = marksFromQuizzes + otherMarks;
 
 	return (
-		<div className="group hover:shadow-sm transition overflow-hidden border rounded-lg p-3 h-full">
+		<div className="group hover:shadow-sm transition overflow-hidden border rounded-lg p-3 h-full hero border-primary/40">
 			<div className="relative w-full aspect-video rounded-md overflow-hidden">
 				<Image
 					src={`/assets/images/courses/${enrollment?.course?.thumbnail}`}
