@@ -24,10 +24,8 @@ const Module = async ({ params }: PageProps) => {
 	const module = await getModule(moduleId);
 	// console.log(module);
 
-	// const moduleData = { moduleI };
-
 	const lessons = replaceMongoIdInArray(module.lessonIds).sort(
-		(a, b) => a.order - b.order
+		(a, b) => a.order - b.order,
 	);
 
 	// console.log(lessons);
