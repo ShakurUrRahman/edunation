@@ -48,7 +48,7 @@ const CourseDetails = ({ course }) => {
 						<TabsList className="grid w-full grid-cols-3 my-6 max-w-3xl">
 							<TabsTrigger value="overview">Overview</TabsTrigger>
 							<TabsTrigger value="curriculum">
-								Carriculum
+								Curriculum
 							</TabsTrigger>
 							<TabsTrigger value="instructor">
 								Instructor

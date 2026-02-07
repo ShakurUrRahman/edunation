@@ -21,7 +21,7 @@ export const SidebarLessonItem = ({ courseId, lesson, module }) => {
 					: `/courses/${courseId}/lesson?name=${lesson.slug}&module=${module}`
 			}
 			className={cn(
-				"flex items-center gap-x-2 text-slate-700 text-sm font-medium transition-all hover:text-slate-600 ",
+				"flex items-center gap-x-2 text-slate-700 text-sm font-[500]  transition-all hover:text-slate-600 ",
 				isPrivate(lesson)
 					? "text-slate-700  hover:text-slate-700 cursor-default"
 					: isComplete(lesson) &&
