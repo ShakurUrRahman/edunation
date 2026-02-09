@@ -1,4 +1,4 @@
-import { AddQuizSetForm } from "../[quizSetId]/_components/add-quiz-form";
+import { AddQuizSetForm } from "../_components/add-quizset-form";
 
 const AddQuizSet = () => {
 	return <AddQuizSetForm />;
