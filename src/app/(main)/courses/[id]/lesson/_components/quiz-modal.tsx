@@ -8,8 +8,9 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 import { addQuizAssessment } from "@/app/actions/quiz";
+import { DialogTitle } from "@radix-ui/react-dialog";
 
-function QuizModal({ courseId, quizSetId, quizzes, open, setOpen }) {
+function QuizModal({ courseId, quizSetId, quizzes, open, setOpen, isTaken }) {
 	const router = useRouter();
 	const totalQuizzes = quizzes?.length;
 	const [quizIndex, setQuizIndex] = useState(0);
@@ -44,7 +45,7 @@ function QuizModal({ courseId, quizSetId, quizzes, open, setOpen }) {
 			options: [obj],
 		};
 
-		console.log(answer);
+		// console.log(answer);
 		const found = answers.find((a) => a.quizId === answer.quizId);
 
 		if (found) {
@@ -57,7 +58,7 @@ function QuizModal({ courseId, quizSetId, quizzes, open, setOpen }) {
 
 	const submitQuiz = async (event) => {
 		try {
-			console.log(answers);
+			// console.log(answers);
 			await addQuizAssessment(courseId, quizSetId, answers);
 			setOpen(false);
 			router.refresh();
@@ -70,6 +71,7 @@ function QuizModal({ courseId, quizSetId, quizzes, open, setOpen }) {
 	return (
 		<>
 			<Dialog open={open} onOpenChange={setOpen}>
+				<DialogTitle className="text-center">Quiz</DialogTitle>
 				<DialogContent className="sm:max-w-[95%] block">
 					<div className="pb-4 border-b border-border text-sm">
 						<span className="text-success inline-block mr-1">
@@ -81,7 +83,7 @@ function QuizModal({ courseId, quizSetId, quizzes, open, setOpen }) {
 						<h3 className="text-xl font-medium mb-10">
 							<svg
 								className="text-success inline"
-								stroke-width="0"
+								strokeWidth="0"
 								viewBox="0 0 512 512"
 								height="1em"
 								width="1em"
@@ -99,10 +101,10 @@ function QuizModal({ courseId, quizSetId, quizzes, open, setOpen }) {
 							<svg
 								stroke="currentColor"
 								fill="currentColor"
-								stroke-width="0"
+								strokeWidth="0"
 								version="1.1"
 								viewBox="0 0 16 16"
-								class="text-success inline"
+								className="text-success inline"
 								height="12"
 								width="12"
 								xmlns="http://www.w3.org/2000/svg"
@@ -157,8 +159,9 @@ function QuizModal({ courseId, quizSetId, quizzes, open, setOpen }) {
 							className="gap-2 rounded-3xl bg-green-600"
 							onClick={submitQuiz}
 							type="submit"
+							disabled={isTaken}
 						>
-							Submit
+							{isTaken ? "Quiz Taken" : "Submit Quiz"}
 						</Button>
 						<Button
 							className="gap-2 rounded-3xl"

@@ -42,9 +42,9 @@ export const CourseSidebar = async ({ courseId }) => {
 					}).lean();
 					// console.log(watch);
 					if (watch?.state === "completed") {
-						console.log(
-							`This lesson ${lesson.title} has completed`,
-						);
+						// console.log(
+						// 	`This lesson ${lesson.title} has completed`,
+						// );
 						lesson.state = "completed";
 					}
 					return lesson;
@@ -72,10 +72,24 @@ export const CourseSidebar = async ({ courseId }) => {
 	}));
 
 	const quizSet = course?.quizSet;
+
+	const quizzes = quizSet.quizIds.map((quiz) => {
+		return {
+			id: quiz._id.toString(),
+			title: quiz.title,
+			description: quiz.description,
+			options: quiz.options.map((option) => {
+				return {
+					label: option.text,
+					isTrue: option.is_correct,
+				};
+			}),
+		};
+	});
 	const isQuizComplete = report?.quizAssessment ? true : false;
 
-	console.log({ quizSet });
-	console.log({ isQuizComplete });
+	// console.log(quizSet);
+	// console.log({ isQuizComplete });
 
 	return (
 		<>
@@ -95,8 +109,9 @@ export const CourseSidebar = async ({ courseId }) => {
 					{quizSet && (
 						<Quiz
 							courseId={courseId}
-							quizSet={quizSet}
+							quizSet={quizSet.title}
 							isTaken={isQuizComplete}
+							quizzes={quizzes}
 						/>
 					)}
 				</div>
