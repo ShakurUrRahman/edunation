@@ -1,3 +1,4 @@
+import { getAvatarGradient, getInitials } from "@/lib/utils";
 import {
 	ArrowRightIcon,
 	MessageSquare,
@@ -10,16 +11,31 @@ const InstructorDetails = ({
 	courseDetailsByInstructor,
 	instructorDetails,
 }) => {
+	const hasProfilePicture = instructorDetails?.profilePicture;
+
 	return (
 		<div className="col-span-12 lg:col-span-4 ">
 			<div className="p-6 shadow hero border border-primary/40 rounded-lg">
 				<div className="mb-6">
 					<div className="w-36 h-36 rounded-full  mb-5 mx-auto overflow-hidden">
-						<img
-							src={instructorDetails?.profilePicture}
-							alt=""
-							className="w-full h-full object-cover rounded"
-						/>
+						{hasProfilePicture ? (
+							<img
+								src={instructorDetails?.profilePicture}
+								alt="Instructor"
+								className="w-full h-full object-cover rounded-full"
+							/>
+						) : (
+							<div
+								className={`w-full h-full flex items-center justify-center text-white text-3xl font-bold bg-gradient-to-br ${getAvatarGradient(
+									instructorDetails?.email,
+								)}`}
+							>
+								{getInitials(
+									instructorDetails?.firstName,
+									instructorDetails?.lastName,
+								)}
+							</div>
+						)}
 					</div>
 
 					<div>
@@ -55,8 +71,8 @@ const InstructorDetails = ({
 							<li className="flex items-center space-x-3">
 								<Star className="text-gray-600 w-4" />
 								<div>
-									{courseDetailsByInstructor?.ratings} Average
-									Rating
+									{courseDetailsByInstructor?.ratings}
+									Average Rating
 								</div>
 							</li>
 						</ul>

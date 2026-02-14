@@ -6,7 +6,7 @@ import { Star } from "lucide-react";
 import { getCourseDetailsByInstructor } from "@/queries/courses";
 import Image from "next/image";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
+import { cn, getAvatarGradient, getInitials } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 
 const CourseInstructor = async ({ course }) => {
@@ -14,7 +14,7 @@ const CourseInstructor = async ({ course }) => {
 
 	const fullName = `${instructor?.firstName}  ${instructor?.lastName}`;
 	const courseDetailsByInstructor = await getCourseDetailsByInstructor(
-		instructor._id.toString()
+		instructor._id.toString(),
 	);
 
 	// console.log(courseDetailsByInstructor);
@@ -23,13 +23,27 @@ const CourseInstructor = async ({ course }) => {
 		<div className="bg-gray-50 rounded-md p-8">
 			<div className="md:flex md:gap-x-5 mb-8">
 				<div className="h-77.5 w-67.5 max-w-full flex-none rounded mb-5 md:mb-0">
-					<Image
-						src={instructor?.profilePicture}
-						alt={fullName}
-						className="w-full h-full object-cover rounded"
-						width={500}
-						height={700}
-					/>
+					{instructor?.profilePicture ? (
+						<Image
+							src={instructor.profilePicture}
+							alt={fullName}
+							className="w-full h-full object-cover rounded"
+							width={500}
+							height={700}
+						/>
+					) : (
+						<div
+							className={cn(
+								"w-full h-full rounded flex items-center justify-center text-white text-6xl font-bold bg-gradient-to-br",
+								getAvatarGradient(instructor?.email),
+							)}
+						>
+							{getInitials(
+								instructor?.firstName,
+								instructor?.lastName,
+							)}
+						</div>
+					)}
 				</div>
 				<div className="flex-1">
 					<div className="max-w-75">

@@ -6,6 +6,7 @@ import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { getUserByEmail } from "@/queries/users";
 import { Input } from "@/components/ui/input";
+import { getAvatarGradient, getInitials } from "@/lib/utils";
 
 const AccountSidebar = async () => {
 	const session = await auth();
@@ -14,24 +15,6 @@ const AccountSidebar = async () => {
 	}
 
 	const loggedInUser = await getUserByEmail(session?.user?.email);
-
-	const getInitials = (firstName?: string, lastName?: string) => {
-		if (!firstName && !lastName) return "U";
-		return `${firstName?.[0] ?? ""}${lastName?.[0] ?? ""}`.toUpperCase();
-	};
-
-	const avatarColors = [
-		"from-indigo-500 to-purple-600",
-		"from-emerald-500 to-teal-600",
-		"from-orange-500 to-pink-600",
-		"from-sky-500 to-blue-600",
-	];
-
-	const getAvatarGradient = (email?: string) => {
-		if (!email) return avatarColors[0];
-		const index = email.charCodeAt(0) % avatarColors.length;
-		return avatarColors[index];
-	};
 
 	return (
 		<div className="lg:w-1/4 md:px-3">
@@ -70,7 +53,7 @@ const AccountSidebar = async () => {
 									>
 										{getInitials(
 											loggedInUser?.firstName,
-											loggedInUser?.lastName
+											loggedInUser?.lastName,
 										)}
 									</div>
 									<label

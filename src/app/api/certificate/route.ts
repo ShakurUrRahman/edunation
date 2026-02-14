@@ -4,44 +4,30 @@ import fontkit from "@pdf-lib/fontkit";
 import { getCourseDetails } from "@/queries/courses";
 import { getLoggedInUser } from "@/lib/loggedIn-user";
 import { getAReport } from "@/queries/reports";
-
 import { formatMyDate } from "@/lib/date";
-
-// Fetch custom fonts
-const kalamFontUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/fonts/kalam/Kalam-Regular.ttf`;
-const kalamFontBytes = await fetch(kalamFontUrl).then((res) =>
-	res.arrayBuffer(),
-);
-console.log({
-	env: process.env.NEXT_PUBLIC_BASE_URL,
-});
-console.log({
-	kalamFontUrl,
-	kalamFontBytes,
-});
-
-const montserratItalicFontUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/fonts/montserrat/Montserrat-Italic.ttf`;
-const montserratItalicFontBytes = await fetch(montserratItalicFontUrl).then(
-	(res) => res.arrayBuffer(),
-);
-console.log({
-	montserratItalicFontUrl,
-	montserratItalicFontBytes,
-});
-const montserratFontUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/fonts/montserrat/Montserrat-Medium.ttf`;
-const montserratFontBytes = await fetch(montserratFontUrl).then((res) =>
-	res.arrayBuffer(),
-);
-console.log({
-	montserratFontUrl,
-	montserratFontBytes,
-});
 
 export async function GET(request) {
 	try {
 		/* -----------------
 		 *
-		 * Configuratios
+		 * Fetch Custom Fonts
+		 *
+		 *-------------------*/
+		const kalamFontBytes = await fetch(
+			`${process.env.NEXT_PUBLIC_BASE_URL}/fonts/kalam/Kalam-Regular.ttf`,
+		).then((res) => res.arrayBuffer());
+
+		const montserratItalicFontBytes = await fetch(
+			`${process.env.NEXT_PUBLIC_BASE_URL}/fonts/montserrat/Montserrat-Italic.ttf`,
+		).then((res) => res.arrayBuffer());
+
+		const montserratFontBytes = await fetch(
+			`${process.env.NEXT_PUBLIC_BASE_URL}/fonts/montserrat/Montserrat-Medium.ttf`,
+		).then((res) => res.arrayBuffer());
+
+		/* -----------------
+		 *
+		 * Configurations
 		 *
 		 *-------------------*/
 		const searchParams = request.nextUrl.searchParams;
@@ -53,11 +39,10 @@ export async function GET(request) {
 			course: courseId,
 			student: loggedInUser.id,
 		});
-		console.log(report?.completion_date);
+
 		const completionDate = report?.completion_date
 			? formatMyDate(report?.completion_date)
 			: formatMyDate(Date.now());
-		console.log(completionDate);
 
 		const completionInfo = {
 			name: `${loggedInUser?.firstName} ${loggedInUser?.lastName}`,
@@ -68,8 +53,11 @@ export async function GET(request) {
 			sign: "/sign.png",
 		};
 
-		console.log(completionInfo);
-
+		/* -----------------
+		 *
+		 * PDF Setup
+		 *
+		 *-------------------*/
 		const pdfDoc = await PDFDocument.create();
 		pdfDoc.registerFontkit(fontkit);
 
@@ -77,22 +65,23 @@ export async function GET(request) {
 		const montserratItalic = await pdfDoc.embedFont(
 			montserratItalicFontBytes,
 		);
-
 		const montserrat = await pdfDoc.embedFont(montserratFontBytes);
+		const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);
 
 		const page = pdfDoc.addPage([841.89, 595.28]);
 		const { width, height } = page.getSize();
-		const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);
 
 		/* -----------------
 		 *
 		 * Logo
 		 *
 		 *-------------------*/
-		const logoUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/logo.png`;
-		const logoBytes = await fetch(logoUrl).then((res) => res.arrayBuffer());
+		const logoBytes = await fetch(
+			`${process.env.NEXT_PUBLIC_BASE_URL}/logo.png`,
+		).then((res) => res.arrayBuffer());
 		const logo = await pdfDoc.embedPng(logoBytes);
 		const logoDimns = logo.scale(0.5);
+
 		page.drawImage(logo, {
 			x: width / 2 - logoDimns.width / 2,
 			y: height - 120,
@@ -105,16 +94,14 @@ export async function GET(request) {
 		 * Title
 		 *
 		 *-------------------*/
-
 		const titleFontSize = 30;
 		const titleText = "Certificate Of Completion";
-		// title text width
 		const titleTextWidth = montserrat.widthOfTextAtSize(
 			titleText,
 			titleFontSize,
 		);
 
-		page.drawText("Certificate Of Completion", {
+		page.drawText(titleText, {
 			x: width / 2 - titleTextWidth / 2,
 			y: height - (logoDimns.height + 125),
 			size: titleFontSize,
@@ -128,9 +115,7 @@ export async function GET(request) {
 		 *
 		 *-------------------*/
 		const nameLabelText = "This certificate is hereby bestowed upon";
-
 		const nameLabelFontSize = 20;
-		// title text width
 		const nameLabelTextWidth = montserratItalic.widthOfTextAtSize(
 			nameLabelText,
 			nameLabelFontSize,
@@ -150,10 +135,9 @@ export async function GET(request) {
 		 *
 		 *-------------------*/
 		const nameText = completionInfo.name;
-
 		const nameFontSize = 40;
-		// title text width
-		const nameTextWidth = timesRomanFont.widthOfTextAtSize(
+		// ✅ Fixed: now using kalamFont instead of timesRomanFont for accurate width
+		const nameTextWidth = kalamFont.widthOfTextAtSize(
 			nameText,
 			nameFontSize,
 		);
@@ -172,13 +156,7 @@ export async function GET(request) {
 		 *
 		 *-------------------*/
 		const detailsText = `This is to certify that ${completionInfo.name} successfully completed the ${completionInfo.courseName} course on ${completionInfo.completionDate} by ${completionInfo.instructor}`;
-
 		const detailsFontSize = 16;
-		// title text width
-		const detailsTextWidth = montserrat.widthOfTextAtSize(
-			titleText,
-			titleFontSize,
-		);
 
 		page.drawText(detailsText, {
 			x: width / 2 - 700 / 2,
@@ -192,35 +170,14 @@ export async function GET(request) {
 
 		/* -----------------
 		 *
-		 * Signatures
+		 * Signature
 		 *
 		 *-------------------*/
 		const signatureBoxWidth = 300;
-		page.drawText(completionInfo.instructor, {
-			x: width - signatureBoxWidth,
-			y: 90,
-			size: detailsFontSize,
-			font: timesRomanFont,
-			color: rgb(0, 0, 0),
-		});
-		page.drawText(completionInfo.instructorDesignation, {
-			x: width - signatureBoxWidth,
-			y: 72,
-			size: 10,
-			font: timesRomanFont,
-			color: rgb(0, 0, 0),
-			maxWidth: 250,
-		});
-		page.drawLine({
-			start: { x: width - signatureBoxWidth, y: 110 },
-			end: { x: width - 60, y: 110 },
-			thickness: 1,
-			color: rgb(0, 0, 0),
-		});
 
-		const signUrl = `${process.env.NEXT_PUBLIC_BASE_URL}${completionInfo.sign}`;
-
-		const signBytes = await fetch(signUrl).then((res) => res.arrayBuffer());
+		const signBytes = await fetch(
+			`${process.env.NEXT_PUBLIC_BASE_URL}${completionInfo.sign}`,
+		).then((res) => res.arrayBuffer());
 		const sign = await pdfDoc.embedPng(signBytes);
 
 		page.drawImage(sign, {
@@ -230,12 +187,38 @@ export async function GET(request) {
 			height: 54,
 		});
 
-		// pattern
-		const patternUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/pattern.jpg`;
+		page.drawLine({
+			start: { x: width - signatureBoxWidth, y: 110 },
+			end: { x: width - 60, y: 110 },
+			thickness: 1,
+			color: rgb(0, 0, 0),
+		});
 
-		const patternBytes = await fetch(patternUrl).then((res) =>
-			res.arrayBuffer(),
-		);
+		page.drawText(completionInfo.instructor, {
+			x: width - signatureBoxWidth,
+			y: 90,
+			size: detailsFontSize,
+			font: timesRomanFont,
+			color: rgb(0, 0, 0),
+		});
+
+		page.drawText(completionInfo.instructorDesignation, {
+			x: width - signatureBoxWidth,
+			y: 72,
+			size: 10,
+			font: timesRomanFont,
+			color: rgb(0, 0, 0),
+			maxWidth: 250,
+		});
+
+		/* -----------------
+		 *
+		 * Background Pattern
+		 *
+		 *-------------------*/
+		const patternBytes = await fetch(
+			`${process.env.NEXT_PUBLIC_BASE_URL}/pattern.jpg`,
+		).then((res) => res.arrayBuffer());
 		const pattern = await pdfDoc.embedJpg(patternBytes);
 
 		page.drawImage(pattern, {
@@ -245,9 +228,10 @@ export async function GET(request) {
 			height: height,
 			opacity: 0.2,
 		});
+
 		/* -----------------
 		 *
-		 * Generate and send Response
+		 * Generate and Send Response
 		 *
 		 *-------------------*/
 		const pdfBytes = await pdfDoc.save();
@@ -255,6 +239,8 @@ export async function GET(request) {
 			headers: { "content-type": "application/pdf" },
 		});
 	} catch (error) {
-		console.log(error);
+		console.error("Certificate generation failed:", error);
+		// ✅ Fixed: now returns a proper error response instead of undefined
+		return new Response("Failed to generate certificate", { status: 500 });
 	}
 }

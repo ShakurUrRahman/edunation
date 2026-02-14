@@ -5,6 +5,7 @@ import CourseOverview from "./CourseOverview";
 import CourseCurriculum from "./CourseCurriculum";
 import CourseInstructor from "./CourseInstructor";
 import Image from "next/image";
+import { getAvatarGradient, getInitials } from "@/lib/utils";
 
 const CourseDetails = ({ course }) => {
 	const lastModifiedDate = formatMyDate(course.modifiedOn);
@@ -22,13 +23,29 @@ const CourseDetails = ({ course }) => {
 				{/*  */}
 				<div className="flex sm:items-center gap-5 flex-col sm:flex-row sm:gap-6 md:gap-20 mt-6">
 					<div className="flex items-center gap-2">
-						<Image
-							className="w-10 h-10 rounded-full"
-							src={course?.instructor?.profilePicture}
-							alt={course?.instructor?.firstName}
-							width={20}
-							height={20}
-						/>
+						{course?.instructor?.profilePicture ? (
+							<Image
+								className="w-10 h-10 rounded-full object-cover"
+								src={course?.instructor?.profilePicture}
+								alt={
+									course?.instructor?.firstName ||
+									"Instructor"
+								}
+								width={40}
+								height={40}
+							/>
+						) : (
+							<div
+								className={`w-10 h-10 flex items-center justify-center rounded-full text-white font-semibold bg-gradient-to-r ${getAvatarGradient(
+									course?.instructor?.email,
+								)}`}
+							>
+								{getInitials(
+									course?.instructor?.firstName,
+									course?.instructor?.lastName,
+								)}
+							</div>
+						)}
 						<p className="font-bold">
 							{course?.instructor?.firstName}{" "}
 							{course?.instructor?.lastName}
@@ -48,7 +65,7 @@ const CourseDetails = ({ course }) => {
 						<TabsList className="grid w-full grid-cols-3 my-6 max-w-3xl">
 							<TabsTrigger value="overview">Overview</TabsTrigger>
 							<TabsTrigger value="curriculum">
-								Carriculum
+								Curriculum
 							</TabsTrigger>
 							<TabsTrigger value="instructor">
 								Instructor

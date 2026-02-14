@@ -154,7 +154,7 @@ export async function getCourseDetailsByInstructor(instructorId, expand) {
 		courses: courses.flat(),
 		enrollments: totalEnrollments,
 		reviews: totalTestimonials.length,
-		ratings: avgRating.toPrecision(2),
+		ratings: avgRating ? avgRating.toPrecision(2) : 0,
 		revenue: totalRevenue,
 	};
 }
