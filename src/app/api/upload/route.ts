@@ -1,39 +1,41 @@
 import { NextResponse } from "next/server";
-import fs from "fs";
-import { pipeline } from "stream";
-import { promisify } from "util";
-
+import { v2 as cloudinary } from "cloudinary";
 import { updateCourse } from "@/app/actions/course";
 
-const pump = promisify(pipeline);
+cloudinary.config({
+	cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+	api_key: process.env.CLOUDINARY_API_KEY,
+	api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
-export async function POST(request, response) {
+export async function POST(request) {
 	try {
 		const formData = await request.formData();
 		const file = formData.get("files");
-		const destination = formData.get("destination");
+		const courseId = formData.get("courseId");
 
-		if (!destination) {
-			return new NextResponse("Destination not provided", {
-				status: 500,
-			});
+		if (!file) {
+			return new NextResponse("No file provided", { status: 400 });
 		}
 
-		const filePath = `${destination}/${file.name}`;
+		// Convert file to base64
+		const bytes = await file.arrayBuffer();
+		const buffer = Buffer.from(bytes);
+		const base64 = `data:${file.type};base64,${buffer.toString("base64")}`;
 
-		await pump(file.stream(), fs.createWriteStream(filePath));
-
-		// This can be decoupled to another
-		// route handler
-		const courseId = formData.get("courseId");
-		await updateCourse(courseId, { thumbnail: file.name });
-
-		return new NextResponse(`File ${file.name} uploaded successfully`, {
-			status: 200,
+		// Upload to Cloudinary
+		const uploadResult = await cloudinary.uploader.upload(base64, {
+			folder: "courses",
 		});
+
+		// Save the Cloudinary URL to your DB
+		await updateCourse(courseId, { thumbnail: uploadResult.secure_url });
+
+		return new NextResponse(
+			JSON.stringify({ url: uploadResult.secure_url }),
+			{ status: 200 },
+		);
 	} catch (err) {
-		return new NextResponse(err.message, {
-			status: 500,
-		});
+		return new NextResponse(err.message, { status: 500 });
 	}
 }

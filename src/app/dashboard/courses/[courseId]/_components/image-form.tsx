@@ -31,22 +31,23 @@ export const ImageForm = ({ initialData, courseId }) => {
 				try {
 					const formData = new FormData();
 					formData.append("files", file[0]);
-					formData.append(
-						"destination",
-						"./public/assets/images/courses"
-					);
 					formData.append("courseId", courseId);
+					// ✅ removed "destination" since Cloudinary doesn't need it
+
 					const response = await fetch("/api/upload", {
 						method: "POST",
 						body: formData,
 					});
-					const result = await response.text();
-					// console.log(result);
-					if (response.status === 200) {
-						setImageUrl(`/assets/images/courses/${file[0].path}`);
-						toast.success(result);
+
+					if (response.ok) {
+						const result = await response.json();
+						setImageUrl(result.url); // ✅ Cloudinary URL
+						toast.success("Image uploaded successfully");
 						toggleEdit();
 						router.refresh();
+					} else {
+						const error = await response.text();
+						toast.error(error);
 					}
 				} catch (e) {
 					toast.error(e.message);
@@ -90,7 +91,7 @@ export const ImageForm = ({ initialData, courseId }) => {
 				</Button>
 			</div>
 			{!isEditing &&
-				(!initialData.imageUrl ? (
+				(!imageUrl ? (
 					<div className="flex items-center justify-center h-60 bg-slate-200 rounded-md">
 						<ImageIcon className="h-10 w-10 text-slate-500" />
 					</div>
@@ -100,7 +101,7 @@ export const ImageForm = ({ initialData, courseId }) => {
 							alt="Upload"
 							fill
 							className="object-cover rounded-md"
-							src={initialData.imageUrl}
+							src={imageUrl} // ✅ use state instead of initialData.imageUrl
 						/>
 					</div>
 				))}
