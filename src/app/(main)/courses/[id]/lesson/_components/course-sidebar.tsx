@@ -73,7 +73,7 @@ export const CourseSidebar = async ({ courseId }) => {
 
 	const quizSet = course?.quizSet;
 
-	const quizzes = quizSet.quizIds.map((quiz) => {
+	const quizzes = quizSet?.quizIds.map((quiz) => {
 		return {
 			id: quiz._id.toString(),
 			title: quiz.title,

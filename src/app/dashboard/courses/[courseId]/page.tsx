@@ -39,7 +39,7 @@ const EditCourse = async ({ params }: PageProps) => {
 	});
 
 	const modules = replaceMongoIdInArray(course?.modules).sort(
-		(a, b) => a.order - b.order
+		(a, b) => a.order - b.order,
 	);
 
 	const moduleData = modules.map((module) => ({
@@ -94,7 +94,7 @@ const EditCourse = async ({ params }: PageProps) => {
 						/>
 						<ImageForm
 							initialData={{
-								imageUrl: `/assets/images/courses/${course.thumbnail}`,
+								imageUrl: course?.thumbnail,
 							}}
 							courseId={courseId}
 						/>

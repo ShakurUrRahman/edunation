@@ -48,7 +48,7 @@ const AccountSidebar = async () => {
 								<div className="relative mx-auto w-fit">
 									<div
 										className={`size-28 rounded-full flex items-center justify-center
-										bg-gradient-to-br ${getAvatarGradient(loggedInUser?.email)}
+										bg-linear-to-br ${getAvatarGradient(loggedInUser?.email)}
 										text-white text-3xl font-semibold shadow ring-4 ring-slate-50 dark:ring-slate-800`}
 									>
 										{getInitials(

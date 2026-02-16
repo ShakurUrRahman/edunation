@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
+import { cn, getAvatarGradient, getInitials } from "@/lib/utils";
 import { MobileNav } from "@/components/mobile-nav";
 import { Logo } from "./logo";
 import Image from "next/image";
@@ -18,12 +18,13 @@ import {
 } from "./ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { useSession, signOut } from "next-auth/react";
-import { redirect } from "next/navigation";
+import { redirect, usePathname } from "next/navigation";
 
 export function MainNav({ items, children }) {
 	const { data: session } = useSession();
 	const [loginSession, setLoginSession] = useState(null);
 	const [showMobileMenu, setShowMobileMenu] = useState(false);
+	const pathname = usePathname(); // ✅ added
 	const [loggedInUser, setLoggedInUser] = useState(null);
 	// console.log(session);
 
@@ -100,17 +101,28 @@ export function MainNav({ items, children }) {
 			<div>
 				{items?.length ? (
 					<nav className="hidden gap-6 lg:flex">
-						{items?.map((item, index) => (
-							<Link
-								key={index}
-								href={item.disabled ? "#" : item.href}
-								className={cn(
-									"relative flex items-center tracking-wide text-lg font-medium sm:text-sm transition-colors text-primary hover:text-primary/80	after:absolute after:left-0 after:-bottom-1 after:h-0.5 after:w-full	after:bg-current after:origin-left after:scale-x-0	after:transition-transform after:duration-600 after:ease-out			hover:after:scale-x-100",
-								)}
-							>
-								{item.title}
-							</Link>
-						))}
+						{items?.map((item, index) => {
+							const isActive = pathname === item.href; // ✅ check active route
+							return isActive ? (
+								// ✅ active: colored text, no underline animation, not clickable
+								<span
+									key={index}
+									className="relative flex items-center tracking-wide text-lg font-medium sm:text-sm text-primary/50 cursor-default"
+								>
+									{item.title}
+								</span>
+							) : (
+								<Link
+									key={index}
+									href={item.disabled ? "#" : item.href}
+									className={cn(
+										"relative flex items-center tracking-wide text-lg font-medium sm:text-sm transition-colors text-primary hover:text-primary/80 after:absolute after:left-0 after:-bottom-1 after:h-0.5 after:w-full after:bg-current after:origin-left after:scale-x-0 after:transition-transform after:duration-600 after:ease-out hover:after:scale-x-100",
+									)}
+								>
+									{item.title}
+								</Link>
+							);
+						})}
 					</nav>
 				) : null}
 
@@ -166,15 +178,27 @@ export function MainNav({ items, children }) {
 					</div>
 				)}
 				<div className="relative" ref={avatarRef}>
-					<div className="cursor-pointer" onClick={handleOnOff}>
-						<Avatar>
-							<AvatarImage
-								src={loggedInUser?.profilePicture}
-								alt={loggedInUser?.profilePicture}
-							/>
-							<AvatarFallback>CN</AvatarFallback>
-						</Avatar>
-					</div>
+					{loginSession && (
+						<div className="cursor-pointer" onClick={handleOnOff}>
+							<Avatar>
+								{loggedInUser?.profilePicture ? (
+									<AvatarImage
+										src={loggedInUser?.profilePicture}
+										alt={loggedInUser?.profilePicture}
+									/>
+								) : (
+									<AvatarFallback
+										className={`bg-gradient-to-br ${getAvatarGradient(loggedInUser?.email)} text-white font-semibold`}
+									>
+										{getInitials(
+											loggedInUser?.firstName,
+											loggedInUser?.lastName,
+										)}
+									</AvatarFallback>
+								)}
+							</Avatar>
+						</div>
+					)}
 
 					<div
 						className={cn(
@@ -221,7 +245,7 @@ export function MainNav({ items, children }) {
 								href="#"
 								className="block px-4 py-2 hover:bg-primary-light w-full rounded-b-lg text-left"
 								onClick={() => {
-									signOut();
+									signOut({ callbackUrl: "/" });
 								}}
 							>
 								Logout

@@ -50,36 +50,57 @@ const InstructorDetails = ({
 							<li className="flex items-center space-x-3">
 								<Presentation className="text-gray-600 w-4" />
 								<div>
-									{courseDetailsByInstructor?.courses?.length}
-									+ Courses
+									{courseDetailsByInstructor?.courses
+										?.length > 1
+										? courseDetailsByInstructor?.courses
+												?.length + " Courses"
+										: courseDetailsByInstructor?.courses
+												?.length + " Course"}
 								</div>
 							</li>
 							<li className="flex items-center space-x-3">
 								<UsersRound className="text-gray-600 w-4" />
 								<div>
-									{courseDetailsByInstructor?.enrollments}+
-									Students
+									{courseDetailsByInstructor?.enrollments > 1
+										? courseDetailsByInstructor?.enrollments +
+											" Students"
+										: courseDetailsByInstructor?.enrollments ===
+											  1
+											? "1 Student"
+											: "No Students"}
 								</div>
 							</li>
 							<li className="flex items-center space-x-3">
 								<MessageSquare className="text-gray-600 w-4" />
 								<div>
-									{courseDetailsByInstructor?.reviews}+
-									Reviews
+									{courseDetailsByInstructor?.reviews === 0
+										? "No Reviews"
+										: courseDetailsByInstructor?.reviews ===
+											  1
+											? "1 Review"
+											: courseDetailsByInstructor?.reviews +
+												" Reviews"}
 								</div>
 							</li>
 							<li className="flex items-center space-x-3">
 								<Star className="text-gray-600 w-4" />
 								<div>
-									{courseDetailsByInstructor?.ratings}
-									Average Rating
+									{courseDetailsByInstructor?.ratings === 0
+										? "No Ratings"
+										: courseDetailsByInstructor?.ratings ===
+											  1
+											? "1 Average Rating"
+											: courseDetailsByInstructor?.ratings +
+												" Average Ratings"}
 								</div>
 							</li>
 						</ul>
 					</div>
 				</div>
 				<p className="text-gray-600 text-xs leading-[1.8]">
-					{instructorDetails?.bio}
+					{instructorDetails?.bio
+						? instructorDetails?.bio
+						: "No bio available."}
 				</p>
 			</div>
 		</div>

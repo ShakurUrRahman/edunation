@@ -18,7 +18,7 @@ const Courses = ({ courses }) => {
 						<Link href={`/courses/${course._id}`}>
 							<div className="relative w-full aspect-video rounded-md overflow-hidden">
 								<Image
-									src={`/assets/images/courses/${course.thumbnail}`}
+									src={course.thumbnail}
 									alt={course.title}
 									className="object-cover"
 									fill

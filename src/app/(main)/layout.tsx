@@ -8,20 +8,20 @@ import SessionProviderWrapper from "@/hooks/useSessionWrapper";
 
 const navLinks = [
 	{
-		title: "Features",
-		href: "/#features",
+		title: "Courses",
+		href: "/courses",
 	},
 	{
-		title: "Pricing",
-		href: "/pricing",
+		title: "About",
+		href: "/about",
 	},
 	{
 		title: "Blog",
 		href: "/blog",
 	},
 	{
-		title: "Documentation",
-		href: "/docs",
+		title: "Contact",
+		href: "/contact",
 	},
 ];
 

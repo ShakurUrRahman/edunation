@@ -2,16 +2,16 @@
 
 import QuizModal from "./quiz-modal";
 
-function VideoDescription({ description }) {
+const VideoDescription = ({ description }) => {
+	// console.log(description);
+
 	return (
-		<div className="mt-4">
+		<div className="mt-4 ">
 			{description && (
-				<p className="text-gray-700 dark:text-gray-300">
-					{description}
-				</p>
+				<div dangerouslySetInnerHTML={{ __html: description }} />
 			)}
 		</div>
 	);
-}
+};
 
 export default VideoDescription;
