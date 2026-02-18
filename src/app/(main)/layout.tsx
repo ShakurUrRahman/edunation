@@ -27,15 +27,15 @@ const navLinks = [
 
 const MainLayout = ({ children }) => {
 	return (
-		<div className="min-h-screen flex-col hero">
-			<header className="z-40 backdrop-blur-lg fixed top-0 left-0 right-0">
+		<div className="min-h-screen hero">
+			<header className="z-40 backdrop-blur-lg fixed top-0 left-0 right-0 container px-24">
 				<SessionProviderWrapper>
-					<div className="container flex h-20 items-center justify-between py-6">
+					<div className="flex h-20 items-center justify-between py-6">
 						<MainNav items={navLinks} />
 					</div>
 				</SessionProviderWrapper>
 			</header>
-			<main className="flex-1 pt-20 flex flex-col">{children}</main>
+			<main className="pt-20 ">{children}</main>
 			<SiteFooter />
 		</div>
 	);
