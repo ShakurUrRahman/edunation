@@ -7,11 +7,11 @@ export const Logo = ({ className = "" }) => {
 		<Link
 			className={cn(
 				"flex justify-center items-center gap-1.5",
-				className
+				className,
 			)}
 			href="/"
 		>
-			<Image src={logo} alt="logo" />
+			{/* <Image src={logo} alt="logo" /> */}
 			<p className="font-semibold text-primary mb-2">
 				Edu<span className="font-light">Nation</span>
 			</p>

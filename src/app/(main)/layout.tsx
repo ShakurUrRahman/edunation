@@ -28,14 +28,12 @@ const navLinks = [
 const MainLayout = ({ children }) => {
 	return (
 		<div className="min-h-screen hero">
-			<header className="z-40 backdrop-blur-lg fixed top-0 left-0 right-0 container px-24">
-				<SessionProviderWrapper>
-					<div className="flex h-20 items-center justify-between py-6">
-						<MainNav items={navLinks} />
-					</div>
-				</SessionProviderWrapper>
-			</header>
-			<main className="pt-20 ">{children}</main>
+			<SessionProviderWrapper>
+				<div className="flex items-center justify-between py-6">
+					<MainNav items={navLinks} />
+				</div>
+			</SessionProviderWrapper>
+			<main className="pt-24">{children}</main>
 			<SiteFooter />
 		</div>
 	);

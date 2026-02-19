@@ -20,7 +20,6 @@ const HomePage = async () => {
 	return (
 		<>
 			<HeroSection />
-
 			{/* Categories Section */}
 			<section
 				id="categories"

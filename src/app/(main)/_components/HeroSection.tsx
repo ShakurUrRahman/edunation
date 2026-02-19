@@ -21,7 +21,7 @@ export default function HeroSection() {
 	}, []);
 
 	return (
-		<section className="hero relative overflow-hidden">
+		<section className=" relative overflow-hidden">
 			{/* Background Glow */}
 
 			<div className="container min-h-[90vh] flex items-center">
