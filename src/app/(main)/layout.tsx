@@ -33,7 +33,7 @@ const MainLayout = ({ children }) => {
 					<MainNav items={navLinks} />
 				</div>
 			</SessionProviderWrapper>
-			<main className="pt-24">{children}</main>
+			<main className="pt-10">{children}</main>
 			<SiteFooter />
 		</div>
 	);

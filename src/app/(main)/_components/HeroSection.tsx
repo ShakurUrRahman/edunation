@@ -9,6 +9,7 @@ import {
 	Users,
 	Youtube,
 } from "lucide-react";
+import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
 export default function HeroSection() {
@@ -27,12 +28,11 @@ export default function HeroSection() {
 			<div className="container min-h-[90vh] flex items-center">
 				<div className="grid lg:grid-cols-2 gap-16 items-center w-full py-20">
 					{/* LEFT CONTENT */}
-					<div className="space-y-8 animate-slide-up">
+					<div className="space-y-6 animate-slide-up">
 						{/* Badge */}
 						<div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/60 backdrop-blur-md shadow-sm border border-border text-sm font-medium">
 							🚀 15,000+ Students Learning Worldwide
 						</div>
-
 						{/* Heading */}
 						<h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
 							Master{" "}
@@ -57,25 +57,29 @@ export default function HeroSection() {
 								</svg>
 							</span>
 						</h1>
-
 						{/* Subtext */}
 						<p className="text-muted-foreground text-lg max-w-xl">
 							Join thousands of learners building real-world
 							skills through structured courses, expert
 							mentorship, and hands-on projects.
 						</p>
-
 						{/* CTA Buttons */}
+
 						<div className="flex flex-wrap gap-4">
-							<button className="px-6 py-3 rounded-lg bg-primary text-primary-foreground shadow-md hover:shadow-xl transition-all duration-300 hover:scale-105">
+							<Link
+								href="/courses"
+								className="px-6 py-3 rounded-lg bg-primary text-primary-foreground shadow-md hover:shadow-xl transition-all duration-300 hover:scale-105 inline-block"
+							>
 								Start Learning Free →
-							</button>
+							</Link>
 
-							<button className="px-6 py-3 rounded-lg border border-border bg-white/60 backdrop-blur hover:bg-muted transition-all duration-300">
+							<Link
+								href="/courses"
+								className="px-6 py-3 rounded-lg border border-border bg-white/60 backdrop-blur hover:bg-muted transition-all duration-300 inline-block"
+							>
 								Explore Courses
-							</button>
+							</Link>
 						</div>
-
 						{/* Social Proof */}
 						<div className="flex items-center gap-4 pt-4">
 							<div className="flex space-x-4">
@@ -89,14 +93,12 @@ export default function HeroSection() {
 							</p>
 						</div>
 					</div>
-
-					{/* RIGHT VISUAL SECTION */}
 					{/* RIGHT VISUAL SECTION */}
 					<div className="relative flex justify-end items-center ">
 						{/* Main Visual Wrapper */}
 						<div className="relative ">
 							{/* Glow Background */}
-							<div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent-blue/20 rounded-[30%] blur-3xl scale-110 -z-10" />
+							<div className="absolute inset-0 bg-gradient-to-br from-lime-300/20 to-accent-blue/20 rounded-[30%] blur-3xl scale-110 z-0" />
 
 							{/* Main Image */}
 							<img
