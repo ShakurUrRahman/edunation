@@ -4,21 +4,17 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Autoplay } from "swiper/modules";
 
 import "swiper/css";
-import "swiper/css/pagination";
 
 export default function CategoriesSection({ categories }) {
-	console.log(categories);
-
 	return (
-		<section className="py-16 container">
-			<div className="space-y-4 mb-10 text-center ">
+		<section className="container py-24">
+			<div className="space-y-4 mb-20 text-center ">
 				<p className="inline-flex text-center items-center gap-2 px-4 py-2 rounded-full bg-white/60 backdrop-blur-md shadow-sm border border-border text-sm font-medium">
 					Categories
 				</p>
-
-				<h2 className="text-3xl md:text-4xl font-bold">
+				<h2 className="text-6xl md:text-5xl font-bold leading-16">
 					Explore Top Courses{" "}
-					<span className="relative inline-block">
+					<span className="relative inline-block bg-gradient-to-r from-primary to-teal-400 bg-clip-text text-transparent">
 						Categories
 						<svg
 							className="absolute -bottom-2 left-0 w-full"
@@ -26,25 +22,42 @@ export default function CategoriesSection({ categories }) {
 							fill="none"
 							preserveAspectRatio="none"
 						>
+							<defs>
+								<linearGradient
+									id="lineGradient"
+									x1="0%"
+									y1="0%"
+									x2="100%"
+									y2="0%"
+								>
+									<stop
+										offset="0%"
+										stopColor="var(--primary)"
+									/>
+									<stop offset="100%" stopColor="#2dd4bf" />{" "}
+									{/* teal-400 */}
+								</linearGradient>
+							</defs>
+
 							<path
 								d="M0 15 Q100 0 200 15"
-								stroke="currentColor"
+								stroke="url(#lineGradient)"
 								strokeWidth="4"
-								className="text-primary"
 							/>
 						</svg>
 					</span>
-				</h2>
+					<br />
+					That Change Yourself
+				</h2>{" "}
 			</div>
 			<Swiper
 				slidesPerView={1.2}
 				spaceBetween={24}
-				centeredSlides={false}
 				loop={true}
 				grabCursor={true}
-				speed={900} // smooth slow animation
+				speed={900}
 				autoplay={{
-					delay: 1000,
+					delay: 2500,
 					disableOnInteraction: false,
 				}}
 				pagination={{
@@ -62,29 +75,31 @@ export default function CategoriesSection({ categories }) {
 					},
 				}}
 				modules={[Pagination, Autoplay]}
-				className=""
+				className="categories-swiper"
 			>
-				<div className="mb-12">
-					{categories?.map((category, index) => (
-						<SwiperSlide key={index}>
-							<div
-								className={`h-36 rounded-2xl p-6 text-white  transition-all duration-500 hover:scale-105 bg-linear-to-br
-							${index % 4 === 0 ? "from-indigo-500 to-purple-600" : ""}
-							${index % 4 === 1 ? "from-pink-500 to-rose-500" : ""}
-							${index % 4 === 2 ? "from-emerald-500 to-teal-600" : ""}
-							${index % 4 === 3 ? "from-orange-500 to-amber-500" : ""}
-						`}
-							>
-								<h3 className="text-xl font-semibold text-accent-orange">
-									{category?.title}
-								</h3>
-								<p className="mt-3 text-sm ">
-									Explore top courses in this category.
-								</p>
+				{categories?.map((category, index) => (
+					<SwiperSlide key={index}>
+						<div
+							className={`category-card
+                ${index % 1 === 0 ? "gradient-1" : ""}
+                ${index % 2 === 1 ? "gradient-2" : ""}
+                ${index % 3 === 2 ? "gradient-3" : ""}
+                ${index % 4 === 3 ? "gradient-4" : ""} 
+                ${index % 5 === 4 ? "gradient-5" : ""}
+              relative`}
+						>
+							<img
+								className="w-24 h-24 bottom-2 right-2 absolute z-0 opacity-80"
+								src={`/assets/images/categories/${category.thumbnail}`}
+								alt={category?.title}
+							/>
+							<div className="relative z-10">
+								<h3>{category?.title}</h3>
+								<p>Explore top courses in this category.</p>
 							</div>
-						</SwiperSlide>
-					))}
-				</div>
+						</div>
+					</SwiperSlide>
+				))}
 			</Swiper>
 		</section>
 	);

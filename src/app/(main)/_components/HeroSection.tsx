@@ -37,10 +37,14 @@ export default function HeroSection() {
 						<h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
 							Master{" "}
 							<span className="bg-gradient-to-r from-primary to-accent-blue bg-clip-text text-transparent">
-								In-Demand Skills
+								In
+								<span className="bg-gradient-to-r from-primary to-accent-blue bg-clip-text text-transparent mx-1 hyphen-animate">
+									-
+								</span>
+								Demand Skills
 							</span>{" "}
 							For Your{" "}
-							<span className="relative inline-block">
+							<span className="relative inline-block bg-gradient-to-r from-primary to-teal-400 bg-clip-text text-transparent">
 								Future
 								<svg
 									className="absolute -bottom-2 left-0 w-full"
@@ -48,11 +52,30 @@ export default function HeroSection() {
 									fill="none"
 									preserveAspectRatio="none"
 								>
+									<defs>
+										<linearGradient
+											id="lineGradient"
+											x1="0%"
+											y1="0%"
+											x2="100%"
+											y2="0%"
+										>
+											<stop
+												offset="0%"
+												stopColor="var(--primary)"
+											/>
+											<stop
+												offset="100%"
+												stopColor="#2dd4bf"
+											/>{" "}
+											{/* teal-400 */}
+										</linearGradient>
+									</defs>
+
 									<path
 										d="M0 15 Q100 0 200 15"
-										stroke="currentColor"
-										strokeWidth="4"
-										className="text-primary"
+										stroke="url(#lineGradient)"
+										strokeWidth="7"
 									/>
 								</svg>
 							</span>
