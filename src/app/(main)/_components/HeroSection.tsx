@@ -22,7 +22,7 @@ export default function HeroSection() {
 	}, []);
 
 	return (
-		<section className=" relative overflow-hidden">
+		<section className="relative overflow-hidden">
 			{/* Background Glow */}
 
 			<div className="container min-h-[90vh] flex items-center">
@@ -30,7 +30,7 @@ export default function HeroSection() {
 					{/* LEFT CONTENT */}
 					<div className="space-y-6 animate-slide-up">
 						{/* Badge */}
-						<div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/60 backdrop-blur-md shadow-sm border border-border text-sm font-medium">
+						<div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/5 backdrop-blur shadow-sm border border-green-300 text-sm font-medium">
 							🚀 15,000+ Students Learning Worldwide
 						</div>
 						{/* Heading */}
@@ -91,14 +91,14 @@ export default function HeroSection() {
 						<div className="flex flex-wrap gap-4">
 							<Link
 								href="/courses"
-								className="px-6 py-3 rounded-lg bg-primary text-primary-foreground shadow-md hover:shadow-xl transition-all duration-300 hover:scale-105 inline-block"
+								className="px-6 py-3 rounded-lg bg-primary text-primary-foreground shadow-md hover:shadow-xl transition-all duration-300 hover:scale-105 inline-block font-bold"
 							>
 								Start Learning Free →
 							</Link>
 
 							<Link
 								href="/courses"
-								className="px-6 py-3 rounded-lg border border-border bg-white/60 backdrop-blur hover:bg-muted transition-all duration-300 inline-block"
+								className="px-6 py-3 rounded-lg border border-primary bg-white/60 backdrop-blur hover:bg-muted transition-all duration-300 inline-block font-bold"
 							>
 								Explore Courses
 							</Link>

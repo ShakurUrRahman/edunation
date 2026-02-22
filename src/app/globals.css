@@ -293,7 +293,69 @@
 
 	.hyphen-animate {
 		display: inline-block;
-		animation: hyphenFloat 1.8s ease-in-out infinite;
+		animation: hyphenFloat 1.5s ease-in-out infinite;
+	}
+
+	.sparkle {
+		position: absolute;
+		width: 10px;
+		height: 10px;
+		background: radial-gradient(
+			circle,
+			#fff 0%,
+			#facc15 60%,
+			transparent 70%
+		);
+		border-radius: 50%;
+		animation: floatUp 3s infinite ease-in-out;
+		filter: drop-shadow(0 0 6px #facc15);
+	}
+
+	/* Random positions */
+	.sparkle:nth-child(1) {
+		left: -30px;
+	}
+	.sparkle:nth-child(2) {
+		left: -10px;
+	}
+	.sparkle:nth-child(3) {
+		left: 10px;
+	}
+	.sparkle:nth-child(4) {
+		left: 30px;
+	}
+	.sparkle:nth-child(5) {
+		left: 50px;
+	}
+
+	.delay-0 {
+		animation-delay: 0s;
+	}
+	.delay-1 {
+		animation-delay: 0.5s;
+	}
+	.delay-2 {
+		animation-delay: 1s;
+	}
+	.delay-3 {
+		animation-delay: 1.5s;
+	}
+	.delay-4 {
+		animation-delay: 2s;
+	}
+
+	@keyframes floatUp {
+		0% {
+			transform: translateY(0) scale(0.6);
+			opacity: 0;
+		}
+		30% {
+			opacity: 1;
+		}
+		100% {
+			transform: translateY(-120px) scale(1.2);
+			opacity: 0;
+		}
 	}
 }
 

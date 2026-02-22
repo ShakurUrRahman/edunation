@@ -7,15 +7,17 @@ import { getCategoryDetails } from "@/queries/categories";
 import { EnrollCourse } from "@/components/enroll-course";
 
 const Courses = ({ courses }) => {
+	// console.log(courses);
+
 	return (
 		<div className="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4">
 			{courses.map((course) => {
 				return (
 					<div
-						key={course._id}
+						key={course?.id}
 						className="group hover:shadow-sm transition overflow-hidden p-3 h-full hero border border-primary/40 rounded-lg"
 					>
-						<Link href={`/courses/${course._id}`}>
+						<Link href={`/courses/${course?.id}`}>
 							<div className="relative w-full aspect-video rounded-md overflow-hidden">
 								<Image
 									src={course.thumbnail}
@@ -54,10 +56,7 @@ const Courses = ({ courses }) => {
 								{formatPrice(course.price)}
 							</p>
 
-							<EnrollCourse
-								asLink={true}
-								courseId={course._id.toString()}
-							/>
+							<EnrollCourse asLink={true} courseId={course?.id} />
 						</div>
 					</div>
 				);

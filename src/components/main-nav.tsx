@@ -80,7 +80,7 @@ export function MainNav({ items, children }) {
 
 	return (
 		<header className="fixed top-0 left-0 right-0 w-full container z-50">
-			<div className="mt-6 flex items-center justify-between rounded-2xl bg-white/70 backdrop-blur-lg border border-white/40 shadow-[0_8px_30px_rgba(0,0,0,0.08)] px-6 py-3">
+			<div className="mt-6 flex items-center justify-between rounded-2xl bg-white/45 backdrop-blur-lg border border-white/40 shadow-[0_8px_30px_rgba(0,0,0,0.08)] px-6 py-3">
 				{/* LEFT SIDE */}
 				<div className="flex items-center gap-10">
 					<Link href="/">
