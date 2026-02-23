@@ -59,7 +59,7 @@ const CourseCard = ({ course }) => {
 			</Link>
 
 			{/* Footer */}
-			<div className="flex items-center justify-between px-5 pb-5 pt-2 border-t border-border/50">
+			<div className="flex items-center justify-between px-5 pb-8 pt-2 border-t border-border/50">
 				<span className="text-lg font-bold text-primary">
 					{formatPrice(course?.price)}
 				</span>
