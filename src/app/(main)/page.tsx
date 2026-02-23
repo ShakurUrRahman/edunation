@@ -27,7 +27,7 @@ const HomePage = async () => {
 			<CriteriaSection />
 			<CategoriesSection categories={categories} />
 			<AboutUsSection />
-			<CoursesSection courses={courses} />
+			<CoursesSection courses={courses} categories={categories} />
 		</>
 	);
 };

@@ -1,55 +1,218 @@
+"use client";
+
 import Link from "next/link";
 import CourseCard from "../courses/_components/CourseCard";
 import { ArrowRightIcon } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { replaceMongoIdInObject } from "@/lib/convertData";
+import { useEffect, useRef, useState } from "react";
 
-export default function Courses({ courses }) {
+export default function Courses({ courses, categories }) {
+	const [activeTab, setActiveTab] = useState("All");
+	const [underlineStyle, setUnderlineStyle] = useState({ left: 0, width: 0 });
+	const tabsRef = useRef({});
+
+	useEffect(() => {
+		const activeEl = tabsRef.current[activeTab];
+		if (activeEl) {
+			const rect = activeEl.getBoundingClientRect();
+			const parentRect = activeEl.parentElement.getBoundingClientRect();
+
+			setUnderlineStyle({
+				left: rect.left - parentRect.left,
+				width: rect.width,
+			});
+		}
+	}, [activeTab]);
+
 	return (
-		<section className="py-24 bg-gradient-to-b from-white via-slate-50 to-white">
-			<div className="container mx-auto px-6">
-				{/* Section Header */}
-				<div className="text-center max-w-2xl mx-auto mb-16">
-					<h2 className="text-4xl font-bold mb-4">
-						Explore Our{" "}
-						<span className="bg-gradient-to-r from-primary to-teal-400 bg-clip-text text-transparent">
-							Top Courses
-						</span>
-					</h2>
-					<p className="text-gray-600">
-						Upgrade your skills with industry-focused courses
-						designed to help you grow faster.
-					</p>
-				</div>
+		<section className="hero">
+			<div className="py-26">
+				<div className="container mx-auto px-6">
+					{/* Section Header */}
+					<div className="mb-16 text-center ">
+						<p className="inline-flex items-center mb-6 gap-2 px-4 py-2 rounded-full bg-primary/5 backdrop-blur shadow-sm border border-green-200 text-sm font-medium">
+							Popular Courses
+						</p>
+						<h2 className="text-6xl md:text-5xl font-bold leading-16">
+							Highly Rated{" "}
+							<span className="relative inline-block bg-gradient-to-r from-primary to-teal-400 bg-clip-text text-transparent">
+								Skill Development
+								<svg
+									className="absolute -bottom-5 left-0 w-full"
+									viewBox="0 0 200 20"
+									fill="none"
+									preserveAspectRatio="none"
+								>
+									<defs>
+										<linearGradient
+											id="lineGradient"
+											x1="0%"
+											y1="0%"
+											x2="100%"
+											y2="0%"
+										>
+											<stop
+												offset="0%"
+												stopColor="var(--primary)"
+											/>
+											<stop
+												offset="100%"
+												stopColor="#2dd4bf"
+											/>{" "}
+											{/* teal-400 */}
+										</linearGradient>
+									</defs>
 
-				{/* Filter Tabs */}
-				<div className="flex justify-center gap-4 mb-12 flex-wrap">
-					<button className="px-5 py-2 rounded-full bg-primary text-white text-sm font-medium shadow-md">
-						All
-					</button>
-					<button className="px-5 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-sm font-medium transition">
-						Design
-					</button>
-					<button className="px-5 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-sm font-medium transition">
-						Marketing
-					</button>
-					<button className="px-5 py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-sm font-medium transition">
-						Development
-					</button>
-				</div>
+									<path
+										d="M0 15 Q100 0 200 15"
+										stroke="url(#lineGradient)"
+										strokeWidth="4"
+									/>
+								</svg>
+							</span>
+							<br />
+							Programs Today
+						</h2>{" "}
+					</div>
+					{/* Filter Tabs */}
+					<Tabs defaultValue="All" className="w-full">
+						{/* Tabs Header */}
+						<div className="relative flex mx-auto justify-center mb-12">
+							<Tabs
+								defaultValue="All"
+								onValueChange={(v) => setActiveTab(v)}
+								className="w-full"
+							>
+								<TabsList className="relative flex justify-center bg-transparent p-0 space-x-8">
+									{/* All Courses Tab */}
+									<TabsTrigger
+										value="All"
+										ref={(el) =>
+											(tabsRef.current["All"] = el)
+										}
+										className="relative px-0 pb-2 text-base font-semibold text-muted-foreground data-[state=active]:text-black"
+									>
+										All Courses
+									</TabsTrigger>
 
-				{/* Course Grid */}
-				<div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
-					{/* Course Card */}
-					{courses.slice(0, 6).map((course) => (
-						<CourseCard key={course.id} course={course} />
-					))}
-					{/* Add more CourseCards as needed */}
-				</div>
+									{/* Category Tabs */}
+									{categories.slice(0, 3).map((cat) => (
+										<TabsTrigger
+											key={cat.id}
+											value={cat.id}
+											ref={(el) =>
+												(tabsRef.current[cat.id] = el)
+											}
+											className="relative px-0 pb-2 text-base font-semibold text-muted-foreground data-[state=active]:text-black"
+										>
+											{cat.title}
+										</TabsTrigger>
+									))}
 
-				{/* View All Button */}
-				<div className="text-center mt-16">
-					<button className="px-8 py-3 bg-gradient-to-r from-primary to-teal-400 text-white rounded-full shadow-lg hover:scale-105 transition duration-300">
-						View All Courses
-					</button>
+									{/* SVG Underline */}
+									<span
+										className="absolute -bottom-1 h-5 transition-all duration-300"
+										style={{
+											left: underlineStyle.left,
+											width: underlineStyle.width,
+										}}
+									>
+										<svg
+											className="w-full h-full"
+											viewBox="0 0 200 20"
+											fill="none"
+											preserveAspectRatio="none"
+										>
+											<defs>
+												<linearGradient
+													id="lineGradient"
+													x1="0%"
+													y1="0%"
+													x2="100%"
+													y2="0%"
+												>
+													<stop
+														offset="0%"
+														stopColor="var(--primary)"
+													/>
+													<stop
+														offset="100%"
+														stopColor="#2dd4bf"
+													/>
+												</linearGradient>
+											</defs>
+											<path
+												d="M0 15 Q100 0 200 15"
+												stroke="url(#lineGradient)"
+												strokeWidth="4"
+											/>
+										</svg>
+									</span>
+								</TabsList>
+							</Tabs>
+						</div>
+
+						{/* All Courses */}
+						<TabsContent value="All">
+							<div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+								{courses.slice(0, 2).map((course) => (
+									<CourseCard
+										key={course.id}
+										course={course}
+									/>
+								))}
+							</div>
+						</TabsContent>
+
+						{/* Category Based Courses */}
+						{categories.map((cat) => {
+							const filteredCourses = courses
+								.filter(
+									(course) =>
+										course?.category?._id?.toString() ===
+										cat.id,
+								)
+								.slice(0, 2);
+
+							return (
+								<TabsContent key={cat.id} value={cat.id}>
+									{filteredCourses.length > 0 ? (
+										<div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+											{filteredCourses.map((course) => (
+												<CourseCard
+													key={course.id}
+													course={course}
+												/>
+											))}
+										</div>
+									) : (
+										<div className="text-center py-20 flex flex-col items-center gap-3">
+											<div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center text-2xl">
+												📚
+											</div>
+											<p className="text-muted-foreground text-sm">
+												No courses found in{" "}
+												<span className="font-semibold text-primary">
+													{cat.title}
+												</span>
+											</p>
+										</div>
+									)}
+								</TabsContent>
+							);
+						})}
+					</Tabs>
+
+					{/* View All Button */}
+					<div className="text-center mt-16">
+						<Link
+							href="/courses"
+							className="px-8 py-3 bg-gradient-to-r from-primary to-teal-400 text-white rounded-full shadow-lg hover:scale-105 transition duration-300"
+						>
+							View All Courses
+						</Link>
+					</div>
 				</div>
 			</div>
 		</section>

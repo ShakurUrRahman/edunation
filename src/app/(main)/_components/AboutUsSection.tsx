@@ -101,7 +101,7 @@ export default function AboutUsSection() {
 
 						{/* Features */}
 						<div className="flex justify-between">
-							<div className="mt-8 space-y-3">
+							<div className="mt-8 space-y-6">
 								<div className="flex items-center gap-3">
 									<div className="w-7 h-7 text-xl rounded-full bg-secondary flex items-center justify-center text-white">
 										✓
@@ -120,7 +120,7 @@ export default function AboutUsSection() {
 									</span>
 								</div>
 							</div>
-							<div className="mt-8 space-y-3">
+							<div className="mt-8 space-y-6">
 								<div className="flex items-center gap-3">
 									<div className="w-7 h-7 text-xl rounded-full bg-secondary flex items-center justify-center text-white">
 										✓
