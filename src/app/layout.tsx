@@ -4,6 +4,7 @@ import "./globals.css";
 import { Toaster } from "sonner";
 import { log } from "console";
 import { dbConnect } from "@/service/mongo";
+import ScrollToTopButton from "@/components/scroll-to-top-button";
 
 /* Google Fonts */
 const jost = Jost({
@@ -44,6 +45,7 @@ export default async function RootLayout({
 					${spartan.variable}`}
 			>
 				{children}
+				<ScrollToTopButton />
 				<Toaster position="top-center" richColors />
 			</body>
 		</html>

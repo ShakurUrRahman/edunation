@@ -150,7 +150,7 @@ export default function CoursesSection({ courses, categories }) {
 						{/* All Courses */}
 						<TabsContent value="All">
 							<div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-								{courses.slice(0, 6).map((course) => (
+								{courses.slice(0, 3).map((course) => (
 									<CourseCard
 										key={course.id}
 										course={course}
@@ -163,11 +163,9 @@ export default function CoursesSection({ courses, categories }) {
 						{categories.map((cat) => {
 							const filteredCourses = courses
 								.filter(
-									(course) =>
-										course?.category?._id?.toString() ===
-										cat.id,
+									(course) => course?.category?.id === cat.id,
 								)
-								.slice(0, 6);
+								.slice(0, 3);
 
 							return (
 								<TabsContent key={cat.id} value={cat.id}>
@@ -181,7 +179,7 @@ export default function CoursesSection({ courses, categories }) {
 											))}
 										</div>
 									) : (
-										<div className="text-center py-20 flex flex-col items-center gap-3">
+										<div className="text-center py-24 flex flex-col items-center gap-3">
 											<div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center text-2xl">
 												📚
 											</div>

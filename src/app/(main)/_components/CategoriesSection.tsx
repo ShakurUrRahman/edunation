@@ -14,11 +14,11 @@ export default function CategoriesSection({ categories }) {
 						Categories
 					</p>
 					<h2 className="text-6xl md:text-5xl font-bold leading-16">
-						Explore Top Courses{" "}
+						Explore{" "}
 						<span className="relative inline-block bg-gradient-to-r from-primary to-teal-400 bg-clip-text text-transparent">
-							Categories
+							Top Courses{" "}
 							<svg
-								className="absolute -bottom-2 left-0 w-full"
+								className="absolute -bottom-3 left-0 w-full"
 								viewBox="0 0 200 20"
 								fill="none"
 								preserveAspectRatio="none"
@@ -49,10 +49,11 @@ export default function CategoriesSection({ categories }) {
 									strokeWidth="4"
 								/>
 							</svg>
-						</span>
+						</span>{" "}
+						Categories
 						<br />
 						That Change Yourself
-					</h2>{" "}
+					</h2>
 				</div>
 				<Swiper
 					slidesPerView={1.2}

@@ -4,7 +4,7 @@ export default function CriteriaSection() {
 	return (
 		<section className="relative bg-primary text-white">
 			{/* Top Decorative Edge */}
-			<div className="absolute top-0 left-0 w-full h-6 hero rounded-b-[40px]" />
+			<div className="absolute top-0 left-0 w-full h-6  rounded-b-[40px]" />
 
 			<div className="container mx-auto px-6 lg:px-12 py-16">
 				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-white/20">
