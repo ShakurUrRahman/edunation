@@ -118,7 +118,7 @@ export default function TestimonialSection() {
 					{/* Left Arrow */}
 					<button
 						onClick={() => swiperRef.current?.slidePrev()}
-						className="hidden cursor-pointer text-white md:flex absolute left-2 top-2/5 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-gradient-to-r from-primary to-teal-400 backdrop-blur-md border border-primary items-center justify-center transition"
+						className="hidden cursor-pointer text-white md:flex absolute left-2 top-2/5 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-gradient-to-r from-primary to-teal-400 backdrop-blur-md border  items-center justify-center transition border-white"
 					>
 						<ArrowLeft size={20} />
 					</button>
@@ -151,7 +151,7 @@ export default function TestimonialSection() {
 										{/* Image */}
 										<div className="relative md:w-1/3">
 											<img
-												src={t.image}
+												src="/assets/images/about/about.png"
 												alt={t.name}
 												className="h-full w-full object-cover min-h-[180px]"
 											/>
@@ -189,7 +189,7 @@ export default function TestimonialSection() {
 					{/* Right Arrow */}
 					<button
 						onClick={() => swiperRef.current?.slideNext()}
-						className="hidden cursor-pointer text-white md:flex absolute right-2 top-2/5 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-gradient-to-r from-primary to-teal-400 backdrop-blur-md border border-primary items-center justify-center transition"
+						className="hidden cursor-pointer text-white md:flex absolute right-2 top-2/5 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-gradient-to-r from-primary to-teal-400 backdrop-blur-md border border-white items-center justify-center transition"
 					>
 						<ArrowRight size={20} />
 					</button>

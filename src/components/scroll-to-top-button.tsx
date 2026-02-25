@@ -34,6 +34,7 @@ export default function ScrollToTopButton() {
         p-3 rounded-full w-12 h-12
         bg-gradient-to-r from-primary to-teal-400
         text-white shadow-lg
+        border border-white
         transition-all duration-300
         hover:scale-110
         ${visible ? "opacity-100" : "opacity-0 pointer-events-none"}
