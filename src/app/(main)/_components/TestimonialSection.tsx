@@ -57,7 +57,7 @@ export default function TestimonialSection() {
 	const swiperRef = useRef(null);
 
 	return (
-		<section className="relative py-24 overflow-hidden">
+		<section className="relative pt-24 pb-36 overflow-hidden">
 			{/* Background Gradient */}
 			<div className="absolute inset-0 bg-gradient-to-br from-[#435d99] via-secondary to-[#843b65]" />
 			<div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(88, 140, 224, 0.3),transparent_40%)]" />
@@ -118,7 +118,7 @@ export default function TestimonialSection() {
 					{/* Left Arrow */}
 					<button
 						onClick={() => swiperRef.current?.slidePrev()}
-						className="hidden cursor-pointer text-white md:flex absolute left-2 top-2/5 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-gradient-to-r from-primary to-teal-400 backdrop-blur-md border  items-center justify-center transition border-white"
+						className="hidden cursor-pointer text-white md:flex absolute left-2 top-2/5 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-gradient-to-r from-primary to-teal-400 backdrop-blur-md border  items-center justify-center border-white hover:shadow-xl transition-all duration-300 hover:scale-105"
 					>
 						<ArrowLeft size={20} />
 					</button>
@@ -189,7 +189,7 @@ export default function TestimonialSection() {
 					{/* Right Arrow */}
 					<button
 						onClick={() => swiperRef.current?.slideNext()}
-						className="hidden cursor-pointer text-white md:flex absolute right-2 top-2/5 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-gradient-to-r from-primary to-teal-400 backdrop-blur-md border border-white items-center justify-center transition"
+						className="hidden cursor-pointer text-white md:flex absolute right-2 top-2/5 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-gradient-to-r from-primary to-teal-400 backdrop-blur-md border border-white items-center justify-center hover:shadow-xl transition-all duration-300 hover:scale-105"
 					>
 						<ArrowRight size={20} />
 					</button>
