@@ -29,7 +29,7 @@ export default function AverageRatingFilter() {
 									: [...prev, r],
 							)
 						}
-						className="accent-[#2a9d5c]"
+						className="accent-primary"
 					/>
 					<StarRatingFilter rating={r} />
 					<span className="text-xs text-gray-400">

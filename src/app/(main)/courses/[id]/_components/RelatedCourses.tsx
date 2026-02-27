@@ -1,130 +1,135 @@
-import {
-    Carousel,
-    CarouselContent,
-    CarouselItem,
-    CarouselNext,
-    CarouselPrevious,
-} from "@/components/ui/carousel";
-import { SectionTitle } from "@/components/section-title";
 import Link from "next/link";
 import Image from "next/image";
-import { BookOpen } from "lucide-react";
-import { formatPrice } from "@/lib/formatPrice";
-import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { Star, BookOpen, Users } from "lucide-react";
 
-const courses = [
-    {
-        id: 1,
-        title: "Design",
-        thumbnail: "/assets/images/categories/design.jpg",
-    },
+interface RelatedCourse {
+	id: string;
+	title: string;
+	thumbnail?: string;
+	price?: number;
+	modules?: any[];
+	testimonials?: any[];
+}
 
-    {
-        id: 3,
-        title: "Development",
-        thumbnail: "/assets/images/categories/development.jpg",
-    },
-    {
-        id: 4,
-        title: "Marketing",
-        thumbnail: "/assets/images/categories/marketing.jpg",
-    },
-    {
-        id: 5,
-        title: "IT & Software",
-        thumbnail: "/assets/images/categories/it_software.jpg",
-    },
-    {
-        id: 6,
-        title: "Personal Development",
-        thumbnail: "/assets/images/categories/personal_development.jpg",
-    },
-    {
-        id: 7,
-        title: "Business",
-        thumbnail: "/assets/images/categories/business.jpg",
-    },
-    {
-        id: 8,
-        title: "Photography",
-        thumbnail: "/assets/images/categories/photography.jpg",
-    },
-    {
-        id: 9,
-        title: "Music",
-        thumbnail: "/assets/images/categories/music.jpg",
-    },
-];
+interface Props {
+	courses: RelatedCourse[];
+	instructorName?: string;
+}
 
-const RelatedCourses = () => {
-    return (
-        <section className="">
-            <div className="container">
-                <SectionTitle className="mb-6">Related Courses</SectionTitle>
-                <Carousel
-                    opts={{
-                        align: "start",
-                    }}
-                    className="max-2xl:w-[90%] w-full mx-auto"
-                >
-                    <CarouselPrevious />
-                    <CarouselNext />
-                    <CarouselContent>
-                        {courses.map((course) => (
-                            <CarouselItem
-                                key={course.id}
-                                className="md:basis-1/2 lg:basis-1/3"
-                            >
-                                <Link href={`/courses/${course.id}`}>
-                                    <div className="group hover:shadow-sm transition overflow-hidden border rounded-lg p-3 h-full">
-                                        <div className="relative w-full aspect-video rounded-md overflow-hidden">
-                                            <Image
-                                                src="/assets/images/courses/course_1.png"
-                                                alt={"course"}
-                                                className="object-cover"
-                                                fill
-                                            />
-                                        </div>
-                                        <div className="flex flex-col pt-2">
-                                            <div className="text-lg md:text-base font-medium group-hover:text-sky-700 line-clamp-2">
-                                                Reactive Accelerator
-                                            </div>
-                                            <p className="text-xs text-muted-foreground">
-                                                Development
-                                            </p>
-                                            <div className="my-3 flex items-center gap-x-2 text-sm md:text-xs">
-                                                <div className="flex items-center gap-x-1 text-slate-500">
-                                                    <div>
-                                                        <BookOpen className="w-4" />
-                                                    </div>
-                                                    <span>4 Chapters</span>
-                                                </div>
-                                            </div>
+function Stars({ rating }: { rating: number }) {
+	return (
+		<div className="flex gap-0.5">
+			{[1, 2, 3, 4, 5].map((s) => (
+				<Star
+					key={s}
+					className="w-3 h-3"
+					fill={s <= Math.round(rating) ? "#f5a623" : "#e2e8f0"}
+					stroke="none"
+				/>
+			))}
+		</div>
+	);
+}
 
-                                            <div className="flex items-center justify-between mt-4">
-                                                <p className="text-md md:text-sm font-medium text-slate-700">
-                                                    {formatPrice(49)}
-                                                </p>
+export default function RelatedCourses({ courses, instructorName }: Props) {
+	if (!courses || courses.length === 0) return null;
 
-                                                <Button
-                                                    variant="ghost"
-                                                    className="text-xs text-sky-700 h-7 gap-1"
-                                                >
-                                                    Enroll
-                                                    <ArrowRight className="w-3" />
-                                                </Button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </Link>
-                            </CarouselItem>
-                        ))}
-                    </CarouselContent>
-                </Carousel>
-            </div>
-        </section>
-    );
-};
+	return (
+		<section className="py-14 bg-[#f8fdf9] border-t border-gray-100">
+			<div className="max-w-6xl mx-auto px-5">
+				<div className="flex items-end justify-between mb-8">
+					<div>
+						<p className="text-xs font-bold text-[#2a9d5c] uppercase tracking-widest mb-1">
+							Top Courses
+						</p>
+						<h2
+							className="text-2xl font-bold text-[#1a1a2e]"
+							style={{ fontFamily: "'Playfair Display', serif" }}
+						>
+							Explore Courses By{" "}
+							<span className="text-[#2a9d5c]">
+								{instructorName ?? "Instructor"}
+							</span>
+						</h2>
+					</div>
+					<Link
+						href="/courses"
+						className="text-sm font-bold text-white bg-[#f5a623] hover:bg-[#e09710] px-4 py-2 rounded-md transition-colors whitespace-nowrap"
+					>
+						Show All Courses →
+					</Link>
+				</div>
 
-export default RelatedCourses;
+				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+					{courses.slice(0, 3).map((course) => {
+						const isFree = !course.price || course.price === 0;
+						const totalLessons =
+							course.modules?.reduce(
+								(acc: number, m: any) =>
+									acc + (m.lessonIds?.length ?? 0),
+								0,
+							) ?? 0;
+						const avgRating =
+							course.testimonials &&
+							course.testimonials.length > 0
+								? course.testimonials.reduce(
+										(sum: number, t: any) => sum + t.rating,
+										0,
+									) / course.testimonials.length
+								: 0;
+
+						return (
+							<Link
+								key={course.id}
+								href={`/courses/${course.id}`}
+							>
+								<div className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg border border-gray-100 hover:-translate-y-1 transition-all duration-200">
+									<div className="relative h-44 overflow-hidden bg-gray-200">
+										{course.thumbnail && (
+											<Image
+												src={course.thumbnail}
+												alt={course.title}
+												fill
+												className="object-cover"
+											/>
+										)}
+										<div className="absolute top-2.5 left-2.5">
+											<span className="bg-[#2a9d5c] text-white text-[10px] font-bold px-2 py-0.5 rounded">
+												{isFree
+													? "Free"
+													: `$${course.price}`}
+											</span>
+										</div>
+									</div>
+									<div className="p-3.5">
+										<h3 className="text-sm font-semibold text-[#1a1a2e] leading-snug mb-2 line-clamp-2">
+											{course.title}
+										</h3>
+										{avgRating > 0 && (
+											<div className="flex items-center gap-1.5 mb-2.5">
+												<Stars rating={avgRating} />
+												<span className="text-[11px] text-gray-400">
+													({avgRating.toFixed(1)}/5
+													Customer Rating)
+												</span>
+											</div>
+										)}
+										<div className="flex items-center gap-4 border-t border-gray-100 pt-2.5 mb-3">
+											<span className="flex items-center gap-1 text-xs text-gray-500">
+												<BookOpen className="w-3.5 h-3.5" />
+												{totalLessons} Lessons
+											</span>
+										</div>
+										<button className="w-full py-2 bg-[#1a1a2e] hover:bg-[#2a9d5c] text-white text-xs font-bold rounded flex items-center justify-center gap-1.5 transition-colors duration-200 border-none cursor-pointer">
+											Preview This Course →
+										</button>
+									</div>
+								</div>
+							</Link>
+						);
+					})}
+				</div>
+			</div>
+		</section>
+	);
+}

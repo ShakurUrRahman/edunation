@@ -27,7 +27,7 @@ export default function RecentCourses({ recentProducts = RECENT_PRODUCTS }) {
 	return (
 		<div className="bg-white rounded-xl p-5 mb-5 shadow-sm">
 			<h4 className="text-base font-bold mb-3.5 text-[#1a1a2e]">
-				Recent Products
+				Recent Courses
 			</h4>
 			{recentProducts.map((p) => (
 				<div key={p.id} className="flex gap-2.5 items-center mb-3">

@@ -14,10 +14,10 @@ const Courses = ({ courses }) => {
 			{courses.map((course) => {
 				return (
 					<div
-						key={course?.id}
+						key={course?._id}
 						className="group hover:shadow-sm transition overflow-hidden p-3 h-full hero border border-primary/40 rounded-lg"
 					>
-						<Link href={`/courses/${course?.id}`}>
+						<Link href={`/courses/${course?._id}`}>
 							<div className="relative w-full aspect-video rounded-md overflow-hidden">
 								<Image
 									src={course.thumbnail}
@@ -56,7 +56,10 @@ const Courses = ({ courses }) => {
 								{formatPrice(course.price)}
 							</p>
 
-							<EnrollCourse asLink={true} courseId={course?.id} />
+							<EnrollCourse
+								asLink={true}
+								courseId={course?._id.toString()}
+							/>
 						</div>
 					</div>
 				);

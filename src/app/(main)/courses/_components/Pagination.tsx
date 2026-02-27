@@ -15,8 +15,6 @@ export default function Pagination({
 }: PaginationProps) {
 	// if (totalPages <= 1) return null;
 
-	// Build smart page number list with ellipsis
-	// e.g. [1, "...", 4, 5, 6, "...", 12]
 	const getPageNumbers = (): (number | "...")[] => {
 		if (totalPages <= 5) {
 			return Array.from({ length: totalPages }, (_, i) => i + 1);
@@ -36,7 +34,7 @@ export default function Pagination({
 	};
 
 	return (
-		<div className="flex items-center justify-center gap-1.5 min-h-screen">
+		<div className="flex items-center justify-center gap-1.5">
 			{/* Prev */}
 			<button
 				onClick={() => onPageChange(currentPage - 1)}

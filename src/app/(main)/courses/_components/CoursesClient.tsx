@@ -33,19 +33,12 @@ export default function CoursesClient({ courses, categories }) {
 		() => Math.max(...courses.map((c) => c.price ?? 0), 0),
 		[courses],
 	);
-
-	// appliedRange drives actual filtering; starts at full range = no filter
 	const [appliedRange, setAppliedRange] = useState<[number, number]>([
 		minPrice,
 		maxPrice,
 	]);
 
-	const handleApplyPrice = (range: [number, number]) => {
-		setAppliedRange(range);
-		setCurrentPage(1);
-	};
-
-	// ── Category helpers ──────────────────────────────────────────────────────
+	// ── Helpers ───────────────────────────────────────────────────────────────
 	const toggleCategory = (val: string) =>
 		setSelectedCategories((prev) =>
 			prev.includes(val) ? prev.filter((c) => c !== val) : [...prev, val],
@@ -59,22 +52,48 @@ export default function CoursesClient({ courses, categories }) {
 		setCurrentPage(1);
 	};
 
+	const handleApplyPrice = (range: [number, number]) => {
+		setAppliedRange(range);
+		setCurrentPage(1);
+	};
+
+	// SearchBox calls this after debounce — resets to page 1
+	const handleSearch = (query: string) => {
+		setSearchQuery(query);
+		setCurrentPage(1);
+	};
+
 	// ── Combined filter ───────────────────────────────────────────────────────
 	const filteredCourses = courses.filter((course) => {
-		// Category
+		// 1. Category
 		if (
 			selectedCategories.length > 0 &&
 			!selectedCategories.includes(course.category?.id)
 		)
 			return false;
 
-		// Price range — both bounds inclusive
+		// 2. Price range
 		const price = course.price ?? 0;
 		if (price < appliedRange[0] || price > appliedRange[1]) return false;
+
+		// 3. Search — matches title, description, or instructor name
+		if (searchQuery.trim() !== "") {
+			const q = searchQuery.toLowerCase();
+			const matchesTitle = course.title?.toLowerCase().includes(q);
+			const matchesDescription = course.description
+				?.toLowerCase()
+				.includes(q);
+			const matchesInstructor = course.instructor?.name
+				?.toLowerCase()
+				.includes(q);
+			if (!matchesTitle && !matchesDescription && !matchesInstructor)
+				return false;
+		}
 
 		return true;
 	});
 
+	// ── Pagination ────────────────────────────────────────────────────────────
 	const totalPages = Math.max(
 		1,
 		Math.ceil(filteredCourses.length / ITEMS_PER_PAGE),
@@ -94,10 +113,8 @@ export default function CoursesClient({ courses, categories }) {
 					totalCourses={filteredCourses.length}
 				/>
 				<div className="flex items-center gap-2.5">
-					<SearchBox
-						searchQuery={searchQuery}
-						setSearchQuery={setSearchQuery}
-					/>
+					{/* onSearch receives the debounced value from SearchBox */}
+					<SearchBox onSearch={handleSearch} />
 					<SortCourse
 						sortOption={sortOption}
 						setSortOption={setSortOption}
@@ -124,14 +141,12 @@ export default function CoursesClient({ courses, categories }) {
 						selectedCategories={selectedCategories}
 						setSelectedCategories={handleCategoryChange}
 					/>
-
 					<PriceFilter
 						minPrice={minPrice}
 						maxPrice={maxPrice}
 						appliedRange={appliedRange}
 						onApply={handleApplyPrice}
 					/>
-
 					<AverageRatingFilter
 						selectedRatings={selectedRatings}
 						setSelectedRatings={setSelectedRatings}
@@ -166,7 +181,9 @@ export default function CoursesClient({ courses, categories }) {
 									<path d="m21 21-4.35-4.35" />
 								</svg>
 								<p className="text-sm font-medium">
-									No courses found
+									{searchQuery
+										? `No courses found for "${searchQuery}"`
+										: "No courses found"}
 								</p>
 								<p className="text-xs mt-1">
 									Try adjusting your filters

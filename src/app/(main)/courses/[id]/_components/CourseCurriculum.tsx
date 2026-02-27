@@ -1,63 +1,129 @@
-import {
-	Accordion,
-	AccordionContent,
-	AccordionItem,
-	AccordionTrigger,
-} from "@/components/ui/accordion";
+"use client";
 
-import { BookCheck } from "lucide-react";
-import { Clock10 } from "lucide-react";
-import { Radio } from "lucide-react";
-import { Video } from "lucide-react";
-import { NotepadText } from "lucide-react";
-import { FileQuestion } from "lucide-react";
-import { PlayCircle } from "lucide-react";
-import { SquarePlay } from "lucide-react";
-import { Tv } from "lucide-react";
-import { StickyNote } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { useState } from "react";
+import { ChevronDown, PlayCircle, Lock } from "lucide-react";
 
-import CourseModuleList from "./module/CourseModuleList";
+// Your data shape: modules[].lessonIds[] (array of lesson objects after population)
+interface Lesson {
+	_id: string;
+	title: string;
+	duration?: string;
+	isPreview?: boolean;
+}
 
-const CourseCurriculum = ({ course }) => {
-	const totalDuration = course?.modules
-		.map((item) => {
-			return item.lessonIds.reduce(function (acc, obj) {
-				return acc + obj.duration;
-			}, 0);
-		})
-		.reduce(function (acc, obj) {
-			return acc + obj;
-		}, 0);
+interface Module {
+	_id: string;
+	title: string;
+	lessonIds: Lesson[];
+	order: number;
+}
 
-	console.log({ totalDuration });
+interface Props {
+	modules: Module[];
+}
+
+export default function CourseCurriculum({ modules }: Props) {
+	// Sort by order field
+	const sorted = [...modules].sort((a, b) => a.order - b.order);
+	const [openModules, setOpenModules] = useState<string[]>(
+		sorted.length > 0 ? [sorted[0]._id.toString()] : [],
+	);
+
+	const toggle = (id: string) =>
+		setOpenModules((prev) =>
+			prev.includes(id) ? prev.filter((m) => m !== id) : [...prev, id],
+		);
+
+	const totalLessons = modules.reduce(
+		(acc, m) => acc + (m.lessonIds?.length ?? 0),
+		0,
+	);
+
 	return (
-		<>
-			<div className="flex gap-x-5 items-center justify-center flex-wrap mt-4 mb-6 text-gray-600 text-sm">
-				<span className="flex items-center gap-1.5">
-					<BookCheck className="w-4 h-4" />
-					{course?.modules?.length} Chapters
-				</span>
-				<span className="flex items-center gap-1.5">
-					<Clock10 className="w-4 h-4" />
-					{(totalDuration / 60).toPrecision(2)} Hours
+		<section>
+			<div className="flex items-center justify-between mb-5">
+				<h2 className="text-lg font-bold text-[#1a1a2e]">
+					Course Content
+				</h2>
+				<span className="text-xs text-gray-400">
+					{modules.length} modules • {totalLessons} lessons
 				</span>
 			</div>
 
-			{/* contents */}
-			<Accordion
-				defaultValue={["item-1", "item-2", "item-3"]}
-				type="multiple"
-				collapsible
-				className="w-full"
-			>
-				{course?.modules &&
-					course?.modules.map((module) => (
-						<CourseModuleList key={module._id} module={module} />
-					))}
-			</Accordion>
-		</>
-	);
-};
+			<div className="border border-gray-200 rounded-xl overflow-hidden divide-y divide-gray-200">
+				{sorted.map((mod) => {
+					const isOpen = openModules.includes(mod._id.toString());
+					const lessons: Lesson[] = mod.lessonIds ?? [];
 
-export default CourseCurriculum;
+					return (
+						<div key={mod._id.toString()}>
+							{/* Module header */}
+							<button
+								onClick={() => toggle(mod._id.toString())}
+								className="w-full flex items-center justify-between px-4 py-3.5 bg-gray-50 hover:bg-gray-100 text-left cursor-pointer border-none transition-colors duration-150"
+							>
+								<div className="flex items-center gap-2.5">
+									<ChevronDown
+										className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+									/>
+									<span className="text-sm font-semibold text-[#1a1a2e]">
+										{mod.title}
+									</span>
+								</div>
+								<span className="text-xs text-gray-400 shrink-0">
+									{lessons.length}{" "}
+									{lessons.length === 1
+										? "lesson"
+										: "lessons"}
+								</span>
+							</button>
+
+							{/* Lessons */}
+							{isOpen && lessons.length > 0 && (
+								<ul className="divide-y divide-gray-100">
+									{lessons.map((lesson) => (
+										<li
+											key={lesson._id?.toString()}
+											className="flex items-center justify-between px-4 py-3 hover:bg-gray-50 transition-colors"
+										>
+											<div className="flex items-center gap-3">
+												<PlayCircle
+													className={`w-4 h-4 shrink-0 ${lesson.isPreview ? "text-[#2a9d5c]" : "text-gray-400"}`}
+												/>
+												<span className="text-sm text-gray-600">
+													{lesson.title}
+												</span>
+												{lesson.isPreview && (
+													<span className="text-[10px] font-semibold text-[#2a9d5c] bg-[#e8f4f0] px-2 py-0.5 rounded-full">
+														Preview
+													</span>
+												)}
+											</div>
+											<div className="flex items-center gap-2">
+												{lesson.duration && (
+													<span className="text-xs text-gray-400">
+														{lesson.duration}
+													</span>
+												)}
+												{!lesson.isPreview && (
+													<Lock className="w-3.5 h-3.5 text-gray-300" />
+												)}
+											</div>
+										</li>
+									))}
+								</ul>
+							)}
+
+							{/* Empty module */}
+							{isOpen && lessons.length === 0 && (
+								<div className="px-4 py-3 text-xs text-gray-400 italic">
+									No lessons yet.
+								</div>
+							)}
+						</div>
+					);
+				})}
+			</div>
+		</section>
+	);
+}
