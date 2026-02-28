@@ -2,7 +2,7 @@
 
 import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, GraduationCap } from "lucide-react";
 import { createCheckoutSession } from "@/app/actions/stripe";
 import React from "react";
 
@@ -37,8 +37,9 @@ export const EnrollCourse = (React.FC<EnrollCourseProps> = ({
 				) : (
 					<Button
 						type="submit"
-						className={cn(buttonVariants({ size: "lg" }))}
+						className="w-full h-12 bg-primary hover:opacity-90 text-white font-semibold rounded-xl transition-all duration-300 flex items-center justify-center gap-2 shadow-md"
 					>
+						<GraduationCap className="w-5 h-5 " />
 						Enroll Now
 					</Button>
 				)}

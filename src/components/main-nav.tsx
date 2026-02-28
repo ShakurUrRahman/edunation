@@ -138,7 +138,7 @@ export function MainNav({ items, children }) {
 
 								<div
 									className={cn(
-										"absolute right-0 mt-8 w-60 rounded-2xl bg-white/80 backdrop-blur-xl border border-white/40 shadow-[0_10px_40px_rgba(0,0,0,0.15)] overflow-hidden transition-all duration-300",
+										"absolute right-0 mt-8 w-60 rounded-2xl bg-white border border-white/40 shadow-[0_10px_40px_rgba(0,0,0,0.15)] overflow-hidden transition-all duration-300",
 										openRegistrar
 											? "opacity-100 translate-y-0"
 											: "opacity-0 -translate-y-2 pointer-events-none",
@@ -194,7 +194,7 @@ export function MainNav({ items, children }) {
 
 						<div
 							className={cn(
-								"absolute right-0 mt-8 w-60 rounded-2xl bg-white/80 backdrop-blur-xl border border-white/40 shadow-[0_10px_40px_rgba(0,0,0,0.15)] overflow-hidden transition-all duration-300",
+								"absolute right-0 mt-8 w-60 rounded-2xl bg-white border border-white/40 shadow-[0_10px_40px_rgba(0,0,0,0.15)] overflow-hidden transition-all duration-300",
 								open
 									? "opacity-100 translate-y-0"
 									: "opacity-0 -translate-y-2 pointer-events-none",

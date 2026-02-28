@@ -27,6 +27,10 @@ const courseSchema = new Schema({
 		default: false,
 		type: Boolean,
 	},
+	preview_video_url: {
+		required: false,
+		type: String,
+	},
 
 	category: { type: Schema.ObjectId, ref: "Category" },
 

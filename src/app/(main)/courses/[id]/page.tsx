@@ -101,7 +101,7 @@ const SingleCoursePage = async ({ params }: PageProps) => {
 	const rawInstructorPersonalDetails = await getUserDetailsById(
 		rawCourse.instructor._id.toString(),
 	);
-	console.log(rawInstructorPersonalDetails);
+	// console.log(rawInstructorPersonalDetails);
 	if (!rawCourse) notFound();
 
 	// Convert MongoDB objects (ObjectIds/Dates) into plain strings/numbers
@@ -134,6 +134,8 @@ const SingleCoursePage = async ({ params }: PageProps) => {
 				course={course}
 				instructorDetails={instructorDetails}
 				instructorPersonalDetails={instructorPersonalDetails}
+				hasEnrollment={hasEnrollment}
+				loggedInUser={loggedInUser}
 				// relatedCourses={relatedCourses}
 			/>
 		</>

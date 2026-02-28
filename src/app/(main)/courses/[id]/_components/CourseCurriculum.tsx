@@ -1,129 +1,161 @@
 "use client";
 
-import { useState } from "react";
-import { ChevronDown, PlayCircle, Lock } from "lucide-react";
+import React, { useState } from "react";
+import { ChevronDown, ChevronUp, PlayCircle } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
 
-// Your data shape: modules[].lessonIds[] (array of lesson objects after population)
-interface Lesson {
-	_id: string;
-	title: string;
-	duration?: string;
-	isPreview?: boolean;
-}
+export default function CourseCurriculum({
+	modules,
+	totalDuration,
+}: {
+	modules: any[];
+	totalDuration: number;
+}) {
+	const [openSections, setOpenSections] = useState<string[]>([]);
 
-interface Module {
-	_id: string;
-	title: string;
-	lessonIds: Lesson[];
-	order: number;
-}
-
-interface Props {
-	modules: Module[];
-}
-
-export default function CourseCurriculum({ modules }: Props) {
-	// Sort by order field
-	const sorted = [...modules].sort((a, b) => a.order - b.order);
-	const [openModules, setOpenModules] = useState<string[]>(
-		sorted.length > 0 ? [sorted[0]._id.toString()] : [],
-	);
-
-	const toggle = (id: string) =>
-		setOpenModules((prev) =>
-			prev.includes(id) ? prev.filter((m) => m !== id) : [...prev, id],
-		);
-
-	const totalLessons = modules.reduce(
-		(acc, m) => acc + (m.lessonIds?.length ?? 0),
+	// Calculate total lectures across all modules
+	const totalLectures = modules?.reduce(
+		(acc, m) => acc + (m.lessonIds?.length || 0),
 		0,
 	);
 
+	// Determine if all sections are currently expanded
+	const isAllExpanded =
+		modules.length > 0 && openSections.length === modules.length;
+
+	const toggleSection = (id: string) => {
+		setOpenSections((prev) =>
+			prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id],
+		);
+	};
+
+	// Toggle between expanding all and collapsing all
+	const handleToggleAll = () => {
+		if (isAllExpanded) {
+			setOpenSections([]); // Close all
+		} else {
+			setOpenSections(modules.map((m) => m._id)); // Expand all
+		}
+	};
+
 	return (
-		<section>
-			<div className="flex items-center justify-between mb-5">
-				<h2 className="text-lg font-bold text-[#1a1a2e]">
-					Course Content
-				</h2>
-				<span className="text-xs text-gray-400">
-					{modules.length} modules • {totalLessons} lessons
-				</span>
+		<div className=" p-6 border border-primary rounded-2xl shadow-sm">
+			{/* Header */}
+			<div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-2">
+				<div>
+					<h2 className="text-2xl font-bold mb-6">Course Content</h2>
+					<div className="flex items-center text-gray-500 text-sm gap-2">
+						<span>{modules?.length} chapter(s)</span>
+						<span>•</span>
+						<span>{totalLectures} lecture(s)</span>
+						<span>•</span>
+						<span>
+							{totalDuration
+								? (totalDuration / 3600).toPrecision(2)
+								: 0}{" "}
+							hours total length
+						</span>
+					</div>
+				</div>
+
+				{/* Dynamic Button Text */}
+				<button
+					onClick={handleToggleAll}
+					className="text-primary font-semibold text-sm hover:underline self-start md:self-center"
+				>
+					{isAllExpanded
+						? "Collapse All Sections"
+						: "Expand All Sections"}
+				</button>
 			</div>
 
-			<div className="border border-gray-200 rounded-xl overflow-hidden divide-y divide-gray-200">
-				{sorted.map((mod) => {
-					const isOpen = openModules.includes(mod._id.toString());
-					const lessons: Lesson[] = mod.lessonIds ?? [];
+			{/* Accordion List */}
+			<div className="border border-gray-200 rounded-2xl overflow-hidden">
+				{modules.map((module, index) => {
+					const isOpen = openSections.includes(module._id);
 
 					return (
-						<div key={mod._id.toString()}>
-							{/* Module header */}
+						<div
+							key={module._id}
+							className={`${index !== modules.length - 1 ? "border-b" : ""} border-gray-100`}
+						>
 							<button
-								onClick={() => toggle(mod._id.toString())}
-								className="w-full flex items-center justify-between px-4 py-3.5 bg-gray-50 hover:bg-gray-100 text-left cursor-pointer border-none transition-colors duration-150"
+								onClick={() => toggleSection(module._id)}
+								className={`w-full flex items-center justify-between p-4 transition-colors ${
+									isOpen
+										? "bg-gray-50"
+										: "bg-white hover:bg-gray-50"
+								}`}
 							>
-								<div className="flex items-center gap-2.5">
-									<ChevronDown
-										className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
-									/>
-									<span className="text-sm font-semibold text-[#1a1a2e]">
-										{mod.title}
+								<div className="flex items-center gap-3">
+									<div className="p-1 rounded-full border border-gray-300">
+										{isOpen ? (
+											<ChevronUp size={14} />
+										) : (
+											<ChevronDown size={14} />
+										)}
+									</div>
+									<span className="font-semibold text-[#1D2939] text-left">
+										{module.title}
 									</span>
 								</div>
-								<span className="text-xs text-gray-400 shrink-0">
-									{lessons.length}{" "}
-									{lessons.length === 1
-										? "lesson"
-										: "lessons"}
-								</span>
+								<div className="text-sm text-gray-500">
+									{module.lessonIds?.length || 0} lectures
+								</div>
 							</button>
 
-							{/* Lessons */}
-							{isOpen && lessons.length > 0 && (
-								<ul className="divide-y divide-gray-100">
-									{lessons.map((lesson) => (
-										<li
-											key={lesson._id?.toString()}
-											className="flex items-center justify-between px-4 py-3 hover:bg-gray-50 transition-colors"
-										>
-											<div className="flex items-center gap-3">
-												<PlayCircle
-													className={`w-4 h-4 shrink-0 ${lesson.isPreview ? "text-[#2a9d5c]" : "text-gray-400"}`}
-												/>
-												<span className="text-sm text-gray-600">
-													{lesson.title}
-												</span>
-												{lesson.isPreview && (
-													<span className="text-[10px] font-semibold text-[#2a9d5c] bg-[#e8f4f0] px-2 py-0.5 rounded-full">
-														Preview
-													</span>
+							<AnimatePresence>
+								{isOpen && (
+									<motion.div
+										initial={{ height: 0, opacity: 0 }}
+										animate={{ height: "auto", opacity: 1 }}
+										exit={{ height: 0, opacity: 0 }}
+										transition={{
+											duration: 0.3,
+											ease: "easeInOut",
+										}}
+										className="overflow-hidden bg-gray-50/50"
+									>
+										<div className="p-4 bg-white border-t border-gray-100 animate-in fade-in slide-in-from-top-1">
+											<div className="space-y-3">
+												{module.lessonIds?.map(
+													(lesson: any) => (
+														<div
+															key={lesson._id}
+															className="flex items-center justify-between group"
+														>
+															<div className="flex items-center gap-3 text-sm text-gray-600">
+																<PlayCircle
+																	size={16}
+																	className="text-[#005F5F]"
+																/>
+																<span className="group-hover:text-black transition-colors">
+																	{
+																		lesson.title
+																	}
+																</span>
+															</div>
+															<span className="text-xs text-gray-400">
+																{(
+																	totalDuration /
+																	3600
+																).toPrecision(
+																	2,
+																)}{" "}
+																hours
+															</span>
+														</div>
+													),
 												)}
 											</div>
-											<div className="flex items-center gap-2">
-												{lesson.duration && (
-													<span className="text-xs text-gray-400">
-														{lesson.duration}
-													</span>
-												)}
-												{!lesson.isPreview && (
-													<Lock className="w-3.5 h-3.5 text-gray-300" />
-												)}
-											</div>
-										</li>
-									))}
-								</ul>
-							)}
-
-							{/* Empty module */}
-							{isOpen && lessons.length === 0 && (
-								<div className="px-4 py-3 text-xs text-gray-400 italic">
-									No lessons yet.
-								</div>
-							)}
+										</div>
+									</motion.div>
+								)}
+							</AnimatePresence>
 						</div>
 					);
 				})}
 			</div>
-		</section>
+		</div>
 	);
 }

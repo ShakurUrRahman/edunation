@@ -1,6 +1,18 @@
 "use client";
 
-import { BookOpen, Clock, Users, Globe, Award, Phone } from "lucide-react";
+import { EnrollCourse } from "@/components/enroll-course";
+import {
+	BookOpen,
+	Clock,
+	Globe,
+	Award,
+	Phone,
+	Loader2,
+	BadgeCheck,
+	GraduationCap,
+} from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 interface Course {
 	price?: number;
@@ -17,109 +29,138 @@ interface Props {
 
 export default function CourseEnrollCard({
 	course,
-	onEnroll,
-	isEnrolling,
+	hasEnrollment,
+	totalDuration,
+	loggedInUser,
 }: Props) {
 	const isFree = !course.price || course.price === 0;
+
+	const router = useRouter();
+
+	const totalLessons =
+		course.modules?.reduce(
+			(acc: number, m: any) => acc + (m.lessonIds?.length ?? 0),
+			0,
+		) ?? 0;
+
 	const includes = [
 		{
 			icon: BookOpen,
-			label: "Lessons",
-			value: String(
-				course.modules?.reduce(
-					(acc: number, m: any) => acc + (m.lessonIds?.length ?? 0),
-					0,
-				) ?? 0,
-			),
+			label: "Lectures",
+			value: totalLessons,
 		},
-		{ icon: Clock, label: "Duration", value: "Self-paced" },
+		{
+			icon: Clock,
+			label: "Duration",
+			value: totalDuration ? (totalDuration / 3600).toPrecision(2) : 0,
+		},
 		{ icon: Globe, label: "Language", value: course.language ?? "English" },
 		{
 			icon: Award,
 			label: "Certificate",
-			value: course.certificate ? "Yes" : "No",
+			value: "Included",
 		},
 	];
 
 	return (
-		<div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-			{/* Price */}
-			<div className="px-6 pt-6 pb-4">
-				<p className="text-2xl font-bold text-[#1a1a2e]">
+		<div className="sticky top-6 bg-white rounded-3xl border shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden">
+			{/* Top Gradient Banner */}
+			<div className="h-2 bg-gradient-to-r from-primary to-teal-400" />
+
+			{/* Price Section */}
+			<div className="px-8 pt-8 pb-6 text-center">
+				<div className="text-4xl font-extrabold text-gray-900">
 					{isFree ? (
-						<span className="text-[#2a9d5c]">Free</span>
+						<span className="text-primary">Free</span>
 					) : (
-						<span>${course.price?.toFixed(2)}</span>
+						`৳${course.price?.toFixed(2)}`
 					)}
+				</div>
+
+				{/* {!isFree && (
+					<p className="text-sm text-gray-400 line-through mt-1">
+						$99.99
+					</p>
+				)} */}
+
+				<p className="text-xs text-gray-500 mt-3">
+					Full lifetime access • 30-day money-back guarantee
 				</p>
 			</div>
 
-			{/* Enroll button — calls your enroll action */}
-			<div className="px-6 pb-5 border-b border-gray-100">
-				<button
-					onClick={onEnroll}
-					disabled={isEnrolling}
-					className="w-full h-11 bg-[#2a9d5c] hover:bg-[#248f52] disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold text-sm rounded-lg border-none transition-colors duration-200 cursor-pointer"
-				>
-					{isEnrolling ? "Processing..." : "Enroll Now"}
-				</button>
-				<p className="text-center text-xs text-gray-400 mt-2">
-					30-Day Money-Back Guarantee
-				</p>
+			{/* CTA */}
+			<div className="px-8 pb-8">
+				{hasEnrollment ? (
+					<Link
+						href={`/courses/${course?.id}/lesson`}
+						className="w-full h-12 bg-primary hover:opacity-90 text-white font-semibold rounded-xl transition-all duration-300 flex items-center justify-center gap-2 shadow-md"
+					>
+						<BadgeCheck className="w-5 h-5" />
+						Access Course
+					</Link>
+				) : !loggedInUser ? (
+					<button
+						onClick={() =>
+							router.push(
+								`/signin?redirect=/courses/${course?.id}`,
+							)
+						}
+						className="w-full h-12 bg-primary hover:opacity-90 text-white font-semibold rounded-xl transition-all duration-300 flex items-center justify-center gap-2 shadow-md"
+					>
+						<GraduationCap className="w-5 h-5" />
+						Enroll Now
+					</button>
+				) : (
+					<EnrollCourse courseId={course?.id} />
+				)}
 			</div>
 
-			{/* Course includes */}
-			<div className="px-6 py-5 border-b border-gray-100">
-				<p className="text-sm font-bold text-[#1a1a2e] mb-4">
-					Course Includes:
+			{/* Divider */}
+			<div className="border-t" />
+
+			{/* Features */}
+			<div className="px-8 py-8 space-y-5">
+				<p className="text-sm font-semibold text-gray-800">
+					This Course Includes:
 				</p>
-				<ul className="space-y-3">
+
+				<ul className="space-y-4">
 					{includes.map(({ icon: Icon, label, value }) => (
 						<li
 							key={label}
-							className="flex items-center justify-between"
+							className="flex items-center justify-between text-sm"
 						>
-							<div className="flex items-center gap-2.5 text-sm text-gray-500">
-								<Icon className="w-4 h-4 text-[#2a9d5c] shrink-0" />
+							<div className="flex items-center gap-3 text-gray-600">
+								<Icon className="w-5 h-5 text-primary" />
 								<span>{label}</span>
 							</div>
-							<span className="text-sm font-semibold text-[#1a1a2e]">
-								{value}
+
+							<span className="font-semibold text-gray-900">
+								{label === "Duration"
+									? `${value} Hours`
+									: value}
 							</span>
 						</li>
 					))}
 				</ul>
 			</div>
 
-			{/* Share */}
-			<div className="px-6 py-5 border-b border-gray-100">
-				<p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
-					Share This Course
-				</p>
-				<div className="flex items-center gap-2">
-					{[
-						{ label: "f", bg: "#1877f2" },
-						{ label: "✕", bg: "#000" },
-						{ label: "in", bg: "#0a66c2" },
-						{ label: "▶", bg: "#ff0000" },
-					].map(({ label, bg }) => (
-						<button
-							key={label}
-							className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold cursor-pointer border-none hover:opacity-80 transition-opacity"
-							style={{ background: bg }}
-						>
-							{label}
-						</button>
-					))}
-				</div>
-			</div>
-
-			{/* Call */}
-			<div className="px-6 py-5">
-				<button className="w-full flex items-center justify-center gap-2 py-2.5 border-2 border-[#2a9d5c] text-[#2a9d5c] rounded-lg text-sm font-semibold hover:bg-[#2a9d5c] hover:text-white transition-colors duration-200 cursor-pointer bg-transparent">
-					<Phone className="w-4 h-4" />
-					Call Us: 123-456-789
-				</button>
+			{/* Support Section */}
+			<div
+				className="group border-t px-8 py-6 bg-gray-50 
+  transition-all duration-300 ease-in-out
+  hover:bg-gradient-to-r hover:from-primary hover:to-teal-400"
+			>
+				<Link
+					href="#"
+					className="w-full flex items-center justify-center gap-2 
+    text-sm font-medium text-gray-700 
+    transition-colors duration-300 
+    group-hover:text-white"
+				>
+					<Phone className="w-4 h-4 transition-colors duration-300 group-hover:text-white" />
+					Need Help? Contact Support
+				</Link>
 			</div>
 		</div>
 	);

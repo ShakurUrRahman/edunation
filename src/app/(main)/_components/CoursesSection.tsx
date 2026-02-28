@@ -1,5 +1,6 @@
 "use client";
 
+import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import CourseCard from "../courses/_components/CourseCard";
 import { ArrowRightIcon } from "lucide-react";
@@ -148,29 +149,40 @@ export default function CoursesSection({ courses, categories }) {
 						</div>
 
 						{/* All Courses */}
-						<TabsContent value="All">
-							<div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-								{courses.slice(0, 3).map((course) => (
-									<CourseCard
-										key={course.id}
-										course={course}
-									/>
-								))}
-							</div>
-						</TabsContent>
+						<AnimatePresence mode="wait">
+							<motion.div
+								key={activeTab}
+								initial={{ opacity: 0, y: 20 }}
+								animate={{ opacity: 1, y: 0 }}
+								exit={{ opacity: 0, y: -20 }}
+								transition={{ duration: 0.35 }}
+							>
+								{activeTab === "All" && (
+									<div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+										{courses.slice(0, 3).map((course) => (
+											<CourseCard
+												key={course.id}
+												course={course}
+											/>
+										))}
+									</div>
+								)}
 
-						{/* Category Based Courses */}
-						{categories.map((cat) => {
-							const filteredCourses = courses
-								.filter(
-									(course) => course?.category?.id === cat.id,
-								)
-								.slice(0, 3);
+								{categories.map((cat) => {
+									if (activeTab !== cat.id) return null;
 
-							return (
-								<TabsContent key={cat.id} value={cat.id}>
-									{filteredCourses.length > 0 ? (
-										<div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+									const filteredCourses = courses
+										.filter(
+											(course) =>
+												course?.category?.id === cat.id,
+										)
+										.slice(0, 3);
+
+									return filteredCourses.length > 0 ? (
+										<div
+											key={cat.id}
+											className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+										>
 											{filteredCourses.map((course) => (
 												<CourseCard
 													key={course.id}
@@ -179,21 +191,24 @@ export default function CoursesSection({ courses, categories }) {
 											))}
 										</div>
 									) : (
-										<div className="text-center py-24 flex flex-col items-center gap-3">
+										<div
+											key={cat.id}
+											className="text-center py-24 flex flex-col items-center gap-3"
+										>
 											<div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center text-2xl">
 												📚
 											</div>
 											<p className="text-muted-foreground text-sm">
-												No courses found in{" "}
+												No courses found in
 												<span className="font-semibold text-primary">
 													{cat.title}
 												</span>
 											</p>
 										</div>
-									)}
-								</TabsContent>
-							);
-						})}
+									);
+								})}
+							</motion.div>
+						</AnimatePresence>
 					</Tabs>
 
 					{/* View All Button */}

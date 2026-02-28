@@ -5,7 +5,7 @@ const Sidebar = () => {
 	return (
 		<div className="h-full border-r flex flex-col overflow-y-auto hero shadow-sm">
 			<div className="flex justify-center items-center p-5">
-				<img src="/logo.png" alt="" srcset="" />
+				<img src="/logo.png" alt="logo" />
 			</div>
 			<div className="flex flex-col w-full">
 				<SidebarRoutes />
