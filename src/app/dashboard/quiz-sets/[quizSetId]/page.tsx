@@ -37,13 +37,18 @@ const EditQuizSet = async ({ params }: PageProps) => {
 
 	return (
 		<>
-			<AlertBanner
-				label="This course is unpublished. It will not be visible in the course."
-				variant="warning"
-			/>
+			{!quizSet.active && (
+				<AlertBanner
+					label="This quiz set is unpublished. It will not be visible in the quizzes."
+					variant="warning"
+				/>
+			)}
 			<div className="p-6">
 				<div className="flex items-center justify-end">
-					<QuizSetAction />
+					<QuizSetAction
+						quizSetId={quizSetId}
+						isActive={quizSet?.active}
+					/>
 				</div>
 				<div className="grid grid-cols-1 lg:grid-cols-2  gap-6 mt-16">
 					{/* Quiz List */}
@@ -70,7 +75,7 @@ const EditQuizSet = async ({ params }: PageProps) => {
 												return (
 													<div
 														className={cn(
-															"py-1.5 rounded-sm  text-sm flex items-center gap-1 text-gray-600"
+															"py-1.5 rounded-sm  text-sm flex items-center gap-1 text-gray-600",
 														)}
 														key={option.label}
 													>

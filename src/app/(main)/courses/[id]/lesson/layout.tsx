@@ -29,8 +29,8 @@ const CourseLayout = async ({ children, params }: PageProps) => {
 	}
 
 	return (
-		<div className="">
-			<div className="h-[80px] lg:pl-96 fixed top-15 inset-y-0 w-full z-10">
+		<div className="min-h-screen mb-16">
+			<div className="h-[80px] lg:pl-96 fixed top-15 inset-y-0 w-full ">
 				<div className="flex lg:hidden p-4 border-b h-full items-center hero shadow-sm relative">
 					{/* Course Sidebar For Mobile */}
 					<CourseSidebarMobile courseId={id} />

@@ -19,7 +19,7 @@ export default function CourseTabNav({ activeTab, onChange }: Props) {
                   ${
 						activeTab === tab
 							? "border-primary text-primary font-bold"
-							: "border-transparent text-gray-700 hover:text-gray-900"
+							: "border-transparent text-gray-700 hover:text-gray-900 hover:font-bold"
 					}
                `}
 				>

@@ -1,3 +1,5 @@
+"use client";
+
 import { ArrowRight, BookOpen } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -5,8 +7,10 @@ import { formatPrice } from "@/lib/formatPrice";
 import { Button } from "@/components/ui/button";
 import { getCategoryDetails } from "@/queries/categories";
 import { EnrollCourse } from "@/components/enroll-course";
+import { useRouter } from "next/navigation";
 
-const Courses = ({ courses }) => {
+const Courses = ({ courses, loggedInUser }) => {
+	const router = useRouter();
 	// console.log(courses);
 
 	return (
@@ -56,10 +60,22 @@ const Courses = ({ courses }) => {
 								{formatPrice(course.price)}
 							</p>
 
-							<EnrollCourse
-								asLink={true}
-								courseId={course?._id.toString()}
-							/>
+							{!loggedInUser ? (
+								<Button
+									type="submit"
+									variant="ghost"
+									className="text-xs text-sky-700 h-7 gap-1"
+									onClick={() => router.push(`/signin`)}
+								>
+									Enroll
+									<ArrowRight className="w-3" />
+								</Button>
+							) : (
+								<EnrollCourse
+									asLink={true}
+									courseId={course._id}
+								/>
+							)}
 						</div>
 					</div>
 				);

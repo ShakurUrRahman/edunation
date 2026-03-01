@@ -59,11 +59,33 @@ export async function addQuizToQuizSet(quizSetId, quizData) {
 	}
 }
 
+export async function changeQuizSetPublishState(quizSetId) {
+	const quizSet = await Quizset.findById(quizSetId);
+	try {
+		const res = await Quizset.findByIdAndUpdate(
+			quizSetId,
+			{ active: !quizSet.active },
+			{ lean: true },
+		);
+		return res.active;
+	} catch (err) {
+		throw new Error(err);
+	}
+}
+
+export async function deleteQuizSet(quizSetId) {
+	try {
+		await Quizset.findByIdAndDelete(quizSetId);
+	} catch (err) {
+		throw new Error(err);
+	}
+}
+
 export async function doCreateQuizSet(data) {
 	try {
-		data["slug"] = getSlug(data.tite);
-		const craetedQuizSet = await Quizset.create(data);
-		return craetedQuizSet?._id.toString();
+		data["slug"] = getSlug(data.title);
+		const createdQuizSet = await Quizset.create(data);
+		return createdQuizSet?._id.toString();
 	} catch (e) {
 		throw new Error(e);
 	}

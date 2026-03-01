@@ -1,10 +1,15 @@
 import Link from "next/link";
 import Image from "next/image";
-import { BookOpen, Eye } from "lucide-react";
+import { ArrowRight, BookOpen, Eye } from "lucide-react";
 import { formatPrice } from "@/lib/formatPrice";
 import { EnrollCourse } from "@/components/enroll-course";
+import { auth } from "@/auth";
+import { getUserByEmail } from "@/queries/users";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
-const CourseCard = ({ course }) => {
+const CourseCard = ({ course, loggedInUser }) => {
+	const router = useRouter();
 	return (
 		<div className="group relative hero rounded-2xl overflow-hidden border border-primary shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
 			{/* Thumbnail */}
@@ -64,7 +69,23 @@ const CourseCard = ({ course }) => {
 					{formatPrice(course?.price)}
 				</span>
 
-				<EnrollCourse asLink={true} courseId={course.id} />
+				{!loggedInUser ? (
+					<Button
+						type="submit"
+						variant="ghost"
+						className="text-xs text-sky-700 h-7 gap-1"
+						onClick={() =>
+							router.push(
+								`/signin?redirect=/courses/${course?.id}`,
+							)
+						}
+					>
+						Enroll
+						<ArrowRight className="w-3" />
+					</Button>
+				) : (
+					<EnrollCourse asLink={true} courseId={course.id} />
+				)}
 			</div>
 		</div>
 	);

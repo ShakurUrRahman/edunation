@@ -1,8 +1,14 @@
 import { getCategories } from "@/queries/categories";
 import CoursesClient from "./_components/CoursesClient";
 import { getCourseList } from "@/queries/courses";
+import { auth } from "@/auth";
+import { getUserByEmail } from "@/queries/users";
 
 export default async function CoursesPage() {
+	const session = await auth();
+
+	const loggedInUser = await getUserByEmail(session?.user?.email);
+
 	const courses = (await getCourseList()).map((course) => ({
 		id: course.id,
 		title: course.title,
@@ -46,7 +52,11 @@ export default async function CoursesPage() {
 
 	return (
 		<div className="container mt-24 mb-48">
-			<CoursesClient courses={courses} categories={categories} />
+			<CoursesClient
+				courses={courses}
+				categories={categories}
+				loggedInUser={loggedInUser}
+			/>
 		</div>
 	);
 }

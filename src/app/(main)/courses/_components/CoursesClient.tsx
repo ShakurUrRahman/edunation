@@ -15,7 +15,18 @@ import CourseCard from "./CourseCard";
 
 const ITEMS_PER_PAGE = 8;
 
-export default function CoursesClient({ courses, categories }) {
+// ── Avg rating from testimonials ─────────────────────────────────────────────
+function getAvgRating(course: any): number {
+	if (!course.testimonials?.length) return 0;
+	return (
+		course.testimonials.reduce(
+			(sum: number, t: any) => sum + (t.rating ?? 0),
+			0,
+		) / course.testimonials.length
+	);
+}
+
+export default function CoursesClient({ courses, categories, loggedInUser }) {
 	const [viewMode, setViewMode] = useState("grid");
 	const [searchQuery, setSearchQuery] = useState("");
 	const [sortOption, setSortOption] = useState("");
@@ -24,7 +35,7 @@ export default function CoursesClient({ courses, categories }) {
 	const [selectedTags, setSelectedTags] = useState<string[]>([]);
 	const [currentPage, setCurrentPage] = useState(1);
 
-	// ── Price range ───────────────────────────────────────────────────────────
+	// ── Price range ──────────────────────────────────────────────────────────────
 	const minPrice = useMemo(
 		() => Math.min(...courses.map((c) => c.price ?? 0)),
 		[courses],
@@ -38,7 +49,18 @@ export default function CoursesClient({ courses, categories }) {
 		maxPrice,
 	]);
 
-	// ── Helpers ───────────────────────────────────────────────────────────────
+	// ── Live rating counts for the sidebar (based on ALL courses, not filtered) ──
+	// Shows how many courses have floor(avgRating) === star
+	const ratingCounts = useMemo(() => {
+		const counts: Record<number, number> = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+		courses.forEach((course: any) => {
+			const floor = Math.floor(getAvgRating(course));
+			if (floor >= 1 && floor <= 5) counts[floor]++;
+		});
+		return counts;
+	}, [courses]);
+
+	// ── Handlers ─────────────────────────────────────────────────────────────────
 	const toggleCategory = (val: string) =>
 		setSelectedCategories((prev) =>
 			prev.includes(val) ? prev.filter((c) => c !== val) : [...prev, val],
@@ -57,48 +79,90 @@ export default function CoursesClient({ courses, categories }) {
 		setCurrentPage(1);
 	};
 
-	// SearchBox calls this after debounce — resets to page 1
 	const handleSearch = (query: string) => {
 		setSearchQuery(query);
 		setCurrentPage(1);
 	};
 
-	// ── Combined filter ───────────────────────────────────────────────────────
-	const filteredCourses = courses.filter((course) => {
-		// 1. Category
-		if (
-			selectedCategories.length > 0 &&
-			!selectedCategories.includes(course.category?.id)
-		)
-			return false;
+	const handleSort = (option: string) => {
+		setSortOption(option);
+		setCurrentPage(1);
+	};
 
-		// 2. Price range
-		const price = course.price ?? 0;
-		if (price < appliedRange[0] || price > appliedRange[1]) return false;
-
-		// 3. Search — matches title, description, or instructor name
-		if (searchQuery.trim() !== "") {
-			const q = searchQuery.toLowerCase();
-			const matchesTitle = course.title?.toLowerCase().includes(q);
-			const matchesDescription = course.description
-				?.toLowerCase()
-				.includes(q);
-			const matchesInstructor = course.instructor?.name
-				?.toLowerCase()
-				.includes(q);
-			if (!matchesTitle && !matchesDescription && !matchesInstructor)
+	// ── 1. Filter ────────────────────────────────────────────────────────────────
+	const filteredCourses = useMemo(() => {
+		return courses.filter((course: any) => {
+			// Category
+			if (
+				selectedCategories.length > 0 &&
+				!selectedCategories.includes(course.category?.id)
+			)
 				return false;
+
+			// Price
+			const price = course.price ?? 0;
+			if (price < appliedRange[0] || price > appliedRange[1])
+				return false;
+
+			// Search — title, description, or instructor full name
+			if (searchQuery.trim() !== "") {
+				const q = searchQuery.toLowerCase();
+				const matchesTitle = course.title?.toLowerCase().includes(q);
+				const matchesDescription = course.description
+					?.toLowerCase()
+					.includes(q);
+				const matchesInstructor =
+					`${course.instructor?.firstName ?? ""} ${course.instructor?.lastName ?? ""}`
+						.toLowerCase()
+						.includes(q);
+				if (!matchesTitle && !matchesDescription && !matchesInstructor)
+					return false;
+			}
+
+			// Average rating filter — floor(avg) must match one of selectedRatings
+			if (selectedRatings.length > 0) {
+				const floor = Math.floor(getAvgRating(course));
+				if (!selectedRatings.includes(floor)) return false;
+			}
+
+			return true;
+		});
+	}, [
+		courses,
+		selectedCategories,
+		appliedRange,
+		searchQuery,
+		selectedRatings,
+	]);
+
+	// ── 2. Sort ──────────────────────────────────────────────────────────────────
+	const sortedCourses = useMemo(() => {
+		const copy = [...filteredCourses];
+		switch (sortOption) {
+			case "price-asc":
+				return copy.sort((a, b) => (a.price ?? 0) - (b.price ?? 0));
+			case "price-desc":
+				return copy.sort((a, b) => (b.price ?? 0) - (a.price ?? 0));
+			case "latest":
+				return copy.sort(
+					(a, b) =>
+						new Date(b.createdOn ?? 0).getTime() -
+						new Date(a.createdOn ?? 0).getTime(),
+				);
+			// "popular" = highest average rating (most average rated)
+			case "popular":
+				return copy.sort((a, b) => getAvgRating(b) - getAvgRating(a));
+			default:
+				return copy;
 		}
+	}, [filteredCourses, sortOption]);
 
-		return true;
-	});
-
-	// ── Pagination ────────────────────────────────────────────────────────────
+	// ── 3. Paginate ──────────────────────────────────────────────────────────────
 	const totalPages = Math.max(
 		1,
-		Math.ceil(filteredCourses.length / ITEMS_PER_PAGE),
+		Math.ceil(sortedCourses.length / ITEMS_PER_PAGE),
 	);
-	const paginatedCourses = filteredCourses.slice(
+	const paginatedCourses = sortedCourses.slice(
 		(currentPage - 1) * ITEMS_PER_PAGE,
 		currentPage * ITEMS_PER_PAGE,
 	);
@@ -110,14 +174,13 @@ export default function CoursesClient({ courses, categories }) {
 				<ViewMode
 					viewMode={viewMode}
 					setViewMode={setViewMode}
-					totalCourses={filteredCourses.length}
+					totalCourses={sortedCourses.length}
 				/>
 				<div className="flex items-center gap-2.5">
-					{/* onSearch receives the debounced value from SearchBox */}
 					<SearchBox onSearch={handleSearch} />
 					<SortCourse
 						sortOption={sortOption}
-						setSortOption={setSortOption}
+						setSortOption={handleSort}
 					/>
 				</div>
 			</div>
@@ -147,9 +210,11 @@ export default function CoursesClient({ courses, categories }) {
 						appliedRange={appliedRange}
 						onApply={handleApplyPrice}
 					/>
+					{/* Pass live counts and lifted state */}
 					<AverageRatingFilter
 						selectedRatings={selectedRatings}
 						setSelectedRatings={setSelectedRatings}
+						ratingCounts={ratingCounts}
 					/>
 					<RecentCourses />
 					<PopularTags
@@ -160,11 +225,17 @@ export default function CoursesClient({ courses, categories }) {
 
 				<div>
 					<div
-						className={`grid gap-5 mb-8 ${viewMode === "grid" ? "grid-cols-2" : "grid-cols-1"}`}
+						className={`grid gap-5 mb-8 ${
+							viewMode === "grid" ? "grid-cols-2" : "grid-cols-1"
+						}`}
 					>
 						{paginatedCourses.length > 0 ? (
 							paginatedCourses.map((course) => (
-								<CourseCard key={course.id} course={course} />
+								<CourseCard
+									key={course.id}
+									course={course}
+									loggedInUser={loggedInUser}
+								/>
 							))
 						) : (
 							<div className="col-span-2 flex flex-col items-center justify-center py-20 text-gray-400">

@@ -1,22 +1,25 @@
+// _components/CourseDetailsClient.tsx
 "use client";
 
 import { useState, useTransition } from "react";
 import { Star, User, Calendar } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import CourseTabNav, { Tab } from "./CourseTabNav";
 import CourseVideoPreview from "./CourseVideoPreview";
 import CourseEnrollCard from "./CourseEnrollCard";
 import CourseCurriculum from "./CourseCurriculum";
 import CourseOverview from "./CourseOverview";
-import { formatMyDate } from "@/lib/date";
 import CourseInstructor from "./CourseInstructor";
-import { motion, AnimatePresence } from "framer-motion";
 import CourseReviews from "./CourseReviews";
+import { formatMyDate } from "@/lib/date";
 
 interface Props {
 	course: any;
 	instructorDetails: any;
 	instructorPersonalDetails: any;
+	hasEnrollment: boolean;
 	relatedCourses: any[];
+	loggedInUser: any;
 	enrollAction: (courseId: string) => Promise<void>;
 }
 
@@ -27,22 +30,23 @@ export default function CourseDetailsClient({
 	hasEnrollment,
 	relatedCourses,
 	loggedInUser,
+	enrollAction,
 }: Props) {
 	const [activeTab, setActiveTab] = useState<Tab>("Overview");
+	const [isPending, startTransition] = useTransition();
 
 	const instructorName = course.instructor
 		? `${course.instructor.firstName} ${course.instructor.lastName}`
 		: null;
 
 	const totalDuration = course?.modules
-		.map((item) => {
-			return item.lessonIds.reduce(function (acc, obj) {
-				return acc + obj.duration;
-			}, 0);
-		})
-		.reduce(function (acc, obj) {
-			return acc + obj;
-		}, 0);
+		.map((item: any) =>
+			item.lessonIds.reduce(
+				(acc: number, obj: any) => acc + (obj.duration ?? 0),
+				0,
+			),
+		)
+		.reduce((acc: number, obj: number) => acc + obj, 0);
 
 	const avgRating =
 		course.testimonials?.length > 0
@@ -52,26 +56,27 @@ export default function CourseDetailsClient({
 				) / course.testimonials.length
 			: 0;
 
+	const handleEnroll = () => {
+		startTransition(async () => {
+			await enrollAction(course.id);
+		});
+	};
+
 	return (
 		<div className="pt-12 pb-32 mb-10 container">
-			{/* Added items-start to the grid to ensure the right column 
-          stays at the top of its row.
-      */}
 			<div className="grid grid-cols-1 lg:grid-cols-[1fr_350px] gap-12 items-start">
 				{/* ── Left column ── */}
 				<div className="flex flex-col">
-					{/* Course meta */}
+					{/* Meta */}
 					<div className="mb-6">
 						{course.category && (
 							<p className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/5 backdrop-blur shadow-sm border border-green-300 text-sm font-medium mb-3">
 								{course.category.title}
 							</p>
 						)}
-
 						<h1 className="text-4xl font-bold text-[#1a1a2e] mb-3 leading-snug">
 							{course.title}
 						</h1>
-
 						<div className="flex flex-wrap items-center gap-5 text-sm text-gray-500">
 							{instructorName && (
 								<div className="flex items-center gap-1.5">
@@ -100,7 +105,7 @@ export default function CourseDetailsClient({
 							{avgRating > 0 && (
 								<div className="flex items-center gap-1.5">
 									<Star className="w-4 h-4 fill-[#f5a623] text-[#f5a623]" />
-									<span className="font-semibold text-[#1a1a2e]">
+									<span className="font-semibold text-gray-500">
 										{avgRating.toFixed(1)} Rating
 									</span>
 								</div>
@@ -111,7 +116,7 @@ export default function CourseDetailsClient({
 					<CourseVideoPreview
 						thumbnail={course.thumbnail}
 						title={course.title}
-						previewUrl={course.previewUrl}
+						previewUrl={course.preview_video_url} // ← your schema field name
 					/>
 
 					<CourseTabNav
@@ -119,9 +124,6 @@ export default function CourseDetailsClient({
 						onChange={setActiveTab}
 					/>
 
-					{/* FIX: Use mode="popLayout" to prevent the right column 
-              from jumping down when the left content height changes.
-          */}
 					<AnimatePresence mode="popLayout">
 						<motion.div
 							key={activeTab}
@@ -137,14 +139,12 @@ export default function CourseDetailsClient({
 									totalDuration={totalDuration}
 								/>
 							)}
-
 							{activeTab === "Curriculum" && (
 								<CourseCurriculum
 									modules={course?.modules ?? []}
 									totalDuration={totalDuration}
 								/>
 							)}
-
 							{activeTab === "Instructor" &&
 								course?.instructor && (
 									<CourseInstructor
@@ -154,19 +154,25 @@ export default function CourseDetailsClient({
 										}
 									/>
 								)}
-
-							{activeTab === "Reviews" && <CourseReviews />}
+							{activeTab === "Reviews" && (
+								// Pass real testimonials from getCourseDetails — already populated with user
+								<CourseReviews
+									testimonials={course.testimonials ?? []}
+								/>
+							)}
 						</motion.div>
 					</AnimatePresence>
 				</div>
 
-				{/* ── Right column — sticky enroll card ── */}
+				{/* ── Right sticky card ── */}
 				<aside className="lg:sticky lg:top-30">
 					<CourseEnrollCard
 						course={course}
 						hasEnrollment={hasEnrollment}
 						totalDuration={totalDuration}
 						loggedInUser={loggedInUser}
+						onEnroll={handleEnroll}
+						isEnrolling={isPending}
 					/>
 				</aside>
 			</div>

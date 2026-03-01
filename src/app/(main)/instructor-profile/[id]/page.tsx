@@ -8,7 +8,8 @@ import {
 
 import Courses from "./components/courses";
 import InstructorDetails from "./components/instructor-details";
-import { getUserDetailsById } from "@/queries/users";
+import { getUserByEmail, getUserDetailsById } from "@/queries/users";
+import { auth } from "@/auth";
 
 type PageProps = {
 	params: Promise<{ id: string }>;
@@ -17,14 +18,22 @@ type PageProps = {
 const InstructorProfile = async ({ params }: PageProps) => {
 	const { id } = await params;
 	const instructorDetails = await getUserDetailsById(id);
-	const courseDetailsByInstructor = await getCourseDetailsByInstructor(id);
+	const coursesOfInstructor = await getCourseDetailsByInstructor(id);
+
+	const courseDetailsByInstructor = JSON.parse(
+		JSON.stringify(coursesOfInstructor),
+	);
+
+	const session = await auth();
+
+	const loggedInUser = await getUserByEmail(session?.user?.email);
 
 	// console.log(instructorDetails);
 
 	return (
 		<section
 			id="categories"
-			className="space-y-6  py-6  lg:py-12 min-h-screen"
+			className="space-y-6  py-6 mb-16  lg:py-12 min-h-screen"
 		>
 			<div className="container grid grid-cols-12 lg:gap-x-8 gap-y-8">
 				{/* Instructor Info */}
@@ -36,7 +45,10 @@ const InstructorProfile = async ({ params }: PageProps) => {
 				<div className="col-span-12 lg:col-span-8">
 					<div>
 						<SectionTitle className="mb-6">Courses</SectionTitle>
-						<Courses courses={courseDetailsByInstructor?.courses} />
+						<Courses
+							courses={courseDetailsByInstructor?.courses}
+							loggedInUser={loggedInUser}
+						/>
 					</div>
 				</div>
 			</div>

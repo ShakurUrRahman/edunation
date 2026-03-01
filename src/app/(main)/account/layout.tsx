@@ -2,7 +2,7 @@ import AccountSidebar from "./component/account-sidebar";
 
 function Layout({ tabs }) {
 	return (
-		<section className="relative pb-16 h-screen">
+		<section className="relative pb-16 h-screen mb-24">
 			{/*end container*/}
 			<div className="container relative mt-10">
 				<div className="lg:flex">
