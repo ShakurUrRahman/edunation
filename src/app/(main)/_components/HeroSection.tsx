@@ -1,14 +1,6 @@
 "use client";
 
-import {
-	Facebook,
-	FacebookIcon,
-	Instagram,
-	Linkedin,
-	LinkedinIcon,
-	Users,
-	Youtube,
-} from "lucide-react";
+import { Facebook, Instagram, Linkedin, Users, Youtube } from "lucide-react";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
@@ -16,45 +8,50 @@ export default function HeroSection() {
 	const [progress, setProgress] = useState(0);
 
 	useEffect(() => {
-		setTimeout(() => {
+		const timer = setTimeout(() => {
 			setProgress(60);
-		}, 200); // small delay for smooth start
+		}, 200);
+		return () => clearTimeout(timer);
 	}, []);
 
 	return (
 		<section className="relative overflow-hidden">
-			{/* Background Glow */}
+			{/* Background Decoration */}
+			<div className="absolute top-0 right-0 -z-10 w-1/2 h-full bg-gradient-to-l from-primary/5 to-transparent hidden lg:block" />
 
-			<div className="container min-h-[90vh] flex items-center">
-				<div className="grid lg:grid-cols-2 gap-16 items-center w-full py-20">
+			<div className="container mx-auto px-4 sm:px-6 lg:px-8 min-h-[90vh] flex items-center">
+				<div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center w-full py-12 md:py-20">
 					{/* LEFT CONTENT */}
-					<div className="space-y-6 animate-slide-up">
+					<div className="space-y-6 md:space-y-8 text-center lg:text-left order-2 lg:order-2">
 						{/* Badge */}
-						<div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/5 backdrop-blur shadow-sm border border-green-300 text-sm font-medium">
+						<div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-xs md:text-sm font-bold text-primary animate-fade-in">
 							🚀 15,000+ Students Learning Worldwide
 						</div>
+
 						{/* Heading */}
-						<h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
+						<h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-[1.15] text-gray-900">
 							Master{" "}
-							<span className="bg-gradient-to-r from-primary to-accent-blue bg-clip-text text-transparent">
-								In
-								<span className="bg-gradient-to-r from-primary to-accent-blue bg-clip-text text-transparent mx-1 hyphen-animate">
-									-
-								</span>
-								Demand Skills
+							<span className="bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
+								In-Demand Skills
 							</span>{" "}
 							For Your{" "}
-							<span className="relative inline-block bg-gradient-to-r from-primary to-teal-400 bg-clip-text text-transparent">
+							<span className="relative inline-block text-primary">
 								Future
 								<svg
-									className="absolute -bottom-2 left-0 w-full"
+									className="absolute -bottom-2 md:-bottom-2 left-0 w-full h-2 md:h-3"
 									viewBox="0 0 200 20"
 									fill="none"
 									preserveAspectRatio="none"
 								>
+									<path
+										d="M0 15 Q100 0 200 15"
+										stroke="url(#lineGradientHeader)"
+										strokeWidth="6"
+										strokeLinecap="round"
+									/>
 									<defs>
 										<linearGradient
-											id="lineGradient"
+											id="lineGradientHeader"
 											x1="0%"
 											y1="0%"
 											x2="100%"
@@ -67,118 +64,115 @@ export default function HeroSection() {
 											<stop
 												offset="100%"
 												stopColor="#2dd4bf"
-											/>{" "}
-											{/* teal-400 */}
+											/>
 										</linearGradient>
 									</defs>
-
-									<path
-										d="M0 15 Q100 0 200 15"
-										stroke="url(#lineGradient)"
-										strokeWidth="7"
-									/>
 								</svg>
 							</span>
 						</h1>
+
 						{/* Subtext */}
-						<p className="text-muted-foreground text-lg max-w-xl">
+						<p className="text-gray-600 text-base md:text-lg max-w-xl mx-auto lg:mx-0 leading-relaxed">
 							Join thousands of learners building real-world
 							skills through structured courses, expert
 							mentorship, and hands-on projects.
 						</p>
-						{/* CTA Buttons */}
 
-						<div className="flex flex-wrap gap-4">
+						{/* CTA Buttons */}
+						<div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
 							<Link
 								href="/courses"
-								className="px-6 py-3 rounded-lg bg-primary text-primary-foreground shadow-md hover:shadow-xl transition-all duration-300 hover:scale-105 inline-block font-bold"
+								className="w-full sm:w-auto px-8 py-4 rounded-xl bg-primary text-white shadow-lg shadow-primary/30 hover:shadow-xl hover:bg-primary/90 transition-all duration-300 hover:-translate-y-1 text-center font-bold"
 							>
 								Start Learning Free →
 							</Link>
 
 							<Link
 								href="/courses"
-								className="px-6 py-3 rounded-lg border border-primary bg-white/60 backdrop-blur hover:bg-muted transition-all duration-300 inline-block font-bold"
+								className="w-full sm:w-auto px-8 py-4 rounded-xl border-2 border-gray-100 bg-white hover:bg-gray-50 transition-all duration-300 text-center font-bold text-gray-700"
 							>
 								Explore Courses
 							</Link>
 						</div>
+
 						{/* Social Proof */}
-						<div className="flex items-center gap-4 pt-4">
-							<div className="flex space-x-4">
-								<Facebook className="w-10 h-10 text-blue-600" />
-								<Youtube className="w-10 h-10 text-gray-200 fill-red-600" />
-								<Linkedin className="w-10 h-10 text-blue-700" />
-								<Instagram className="w-10 h-10 text-pink-500" />
+						<div className="pt-6 flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
+							<div className="flex -space-x-2">
+								{/* Placeholder for small student avatars if you have them, otherwise keeping your icons */}
+								<div className="flex gap-3">
+									<Facebook className="w-6 h-6 text-blue-600 hover:scale-110 transition-transform" />
+									<Youtube className="w-6 h-6 text-red-600 hover:scale-110 transition-transform" />
+									<Linkedin className="w-6 h-6 text-blue-700 hover:scale-110 transition-transform" />
+									<Instagram className="w-6 h-6 text-pink-500 hover:scale-110 transition-transform" />
+								</div>
 							</div>
-							<p className="text-sm text-muted-foreground">
-								⭐⭐⭐⭐⭐ 4.9/5 from 2,000+ Reviews
+							<div className="h-4 w-px bg-gray-200 hidden sm:block" />
+							<p className="text-sm font-semibold text-gray-500">
+								⭐⭐⭐⭐⭐{" "}
+								<span className="text-gray-900">4.9/5</span>{" "}
+								from 2,000+ Reviews
 							</p>
 						</div>
 					</div>
+
 					{/* RIGHT VISUAL SECTION */}
-					<div className="relative flex justify-end items-center ">
-						{/* Main Visual Wrapper */}
-						<div className="relative ">
+					<div className="relative flex justify-center lg:justify-end items-center order-2 lg:order-1 px-4 md:px-0">
+						<div className="relative w-full max-w-[500px]">
 							{/* Glow Background */}
-							<div className="absolute inset-0 bg-gradient-to-br from-lime-300/20 to-accent-blue/20 rounded-[30%] blur-3xl scale-110 z-0" />
+							<div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-blue-400/20 rounded-full blur-3xl transform scale-110" />
 
 							{/* Main Image */}
 							<img
 								src="/hero-student.png"
 								alt="Student Learning"
-								className="relative w-full object-contain drop-shadow-2xl"
+								className="relative w-full h-auto object-contain drop-shadow-2xl z-10"
 							/>
 
-							{/* Floating Card - Top Left */}
-							<div className="absolute top-10 left-16 bg-gradient-to-r from-indigo-500 to-purple-300 p-4 rounded-xl shadow-lg w-56 text-white">
-								<p className="font-semibold text-sm">
+							{/* Floating Card 1: UI/UX (Hides on very small mobile) */}
+							<div className="absolute -top-4 -left-4 md:top-10 md:left-0 bg-gradient-to-r from-indigo-600 to-purple-500 p-3 md:p-4 rounded-2xl shadow-xl text-white z-20 animate-bounce-slow max-w-[140px] md:max-w-[200px]">
+								<p className="font-bold text-[10px] md:text-sm">
 									UI/UX Design Masterclass
 								</p>
-								<p className="text-xs text-white/80">
+								<p className="text-[8px] md:text-xs text-white/80">
 									1,200 Students
 								</p>
 							</div>
 
-							{/* Floating Card - Bottom Right */}
-							<div className="absolute bottom-48 -right-16 bg-white/90 backdrop-blur-md p-4 rounded-xl shadow-card w-56">
-								<p className="text-sm font-medium">
+							{/* Floating Card 2: Progress */}
+							<div className="absolute bottom-10 -right-4 md:bottom-20 md:-right-8 bg-white/95 backdrop-blur-sm p-3 md:p-4 rounded-2xl shadow-2xl z-20 w-40 md:w-52 border border-white/20">
+								<p className="text-[10px] md:text-sm font-bold text-gray-800">
 									Your Progress
 								</p>
-
-								<div className="w-full h-2 bg-muted rounded-full mt-2 overflow-hidden">
+								<div className="w-full h-1.5 bg-gray-100 rounded-full mt-2 overflow-hidden">
 									<div
-										className="h-2 bg-primary rounded-full transition-all duration-1000 ease-out"
+										className="h-full bg-primary rounded-full transition-all duration-1000 ease-out"
 										style={{ width: `${progress}%` }}
-									></div>
+									/>
 								</div>
-
-								<p className="text-xs mt-1 text-muted-foreground">
+								<p className="text-[8px] md:text-xs mt-1 font-bold text-primary">
 									{progress}% Complete
 								</p>
 							</div>
 
-							{/* Floating Card - Middle Left */}
-							<div className="absolute bottom-28 -left-20 bg-white/90 backdrop-blur-md p-4 rounded-xl shadow-card w-56">
-								<div className="flex items-center justify-between gap-3">
+							{/* Floating Card 3: Mentorship (Hidden on mobile) */}
+							<div className="absolute bottom-24 -left-4 md:bottom-40 md:-left-12 bg-white/95 backdrop-blur-sm p-3 md:p-4 rounded-2xl shadow-2xl z-20 hidden sm:block border border-white/20">
+								<div className="flex items-center gap-3">
+									<div className="relative">
+										<div className="p-2 bg-primary/10 rounded-lg">
+											<Users className="w-5 h-5 md:w-6 md:h-6 text-primary" />
+										</div>
+										<span className="absolute -top-1 -right-1 flex h-3 w-3">
+											<span className="animate-ping absolute h-full w-full rounded-full bg-green-400 opacity-75"></span>
+											<span className="relative rounded-full h-3 w-3 bg-green-500"></span>
+										</span>
+									</div>
 									<div>
-										<p className="text-sm font-medium">
-											Live Mentorship
+										<p className="text-[10px] md:text-sm font-bold text-gray-800">
+											Live Mentor
 										</p>
-										<p className="text-xs text-muted-foreground">
+										<p className="text-[8px] md:text-xs text-gray-500">
 											Every Week
 										</p>
-									</div>
-
-									{/* Icon with Live Dot */}
-									<div className="relative">
-										<Users className="w-6 h-6 text-primary" />
-
-										{/* Green Live Dot */}
-										<span className="absolute -top-1 -right-1 flex h-3 w-3">
-											<span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-											<span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
-										</span>
 									</div>
 								</div>
 							</div>

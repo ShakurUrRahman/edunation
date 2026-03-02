@@ -8,9 +8,13 @@ import CriteriaSection from "./_components/CriteriaSection";
 import AboutUsSection from "./_components/AboutUsSection";
 import CoursesSection from "./_components/CoursesSection";
 import TestimonialSection from "./_components/TestimonialSection";
+import { auth } from "@/auth";
+import { getUserByEmail } from "@/queries/users";
 
 const HomePage = async () => {
-	// ── Courses ────────────────────────────────────────────────────────────────
+	const session = await auth();
+
+	const loggedInUser = await getUserByEmail(session?.user?.email);
 	const courses = (await getCourseList()).map((course) => ({
 		id: course.id,
 		title: course.title,
@@ -83,7 +87,11 @@ const HomePage = async () => {
 			<CriteriaSection />
 			<CategoriesSection categories={categories} />
 			<AboutUsSection />
-			<CoursesSection courses={courses} categories={categories} />
+			<CoursesSection
+				courses={courses}
+				categories={categories}
+				loggedInUser={loggedInUser}
+			/>
 			<TestimonialSection testimonials={testimonials} />
 		</>
 	);

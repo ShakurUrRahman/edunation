@@ -23,15 +23,24 @@ export async function changePassword(email, oldPassword, newPassword) {
 	}
 
 	const filter = { email: email };
-
 	const hashedPassword = await bcrypt.hash(newPassword, 5);
-
-	const dataToUpdate = {
-		password: hashedPassword,
-	};
+	const dataToUpdate = { password: hashedPassword };
 
 	try {
 		await User.findOneAndUpdate(filter, dataToUpdate);
+		revalidatePath("/account");
+	} catch (error) {
+		throw new Error(error);
+	}
+}
+
+// ── New: update profile picture by email ─────────────────────────────────────
+export async function updateProfilePicture(
+	email: string,
+	profilePicture: string,
+) {
+	try {
+		await User.findOneAndUpdate({ email }, { profilePicture });
 		revalidatePath("/account");
 	} catch (error) {
 		throw new Error(error);

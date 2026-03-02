@@ -7,14 +7,15 @@ import {
 	Globe,
 	Award,
 	Phone,
-	Loader2,
 	BadgeCheck,
 	GraduationCap,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 interface Course {
+	id: string;
 	price?: number;
 	modules?: any[];
 	language?: string;
@@ -23,8 +24,9 @@ interface Course {
 
 interface Props {
 	course: Course;
-	onEnroll: () => void;
-	isEnrolling?: boolean;
+	hasEnrollment: boolean;
+	totalDuration: number;
+	loggedInUser: any;
 }
 
 export default function CourseEnrollCard({
@@ -34,7 +36,6 @@ export default function CourseEnrollCard({
 	loggedInUser,
 }: Props) {
 	const isFree = !course.price || course.price === 0;
-
 	const router = useRouter();
 
 	const totalLessons =
@@ -52,7 +53,7 @@ export default function CourseEnrollCard({
 		{
 			icon: Clock,
 			label: "Duration",
-			value: totalDuration ? (totalDuration / 3600).toPrecision(2) : 0,
+			value: totalDuration ? (totalDuration / 3600).toFixed(1) : 0,
 		},
 		{ icon: Globe, label: "Language", value: course.language ?? "English" },
 		{
@@ -63,37 +64,38 @@ export default function CourseEnrollCard({
 	];
 
 	return (
-		<div className="sticky top-6 bg-white rounded-3xl border shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden">
+		<div className="lg:sticky lg:top-10 bg-white rounded-3xl border border-gray-200 shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden w-full max-w-[400px] mx-auto lg:mx-0">
 			{/* Top Gradient Banner */}
 			<div className="h-2 bg-gradient-to-r from-primary to-teal-400" />
 
 			{/* Price Section */}
-			<div className="px-8 pt-8 pb-6 text-center">
-				<div className="text-4xl font-extrabold text-gray-900">
-					{isFree ? (
-						<span className="text-primary">Free</span>
-					) : (
-						`৳${course.price?.toFixed(2)}`
+			<div className="px-6 md:px-8 pt-6 md:pt-8 pb-4 md:pb-6 text-center">
+				<div className="flex items-center justify-center gap-2">
+					<span className="text-3xl md:text-4xl font-black text-gray-900">
+						{isFree ? (
+							<span className="text-primary">Free</span>
+						) : (
+							`৳${course.price?.toLocaleString()}`
+						)}
+					</span>
+					{!isFree && (
+						<span className="text-sm text-gray-400 line-through font-medium">
+							৳{(course.price! * 1.5).toFixed(0)}
+						</span>
 					)}
 				</div>
 
-				{/* {!isFree && (
-					<p className="text-sm text-gray-400 line-through mt-1">
-						$99.99
-					</p>
-				)} */}
-
-				<p className="text-xs text-gray-500 mt-3">
-					Full lifetime access • 30-day money-back guarantee
+				<p className="text-[11px] md:text-xs text-gray-500 mt-3 font-medium uppercase tracking-wide">
+					Full lifetime access • 30-day money-back
 				</p>
 			</div>
 
-			{/* CTA */}
-			<div className="px-8 pb-8">
+			{/* CTA Section */}
+			<div className="px-6 md:px-8 pb-6 md:pb-8">
 				{hasEnrollment ? (
 					<Link
 						href={`/courses/${course?.id}/lesson`}
-						className="w-full h-12 bg-primary hover:opacity-90 text-white font-semibold rounded-xl transition-all duration-300 flex items-center justify-center gap-2 shadow-md"
+						className="w-full h-12 bg-primary hover:bg-primary/90 text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/20"
 					>
 						<BadgeCheck className="w-5 h-5" />
 						Access Course
@@ -105,22 +107,21 @@ export default function CourseEnrollCard({
 								`/signin?redirect=/courses/${course?.id}`,
 							)
 						}
-						className="w-full h-12 bg-primary hover:opacity-90 text-white font-semibold rounded-xl transition-all duration-300 flex items-center justify-center gap-2 shadow-md"
+						className="w-full h-12 bg-primary hover:bg-primary/90 text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/20"
 					>
 						<GraduationCap className="w-5 h-5" />
 						Enroll Now
 					</button>
 				) : (
-					<EnrollCourse courseId={course?.id} />
+					<div className="w-full">
+						<EnrollCourse courseId={course?.id} />
+					</div>
 				)}
 			</div>
 
-			{/* Divider */}
-			<div className="border-t" />
-
-			{/* Features */}
-			<div className="px-8 py-8 space-y-5">
-				<p className="text-sm font-semibold text-gray-800">
+			{/* Features List */}
+			<div className="bg-gray-50/50 px-6 md:px-8 py-6 md:py-8 border-t border-gray-100">
+				<p className="text-sm font-bold text-gray-800 mb-4">
 					This Course Includes:
 				</p>
 
@@ -128,14 +129,14 @@ export default function CourseEnrollCard({
 					{includes.map(({ icon: Icon, label, value }) => (
 						<li
 							key={label}
-							className="flex items-center justify-between text-sm"
+							className="flex items-center justify-between text-sm group"
 						>
-							<div className="flex items-center gap-3 text-gray-600">
-								<Icon className="w-5 h-5 text-primary" />
-								<span>{label}</span>
+							<div className="flex items-center gap-3 text-gray-600 transition-colors group-hover:text-primary">
+								<Icon className="w-4 h-4 md:w-5 md:h-5" />
+								<span className="font-medium">{label}</span>
 							</div>
 
-							<span className="font-semibold text-gray-900">
+							<span className="font-bold text-gray-900">
 								{label === "Duration"
 									? `${value} Hours`
 									: value}
@@ -146,22 +147,15 @@ export default function CourseEnrollCard({
 			</div>
 
 			{/* Support Section */}
-			<div
-				className="group border-t px-8 py-6 bg-gray-50 
-  transition-all duration-300 ease-in-out
-  hover:bg-gradient-to-r hover:from-primary hover:to-teal-400"
+			<Link
+				href="/support"
+				className="flex items-center justify-center gap-2 px-6 py-5 bg-white border-t border-gray-100 transition-all hover:bg-primary group"
 			>
-				<Link
-					href="#"
-					className="w-full flex items-center justify-center gap-2 
-    text-sm font-medium text-gray-700 
-    transition-colors duration-300 
-    group-hover:text-white"
-				>
-					<Phone className="w-4 h-4 transition-colors duration-300 group-hover:text-white" />
+				<Phone className="w-4 h-4 text-primary group-hover:text-white transition-colors" />
+				<span className="text-sm font-bold text-gray-600 group-hover:text-white transition-colors">
 					Need Help? Contact Support
-				</Link>
-			</div>
+				</span>
+			</Link>
 		</div>
 	);
 }

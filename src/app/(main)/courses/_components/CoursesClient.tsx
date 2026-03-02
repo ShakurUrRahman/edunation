@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import ViewMode from "./ViewMode";
 import SearchBox from "./SearchBox";
 import SortCourse from "./SortCourse";
@@ -12,6 +13,7 @@ import RecentCourses from "./RecentCourses";
 import PopularTags from "./PopularTags";
 import Pagination from "./Pagination";
 import CourseCard from "./CourseCard";
+import { toLowerCase } from "zod";
 
 const ITEMS_PER_PAGE = 8;
 
@@ -26,16 +28,24 @@ function getAvgRating(course: any): number {
 	);
 }
 
-export default function CoursesClient({ courses, categories, loggedInUser }) {
+export default function CoursesClient({
+	courses,
+	categories,
+	loggedInUser,
+	initialCategoryId,
+}) {
 	const [viewMode, setViewMode] = useState("grid");
 	const [searchQuery, setSearchQuery] = useState("");
 	const [sortOption, setSortOption] = useState("");
-	const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+	const [selectedCategories, setSelectedCategories] = useState<string[]>(
+		initialCategoryId ? [initialCategoryId] : [],
+	);
 	const [selectedRatings, setSelectedRatings] = useState<number[]>([]);
 	const [selectedTags, setSelectedTags] = useState<string[]>([]);
 	const [currentPage, setCurrentPage] = useState(1);
+	const router = useRouter();
+	const pathname = usePathname();
 
-	// ── Price range ──────────────────────────────────────────────────────────────
 	const minPrice = useMemo(
 		() => Math.min(...courses.map((c) => c.price ?? 0)),
 		[courses],
@@ -60,18 +70,43 @@ export default function CoursesClient({ courses, categories, loggedInUser }) {
 		return counts;
 	}, [courses]);
 
-	// ── Handlers ─────────────────────────────────────────────────────────────────
-	const toggleCategory = (val: string) =>
-		setSelectedCategories((prev) =>
-			prev.includes(val) ? prev.filter((c) => c !== val) : [...prev, val],
-		);
+	// ── Handlers
 
 	const removeFilter = (id: string) =>
 		setSelectedCategories((prev) => prev.filter((c) => c !== id));
 
 	const handleCategoryChange = (updater) => {
-		setSelectedCategories(updater);
+		const next: string[] =
+			typeof updater === "function"
+				? updater(selectedCategories)
+				: updater;
+
+		setSelectedCategories(next);
 		setCurrentPage(1);
+
+		// Sync URL — use the first selected category's title as slug
+		const params = new URLSearchParams();
+		if (next.length === 1) {
+			const cat = categories.find((c) => c.id === next[0]);
+			if (cat?.title) {
+				const slug = cat.title
+					.toLowerCase()
+					.replace(/\s+/g, "-")
+					.replace(/[^a-z0-9-]/g, "");
+				params.set("category", slug);
+			}
+		}
+		// Multiple or none → clear param
+		const query = params.toString();
+		router.push(query ? `${pathname}?${query}` : pathname, {
+			scroll: false,
+		});
+	};
+
+	const toggleCategory = (val: string) => {
+		handleCategoryChange((prev: string[]) =>
+			prev.includes(val) ? prev.filter((c) => c !== val) : [...prev, val],
+		);
 	};
 
 	const handleApplyPrice = (range: [number, number]) => {

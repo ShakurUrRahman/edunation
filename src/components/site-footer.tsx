@@ -1,216 +1,161 @@
-import {
-	Send,
-	Facebook,
-	Instagram,
-	Linkedin,
-	ArrowUp,
-	YoutubeIcon,
-} from "lucide-react";
+"use client";
+
+import { Send, Facebook, Instagram, Linkedin, YoutubeIcon } from "lucide-react";
 import Link from "next/link";
 
 export default function Footer() {
 	return (
-		<footer className="relative hero pt-32">
-			{/* ================= Newsletter Section ================= */}
-			<div className="absolute -top-20 left-1/2 -translate-x-1/2  container">
-				<div className="bg-emerald-900 rounded-3xl px-10 py-12 flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl">
-					<h2 className="text-3xl md:text-4xl font-bold text-white max-w-xl leading-12">
+		<footer className="relative bg-white pt-16 md:pt-32 hero">
+			<div className="relative md:absolute md:-top-24 left-0 right-0 z-10 container mx-auto px-4">
+				<div className="bg-emerald-900 rounded-3xl px-6 py-10 md:px-12 md:py-14 flex flex-col lg:flex-row items-center justify-between gap-8 shadow-2xl">
+					<h2 className="text-2xl md:text-4xl font-bold text-white text-center lg:text-left max-w-xl leading-tight md:leading-tight">
 						Sign Up today to get the latest inspiration & insights
 					</h2>
 
-					<div className="w-full max-w-xl">
-						<div className="relative">
+					<div className="w-full max-w-md lg:max-w-xl">
+						<form
+							className="relative group"
+							onSubmit={(e) => e.preventDefault()}
+						>
 							<input
 								type="email"
 								placeholder="Enter Your Email Address"
-								className="
-        w-full
-        bg-gray-200
-        text-gray-700
-        placeholder:text-gray-500
-        px-6
-        py-4
-        pr-20
-        rounded-2xl
-        outline-none
-        text-sm
-      "
+								className="w-full bg-white/10 border border-white/20 text-white placeholder:text-gray-300 px-6 py-4 md:py-5 pr-16 rounded-2xl outline-none focus:ring-2 focus:ring-teal-400 transition-all text-sm md:text-base"
 							/>
-
 							<button
-								className="
-        absolute
-        right-3
-        top-1/2
-        -translate-y-1/2
-        bg-emerald-900
-        text-white
-        p-3
-        rounded-xl
-        transition
-        duration-300
-        hover:bg-emerald-800
-        hover:scale-105
-      "
+								type="submit"
+								className="absolute right-2 top-1/2 -translate-y-1/2 bg-white text-emerald-900 p-3 rounded-xl transition duration-300 hover:bg-teal-400 hover:text-white hover:scale-105 active:scale-95"
 							>
-								<Send size={18} />
+								<Send size={20} />
 							</button>
-						</div>
+						</form>
 					</div>
 				</div>
 			</div>
 
 			{/* ================= Main Footer ================= */}
-			<div className="container mx-auto px-6 pb-20 mt-16 mb-10">
-				<div className="grid md:grid-cols-4 gap-12">
+			<div className="container mx-auto px-6 pb-16 pt-12 md:pt-24 lg:pt-32">
+				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
 					{/* Logo + About */}
-					<div>
+					<div className="flex flex-col items-start">
 						<img
 							src="/assets/logo.png"
 							alt="EduNation Logo"
-							className="w-auto h-16 mb-4 -ml-3"
+							className="w-auto h-12 md:h-16 mb-4 -ml-2"
 						/>
-						<p className="text-gray-600 leading-relaxed mb-6">
+						<p className="text-gray-600 leading-relaxed mb-6 text-sm md:text-base">
 							Access expert-led courses designed to help you
 							succeed in your career, all from the comfort of your
 							home.
 						</p>
 
-						<button className=" text-white px-6 py-3 rounded-full hover:shadow-xl hover:transition-all duration-400 hover:scale-105 bg-gradient-to-r from-primary to-teal-400 hover:font-bold">
+						<button className="text-white px-8 py-3 rounded-full bg-gradient-to-r from-emerald-600 to-teal-400 hover:shadow-lg transition-all duration-300 hover:scale-105 font-semibold text-sm">
 							Contact Us →
 						</button>
 					</div>
 
 					{/* Useful Links */}
-					<div>
-						<h4 className="text-xl font-semibold mb-6">
+					<div className="lg:pl-8">
+						<h4 className="text-lg font-bold mb-6 text-gray-900 border-b border-gray-100 pb-2 w-fit">
 							Useful Links
 						</h4>
-						<ul className="space-y-3 text-gray-600">
-							<li>
-								<Link
-									className="inline-block text-muted-foreground transition duration-300 ease-in-out hover:text-primary hover:scale-105 hover:font-semibold"
-									href="#"
-								>
-									Marketplace
-								</Link>
-							</li>
-							<li>
-								<Link
-									className="inline-block text-muted-foreground transition duration-300 ease-in-out hover:text-primary hover:scale-105 hover:font-semibold"
-									href="#"
-								>
-									Kindergarten
-								</Link>
-							</li>
-							<li>
-								<Link
-									className="inline-block text-muted-foreground transition duration-300 ease-in-out hover:text-primary hover:scale-105 hover:font-semibold"
-									href="#"
-								>
-									University
-								</Link>
-							</li>
-							<li>
-								<Link
-									className="inline-block text-muted-foreground transition duration-300 ease-in-out hover:text-primary hover:scale-105 hover:font-semibold"
-									href="#"
-								>
-									GYM Coaching
-								</Link>
-							</li>
-							<li>
-								<Link
-									className="inline-block text-muted-foreground transition duration-300 ease-in-out hover:text-primary hover:scale-105 hover:font-semibold"
-									href="#"
-								>
-									Cooking
-								</Link>
-							</li>
+						<ul className="space-y-3">
+							{[
+								"Marketplace",
+								"Kindergarten",
+								"University",
+								"GYM Coaching",
+								"Cooking",
+							].map((link) => (
+								<li key={link}>
+									<Link
+										href="#"
+										className="text-gray-600 text-sm md:text-base transition duration-300  ease-in-out hover:text-primary hover:scale-105 hover:font-semibold inline-block"
+									>
+										{link}
+									</Link>
+								</li>
+							))}
 						</ul>
 					</div>
 
 					{/* Company */}
-					<div>
-						<h4 className="text-xl font-semibold mb-6">
+					<div className="lg:pl-8">
+						<h4 className="text-lg font-bold mb-6 text-gray-900 border-b border-gray-100 pb-2 w-fit">
 							Our Company
 						</h4>
-						<ul className="space-y-3 text-gray-600">
-							<li>
-								<Link
-									className="inline-block text-muted-foreground transition duration-300 ease-in-out hover:text-primary hover:scale-105 hover:font-semibold"
-									href="#"
-								>
-									Contact Us
-								</Link>
-							</li>
-							<li>
-								<Link
-									className="inline-block text-muted-foreground transition duration-300 ease-in-out hover:text-primary hover:scale-105 hover:font-semibold"
-									href="#"
-								>
-									Become Teacher
-								</Link>
-							</li>
-							<li>
-								<Link
-									className="inline-block text-muted-foreground transition duration-300 ease-in-out hover:text-primary hover:scale-105 hover:font-semibold"
-									href="#"
-								>
-									Blog
-								</Link>
-							</li>
-							<li>
-								<Link
-									className="inline-block text-muted-foreground transition duration-300 ease-in-out hover:text-primary hover:scale-105 hover:font-semibold"
-									href="#"
-								>
-									Instructor
-								</Link>
-							</li>
-							<li>
-								<Link
-									className="inline-block text-muted-foreground transition duration-300 ease-in-out hover:text-primary hover:scale-105 hover:font-semibold"
-									href="#"
-								>
-									Events
-								</Link>
-							</li>
+						<ul className="space-y-3">
+							{[
+								"Contact Us",
+								"Become Teacher",
+								"Blog",
+								"Instructor",
+								"Events",
+							].map((link) => (
+								<li key={link}>
+									<Link
+										href="#"
+										className="text-gray-600 text-sm md:text-base transition duration-300  ease-in-out hover:text-primary hover:scale-105 hover:font-semibold inline-block"
+									>
+										{link}
+									</Link>
+								</li>
+							))}
 						</ul>
 					</div>
 
 					{/* Contact */}
 					<div>
-						<h4 className="text-xl font-semibold mb-6">
+						<h4 className="text-lg font-bold mb-6 text-gray-900 border-b border-gray-100 pb-2 w-fit">
 							Get Contact
 						</h4>
-						<ul className="space-y-3 text-gray-600">
-							<li>
-								<strong>Phone:</strong> (+91) 123-456-789
+						<ul className="space-y-4 text-gray-600 text-sm md:text-base">
+							<li className="flex flex-col">
+								<span className="font-bold text-gray-900">
+									Phone:
+								</span>
+								<span>(+91) 123-456-789</span>
 							</li>
-							<li>
-								<strong>Email:</strong> contact@edunation.com
+							<li className="flex flex-col">
+								<span className="font-bold text-gray-900">
+									Email:
+								</span>
+								<span>contact@edunation.com</span>
 							</li>
-							<li>
-								<strong>Location:</strong> North America, USA
+							<li className="flex flex-col">
+								<span className="font-bold text-gray-900">
+									Location:
+								</span>
+								<span>North America, USA</span>
 							</li>
 						</ul>
 
-						<div className="flex gap-6 mt-6">
-							<Facebook className="cursor-pointer hover:text-primary hover:transition duration-400 hover:scale-120" />
-							<YoutubeIcon className="cursor-pointer hover:text-primary hover:transition duration-400 hover:scale-120" />{" "}
-							<Linkedin className="cursor-pointer hover:text-primary hover:transition duration-400 hover:scale-120" />
-							<Instagram className="cursor-pointer hover:text-primary hover:transition duration-400 hover:scale-120" />
+						<div className="flex gap-4 mt-8">
+							{[Facebook, YoutubeIcon, Linkedin, Instagram].map(
+								(Icon, idx) => (
+									<a
+										key={idx}
+										href="#"
+										className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 text-gray-600 hover:bg-primary hover:text-white transition-all duration-300 hover:-translate-y-1"
+									>
+										<Icon size={18} />
+									</a>
+								),
+							)}
 						</div>
 					</div>
 				</div>
 			</div>
 
 			{/* ================= Bottom Bar ================= */}
-			<div className="bg-emerald-900 py-4 text-center text-white text-sm">
-				Copyright © 2026{" "}
-				<span className="text-yellow-300">EduNation</span> All Rights
-				Reserved
+			<div className="bg-emerald-900 py-6 text-center text-white text-xs md:text-sm px-4">
+				<p>
+					Copyright © 2026{" "}
+					<span className="font-bold">
+						Edu<span className="font-light">Nation</span>
+					</span>
+					. All Rights Reserved.
+				</p>
 			</div>
 		</footer>
 	);

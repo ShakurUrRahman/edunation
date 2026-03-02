@@ -1,16 +1,17 @@
-// _components/CourseReviews.tsx
-import { Star } from "lucide-react";
+"use client";
 
-// Matches your Testimonial schema: content (not comment), user populated
+import { Star } from "lucide-react";
+import { cn } from "@/lib/utils";
+
 interface Testimonial {
-	id: string;
+	_id: string; // Adjusted to match common Mongo/DB id patterns
 	user: {
 		firstName: string;
 		lastName: string;
 		profilePicture?: string;
 	};
 	rating: number;
-	content: string; // ← your schema field
+	content: string;
 	createdOn?: string;
 }
 
@@ -25,7 +26,7 @@ function Stars({
 	rating: number;
 	size?: "sm" | "xs";
 }) {
-	const cls = size === "xs" ? "w-3 h-3" : "w-3.5 h-3.5";
+	const cls = size === "xs" ? "w-3 h-3" : "w-4 h-4";
 	return (
 		<div className="flex gap-0.5">
 			{[1, 2, 3, 4, 5].map((s) => (
@@ -41,7 +42,7 @@ function Stars({
 }
 
 export default function CourseReviews({ testimonials }: Props) {
-	const total = testimonials?.length;
+	const total = testimonials?.length ?? 0;
 	const avgRating =
 		total > 0
 			? testimonials.reduce((sum, t) => sum + t.rating, 0) / total
@@ -55,39 +56,41 @@ export default function CourseReviews({ testimonials }: Props) {
 	});
 
 	return (
-		<div className="p-6 border border-primary rounded-2xl shadow-sm">
-			<h2 className="text-2xl font-bold mb-8">Student Feedback</h2>
+		<div className="space-y-6 md:space-y-8 p-4 md:p-6 border border-primary/20 rounded-2xl bg-white shadow-sm">
+			<h2 className="text-xl md:text-2xl font-bold text-gray-900">
+				Student Feedback
+			</h2>
 
 			{/* ── Rating Summary ── */}
-			<div className="p-6 border border-gray-200 rounded-[2rem] bg-white shadow-sm mb-6">
-				<div className="flex flex-col md:flex-row items-center gap-8 p-6 bg-gray-50 rounded-2xl border border-gray-100">
+			<div className="p-4 md:p-8 bg-gray-50 rounded-3xl border border-gray-100 shadow-inner">
+				<div className="flex flex-col md:flex-row items-center gap-6 md:gap-12">
 					{/* Big number */}
 					<div className="text-center shrink-0">
-						<p className="text-6xl font-bold text-[#1D2939] leading-none">
+						<p className="text-5xl md:text-6xl font-black text-primary leading-none">
 							{avgRating.toFixed(1)}
 						</p>
-						<div className="mt-3 flex justify-center">
+						<div className="mt-4 flex justify-center">
 							<Stars rating={avgRating} />
 						</div>
-						<p className="text-xs text-gray-400 mt-2 font-medium">
+						<p className="text-[10px] md:text-xs text-gray-400 mt-2 font-bold uppercase tracking-wider">
 							{total} {total === 1 ? "Rating" : "Ratings"}
 						</p>
 					</div>
 
 					{/* Breakdown bars */}
-					<div className="flex-1 w-full space-y-3">
+					<div className="flex-1 w-full space-y-2.5">
 						{breakdown.map(({ star, pct }) => (
 							<div key={star} className="flex items-center gap-3">
-								<span className="text-xs font-medium text-gray-500 w-10 shrink-0">
+								<span className="text-xs font-bold text-gray-500 w-10 shrink-0">
 									{star} star
 								</span>
 								<div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
 									<div
-										className="h-full bg-[#f5a623] rounded-full transition-all duration-500"
+										className="h-full bg-[#f5a623] rounded-full transition-all duration-700 ease-out"
 										style={{ width: `${pct}%` }}
 									/>
 								</div>
-								<span className="text-xs text-gray-400 w-10 text-right">
+								<span className="text-xs text-gray-400 w-8 text-right tabular-nums">
 									{Math.round(pct)}%
 								</span>
 							</div>
@@ -97,71 +100,83 @@ export default function CourseReviews({ testimonials }: Props) {
 			</div>
 
 			{/* ── Reviews List ── */}
-			<section className="p-6 border border-gray-200 rounded-[2rem] shadow-sm">
-				<h2 className="text-xl font-bold text-[#1D2939] mb-6">
-					Reviews
-				</h2>
+			<section className="space-y-6">
+				<h3 className="text-lg md:text-xl font-bold text-gray-900 border-b border-gray-100 pb-4">
+					Latest Reviews
+				</h3>
 
 				{total === 0 ? (
-					<p className="text-sm text-gray-400 text-center py-8">
-						No reviews yet. Be the first to review!
-					</p>
+					<div className="text-center py-12 px-4 rounded-2xl border-2 border-dashed border-gray-100">
+						<p className="text-sm text-gray-400">
+							No reviews yet. Be the first to share your
+							experience!
+						</p>
+					</div>
 				) : (
-					<div className="space-y-6">
+					<div className="divide-y divide-gray-100">
 						{testimonials.map((t) => {
 							const fullName = `${t.user.firstName} ${t.user.lastName}`;
 							return (
 								<div
 									key={t._id}
-									className="flex gap-4 pb-6 border-b border-gray-100 last:border-0 last:pb-0"
+									className="py-6 first:pt-0 last:pb-0"
 								>
-									{t.user.profilePicture ? (
-										<img
-											src={t.user.profilePicture}
-											alt={fullName}
-											className="w-12 h-12 rounded-full object-cover shrink-0 border border-gray-100"
-										/>
-									) : (
-										<div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0 border border-primary/5">
-											<span className="text-sm font-bold text-primary">
-												{t.user.firstName.charAt(0)}
-											</span>
-										</div>
-									)}
-
-									<div className="flex-1">
-										<div className="flex items-center justify-between mb-1">
-											<p className="text-base font-bold text-[#1D2939]">
-												{fullName}
-											</p>
-											{t.createdOn && (
-												<span className="text-xs text-gray-400">
-													{new Date(
-														t.createdOn,
-													).toLocaleDateString(
-														"en-US",
-														{
-															month: "short",
-															day: "numeric",
-															year: "numeric",
-														},
-													)}
-												</span>
+									<div className="flex items-start gap-4">
+										{/* Avatar */}
+										<div className="shrink-0">
+											{t.user.profilePicture ? (
+												<img
+													src={t.user.profilePicture}
+													alt={fullName}
+													className="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover border border-gray-200"
+												/>
+											) : (
+												<div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-primary/10 flex items-center justify-center border border-primary/5">
+													<span className="text-sm font-bold text-primary">
+														{t.user.firstName.charAt(
+															0,
+														)}
+													</span>
+												</div>
 											)}
 										</div>
-										<div className="flex items-center gap-2 mb-2">
-											<Stars
-												rating={t.rating}
-												size="xs"
-											/>
-											<span className="text-[10px] font-bold text-gray-500">
-												({t.rating}/5)
-											</span>
+
+										{/* Content */}
+										<div className="flex-1 min-w-0">
+											<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-2">
+												<p className="text-sm md:text-base font-bold text-gray-900 truncate">
+													{fullName}
+												</p>
+												{t.createdOn && (
+													<span className="text-[10px] md:text-xs text-gray-400 font-medium">
+														{new Date(
+															t.createdOn,
+														).toLocaleDateString(
+															"en-US",
+															{
+																month: "short",
+																day: "numeric",
+																year: "numeric",
+															},
+														)}
+													</span>
+												)}
+											</div>
+
+											<div className="flex items-center gap-2 mb-3">
+												<Stars
+													rating={t.rating}
+													size="xs"
+												/>
+												<span className="text-[10px] font-bold text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded">
+													{t.rating.toFixed(1)}
+												</span>
+											</div>
+
+											<p className="text-sm text-gray-600 leading-relaxed italic bg-gray-50/50 p-3 rounded-xl border border-gray-100">
+												"{t.content}"
+											</p>
 										</div>
-										{/* "content" is the field in your Testimonial schema */}
-										<p className="text-sm text-gray-600 leading-relaxed italic">
-											"{t.content}"
-										</p>
 									</div>
 								</div>
 							);

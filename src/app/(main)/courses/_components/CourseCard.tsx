@@ -1,92 +1,204 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, BookOpen, Eye } from "lucide-react";
+import { ArrowUpRight, BookOpen, Star, Users, Sparkles } from "lucide-react";
 import { formatPrice } from "@/lib/formatPrice";
 import { EnrollCourse } from "@/components/enroll-course";
-import { auth } from "@/auth";
-import { getUserByEmail } from "@/queries/users";
-import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 
-const CourseCard = ({ course, loggedInUser }) => {
-	const router = useRouter();
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function getAvgRating(testimonials: any[]): number {
+	if (!testimonials?.length) return 0;
 	return (
-		<div className="group relative hero rounded-2xl overflow-hidden border border-primary shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
-			{/* Thumbnail */}
-			<div className="relative overflow-hidden">
+		testimonials.reduce((s, t) => s + (t.rating ?? 0), 0) /
+		testimonials.length
+	);
+}
+
+function RatingBadge({ rating, count }: { rating: number; count: number }) {
+	return (
+		<div className="flex items-center gap-1.5 bg-amber-400/15 border border-amber-400/30 rounded-full px-2.5 py-1">
+			<Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+			<span className="text-[11px] font-bold text-amber-500 tracking-wide">
+				{rating.toFixed(1)}
+			</span>
+			<span className="text-[10px] text-amber-400/70">({count})</span>
+		</div>
+	);
+}
+
+// ── Component ─────────────────────────────────────────────────────────────────
+const CourseCard = ({
+	course,
+	loggedInUser,
+}: {
+	course: any;
+	loggedInUser: any;
+}) => {
+	const router = useRouter();
+	const avgRating = getAvgRating(course?.testimonials ?? []);
+	const totalReviews = course?.testimonials?.length ?? 0;
+	const isFree = !course?.price || course.price === 0;
+
+	return (
+		<div
+			className="
+        group relative flex flex-col
+        bg-[#0f2314] rounded-2xl overflow-hidden
+        border border-white/8
+        shadow-[0_4px_24px_rgba(0,0,0,0.35)]
+        hover:shadow-[0_8px_48px_rgba(42,157,92,0.18)]
+        hover:-translate-y-1.5
+        transition-all duration-400 ease-out
+      "
+		>
+			{/* ── Thumbnail ──────────────────────────────────────────────────────── */}
+			<div className="relative h-48 overflow-hidden shrink-0">
 				<Link href={`/courses/${course.id}`}>
 					<Image
 						src={course?.thumbnail}
-						alt={course?.title}
-						width={500}
-						height={300}
-						className="w-full h-52 object-cover transition duration-500 group-hover:scale-110"
+						alt={course?.title ?? "Course"}
+						fill
+						className="object-cover transition-transform duration-700 ease-out group-hover:scale-108"
 					/>
 				</Link>
 
-				{/* Category Badge */}
-				<div className="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-medium shadow-sm">
-					{course?.category?.title}
+				{/* Deep gradient scrim bottom */}
+				<div className="absolute inset-0 bg-gradient-to-t from-[#072e0d] via-[#0f2314]/30 to-transparent" />
+
+				{/* Top row badges */}
+				<div className="absolute top-3 left-3 right-3 flex items-center justify-between">
+					{/* Category */}
+					{course?.category?.title && (
+						<span className="text-[10px] font-bold uppercase tracking-widest text-white/90 bg-white/10 backdrop-blur-md border border-white/20 px-2.5 py-1 rounded-full">
+							{course.category.title}
+						</span>
+					)}
+
+					{/* Price pill */}
+					<span
+						className={`
+              ml-auto text-xs font-extrabold px-3 py-1 rounded-full shadow-lg
+              ${isFree ? "bg-emerald-500 text-white" : "bg-primary text-white"}
+            `}
+					>
+						{isFree ? "Free" : formatPrice(course.price)}
+					</span>
 				</div>
 
-				{/* Preview Button (overlay) */}
+				{/* Hover arrow link */}
 				<Link
 					href={`/courses/${course.id}`}
-					className="absolute inset-0 flex items-center justify-center 
-					bg-black/50 opacity-0 group-hover:opacity-100 
-					transition duration-300"
+					className="
+            absolute bottom-3 right-3
+            w-9 h-9 rounded-full
+            bg-primary text-white
+            flex items-center justify-center
+            opacity-0 translate-y-2
+            group-hover:opacity-100 group-hover:translate-y-0
+            transition-all duration-300 shadow-lg border border-amber-50
+          "
 				>
-					<span className="flex items-center gap-2 bg-white text-black px-4 py-2 rounded-full text-sm font-medium shadow-lg hover:scale-105 transition">
-						<Eye className="h-4 w-4" />
-						Preview
-					</span>
+					<ArrowUpRight className="w-4 h-4" />
 				</Link>
 			</div>
-
-			{/* Content */}
-			<Link
-				href={`/courses/${course.id}`}
-				className="block p-5 space-y-3"
-			>
-				<h3 className="text-xl font-semibold leading-snug line-clamp-2 group-hover:text-primary transition">
-					{course?.title}
-				</h3>
-
-				<div className="flex mb-8 items-center text-xs text-muted-foreground gap-2">
-					<BookOpen className="h-4 w-4" />
-					<span>{course?.modules?.length || 0} Chapters</span>
+			<div className="flex flex-col flex-1 px-5 pt-4 pb-5 gap-3">
+				{/* Rating + modules row */}
+				<div className="flex items-center justify-between">
+					{totalReviews > 0 ? (
+						<RatingBadge rating={avgRating} count={totalReviews} />
+					) : (
+						<span className="text-[10px] text-white/30 italic">
+							No ratings yet
+						</span>
+					)}
+					<div className="flex items-center gap-1 text-[11px] text-white/70">
+						<BookOpen className="w-3 h-3" />
+						<span>{course?.modules?.length ?? 0} chapter(s)</span>
+					</div>
 				</div>
-				<div className="">
-					<button className="mt-2  px-4 py-2 w-full bg-primary text-white rounded-full text-sm font-medium hover:bg-primary/90 transition">
-						See Course Details
-					</button>
-				</div>
-			</Link>
 
-			{/* Footer */}
-			<div className="flex items-center justify-between px-5 pb-8 pt-2 border-t border-border/50">
-				<span className="text-lg font-bold text-primary">
-					{formatPrice(course?.price)}
-				</span>
+				{/* Title */}
+				<Link href={`/courses/${course.id}`}>
+					<h3 className="text-[16px] font-bold text-white/90 leading-snug line-clamp-2 group-hover:text-amber-50 transition-colors duration-200">
+						{course?.title}
+					</h3>
+				</Link>
 
-				{!loggedInUser ? (
-					<Button
-						type="submit"
-						variant="ghost"
-						className="text-xs text-sky-700 h-7 gap-1"
-						onClick={() =>
-							router.push(
-								`/signin?redirect=/courses/${course?.id}`,
-							)
-						}
-					>
-						Enroll
-						<ArrowRight className="w-3" />
-					</Button>
-				) : (
-					<EnrollCourse asLink={true} courseId={course.id} />
+				{/* Instructor name if available */}
+				{(course?.instructor?.firstName ||
+					course?.instructor?.name) && (
+					<p className="text-[11px] text-white/50 -mt-1 truncate">
+						by{" "}
+						{course.instructor.firstName
+							? `${course.instructor.firstName} ${course.instructor.lastName ?? ""}`.trim()
+							: course.instructor.name}
+					</p>
 				)}
+
+				<div className="flex-1 mb-4" />
+
+				{/* ── Divider ── */}
+				<div className="h-px bg-white/20 mt-1" />
+
+				{/* ── Footer ──────────────────────────────────────────────────────── */}
+				<div className="flex items-center justify-between pt-1 gap-2">
+					{/* Stars visual strip */}
+					<div className="flex items-center gap-0.5">
+						{[1, 2, 3, 4, 5].map((s) => (
+							<Star
+								key={s}
+								className="w-3 h-3"
+								fill={
+									s <= Math.round(avgRating)
+										? "#f5a623"
+										: "transparent"
+								}
+								stroke={
+									s <= Math.round(avgRating)
+										? "#f5a623"
+										: "#ffffff20"
+								}
+								strokeWidth={1.5}
+							/>
+						))}
+					</div>
+
+					{/* Enroll CTA */}
+					{!loggedInUser ? (
+						<button
+							onClick={() =>
+								router.push(
+									`/signin?redirect=/courses/${course?.id}`,
+								)
+							}
+							className="
+                flex items-center gap-1.5
+                text-[11px] font-bold text-white
+                bg-primary hover:bg-primary
+                px-3.5 py-1.5 rounded-full
+                transition-colors duration-200 shadow-md
+              "
+						>
+							<Sparkles className="w-3 h-3" />
+							Enroll Now
+						</button>
+					) : (
+						<EnrollCourse asLink={true} courseId={course.id} />
+					)}
+				</div>
 			</div>
+
+			{/* Glow edge on hover */}
+			<div
+				className="
+          absolute inset-x-0 bottom-0 h-0.5
+          bg-gradient-to-r from-transparent via-primary to-transparent
+          opacity-0 group-hover:opacity-100
+          transition-opacity duration-500
+        "
+			/>
 		</div>
 	);
 };

@@ -70,11 +70,11 @@ export default function CourseDetailsClient({
 					{/* Meta */}
 					<div className="mb-6">
 						{course.category && (
-							<p className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/5 backdrop-blur shadow-sm border border-green-300 text-sm font-medium mb-3">
+							<p className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/5 backdrop-blur shadow-sm border border-green-300 md:text-sm text-xs font-medium mb-3">
 								{course.category.title}
 							</p>
 						)}
-						<h1 className="text-4xl font-bold text-[#1a1a2e] mb-3 leading-snug">
+						<h1 className="md:text-4xl text-2xl font-bold text-[#1a1a2e] mb-3 leading-snug">
 							{course.title}
 						</h1>
 						<div className="flex flex-wrap items-center gap-5 text-sm text-gray-500">

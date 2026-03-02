@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { replaceMongoIdInObject } from "@/lib/convertData";
 import { useEffect, useRef, useState } from "react";
 
-export default function CoursesSection({ courses, categories }) {
+export default function CoursesSection({ courses, categories, loggedInUser }) {
 	const [activeTab, setActiveTab] = useState("All");
 	const [underlineStyle, setUnderlineStyle] = useState({ left: 0, width: 0 });
 	const tabsRef = useRef({});
@@ -16,37 +16,41 @@ export default function CoursesSection({ courses, categories }) {
 	useEffect(() => {
 		const activeEl = tabsRef.current[activeTab];
 		if (activeEl) {
-			const rect = activeEl.getBoundingClientRect();
-			const parentRect = activeEl.parentElement.getBoundingClientRect();
 			setUnderlineStyle({
-				left: rect.left - parentRect.left,
-				width: rect.width,
+				left: activeEl.offsetLeft, // ← Position relative to parent
+				width: activeEl.offsetWidth, // ← Element width
 			});
 		}
 	}, [activeTab]);
 
 	return (
-		<section className="hero">
-			<div className="py-26">
-				<div className="container mx-auto px-6">
+		<section className="hero overflow-hidden">
+			<div className="py-16 md:py-24 lg:py-26">
+				<div className="container mx-auto px-4 md:px-6">
 					{/* Section Header */}
-					<div className="mb-16 text-center">
-						<p className="inline-flex items-center mb-6 gap-2 px-4 py-2 rounded-full bg-primary/5 backdrop-blur shadow-sm border border-green-200 text-sm font-medium">
+					<div className="mb-10 md:mb-16 text-center max-w-3xl mx-auto">
+						<p className="inline-flex items-center mb-4 md:mb-6 gap-2 px-4 py-2 rounded-full bg-primary/5 backdrop-blur shadow-sm border border-green-200 text-xs md:text-sm font-medium">
 							Popular Courses
 						</p>
-						<h2 className="text-6xl md:text-5xl font-bold leading-16">
+						<h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight">
 							Highly Rated{" "}
 							<span className="relative inline-block bg-gradient-to-r from-primary to-teal-400 bg-clip-text text-transparent">
 								Skill Development
 								<svg
-									className="absolute -bottom-5 left-0 w-full"
+									className="absolute -bottom-2 md:-bottom-2 left-0 w-full h-2 md:h-4"
 									viewBox="0 0 200 20"
 									fill="none"
 									preserveAspectRatio="none"
 								>
+									<path
+										d="M0 15 Q100 0 200 15"
+										stroke="url(#lineGradientCourses)"
+										strokeWidth="6"
+										strokeLinecap="round"
+									/>
 									<defs>
 										<linearGradient
-											id="lineGradient"
+											id="lineGradientCourses"
 											x1="0%"
 											y1="0%"
 											x2="100%"
@@ -62,15 +66,9 @@ export default function CoursesSection({ courses, categories }) {
 											/>
 										</linearGradient>
 									</defs>
-									<path
-										d="M0 15 Q100 0 200 15"
-										stroke="url(#lineGradient)"
-										strokeWidth="4"
-									/>
 								</svg>
 							</span>
-							<br />
-							Programs Today
+							<span className="block mt-2">Programs Today</span>
 						</h2>
 					</div>
 
@@ -81,8 +79,8 @@ export default function CoursesSection({ courses, categories }) {
 						className="w-full"
 					>
 						{/* Tabs Header */}
-						<div className="relative flex mx-auto justify-center mb-12">
-							<TabsList className="relative flex justify-center bg-transparent p-0 space-x-8">
+						<div className="relative mb-8 md:mb-12 overflow-x-auto scrollbar-hide">
+							<TabsList className="flex justify-start md:justify-center bg-transparent p-0 space-x-4 md:space-x-8 border-b border-gray-100 min-w-max md:min-w-0 mx-auto">
 								{/* All Courses Tab */}
 								<TabsTrigger
 									value="All"
@@ -115,7 +113,7 @@ export default function CoursesSection({ courses, categories }) {
 									}}
 								>
 									<svg
-										className="w-full h-full"
+										className="w-full h-full "
 										viewBox="0 0 200 20"
 										fill="none"
 										preserveAspectRatio="none"
@@ -163,6 +161,7 @@ export default function CoursesSection({ courses, categories }) {
 											<CourseCard
 												key={course.id}
 												course={course}
+												loggedInUser={loggedInUser}
 											/>
 										))}
 									</div>
@@ -187,6 +186,7 @@ export default function CoursesSection({ courses, categories }) {
 												<CourseCard
 													key={course.id}
 													course={course}
+													loggedInUser={loggedInUser}
 												/>
 											))}
 										</div>

@@ -359,6 +359,27 @@
 	}
 }
 
+/* GRADIENTS */
+.gradient-1 {
+	background: linear-gradient(90deg, #9394d5, #cdcbd1);
+}
+
+.gradient-2 {
+	background: linear-gradient(90deg, #cc8aab, #d4cdce);
+}
+
+.gradient-3 {
+	background: linear-gradient(90deg, #8acbb6, #aeb5b4);
+}
+
+.gradient-4 {
+	background: linear-gradient(90deg, #c39f85, #aca8a3);
+}
+
+.gradient-5 {
+	background: linear-gradient(90deg, #bcac82, #c7c4bf);
+}
+
 /* SWIPER */
 .categories-swiper {
 	padding-bottom: 70px; /* space for pagination */
@@ -372,11 +393,8 @@
 
 /* CARD */
 .category-card {
-	height: 150px;
-	width: 100%;
 	border-radius: 20px;
 	padding: 24px;
-	color: white;
 	transition: 0.4s ease;
 }
 
@@ -388,27 +406,6 @@
 .category-card p {
 	font-size: 14px;
 	margin-top: 12px;
-}
-
-/* GRADIENTS */
-.gradient-1 {
-	background: linear-gradient(90deg, #0509d7, #b1a6ca);
-}
-
-.gradient-2 {
-	background: linear-gradient(90deg, #bb0962, #daacb3);
-}
-
-.gradient-3 {
-	background: linear-gradient(90deg, #10bc83, #87a9a6);
-}
-
-.gradient-4 {
-	background: linear-gradient(90deg, #b25819, #a59984);
-}
-
-.gradient-5 {
-	background: linear-gradient(90deg, #d9a109, #daad77);
 }
 
 /* ----------------------------- */
@@ -439,4 +436,14 @@
 .swiper-pagination-bullet-active {
 	width: 40px;
 	background: #065f46;
+}
+
+@layer utilities {
+	.scrollbar-hide::-webkit-scrollbar {
+		display: none;
+	}
+	.scrollbar-hide {
+		-ms-overflow-style: none;
+		scrollbar-width: none;
+	}
 }

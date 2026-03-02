@@ -1,65 +1,49 @@
 import { BookOpen, Users, Video, GraduationCap } from "lucide-react";
 
 export default function CriteriaSection() {
+	const stats = [
+		{ icon: BookOpen, count: "250+", label: "Online Courses" },
+		{ icon: Users, count: "1300+", label: "Online Students" },
+		{ icon: Video, count: "1090+", label: "Video Contents" },
+		{ icon: GraduationCap, count: "5000+", label: "Graduated Students" },
+	];
+
 	return (
-		<section className="relative bg-primary text-white">
+		<section className="relative bg-primary text-white overflow-hidden">
 			{/* Top Decorative Edge */}
 			<div className="absolute top-0 left-0 w-full h-6 hero rounded-b-[40px]" />
 
-			<div className="container mx-auto px-6 lg:px-12 py-16">
-				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-white/20">
-					{/* ITEM */}
-					<div className="group flex items-center gap-5 px-6 py-8 justify-center">
-						<BookOpen
-							size={42}
-							className="text-white/80 transition-transform duration-1000 transform group-hover:transform-[rotateY(360deg)]"
-						/>
-						<div>
-							<h3 className="text-3xl font-bold">250+</h3>
-							<p className="text-white/80 text-sm mt-1 bg-gradient-to-l from-primary to-accent-blue">
-								Our Online Courses
-							</p>
-						</div>
-					</div>
+			<div className="container mx-auto px-6 py-12 md:py-20">
+				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-0 lg:gap-4">
+					{stats.map((stat, index) => (
+						<div
+							key={index}
+							className={`group flex items-center gap-5 px-6 py-8 justify-center lg:justify-start transition-all duration-300
+                     /* Mobile/Tablet Border Logic */
+                     border-b border-white/10 sm:border-b-0
+                     ${index % 2 === 0 ? "sm:border-r border-white/10" : ""} 
+                     /* Desktop Border Logic */
+                     lg:border-r lg:last:border-r-0 border-white/10`}
+						>
+							<div className="relative">
+								<stat.icon
+									size={42}
+									className="text-white/80 transition-transform duration-700 group-hover:[transform:rotateY(360deg)]"
+								/>
+								{/* Subtle glow effect on hover */}
+								<div className="absolute inset-0 bg-white/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity rounded-full" />
+							</div>
 
-					<div className="group flex items-center gap-5 px-6 py-8 justify-center">
-						<Users
-							size={42}
-							className="text-white/80 transition-transform duration-1000 transform group-hover:transform-[rotateY(360deg)]"
-						/>
-						<div>
-							<h3 className="text-3xl font-bold">1300+</h3>
-							<p className="text-white/80 text-sm mt-1 bg-gradient-to-l from-primary to-accent-blue">
-								Our Online Students
-							</p>
+							<div>
+								<h3 className="text-3xl md:text-4xl font-black tracking-tight text-white">
+									{stat.count}
+								</h3>
+								<p className="text-white/70 text-sm font-medium mt-1 leading-tight">
+									{stat.label}
+								</p>
+							</div>
 						</div>
-					</div>
-
-					<div className="group flex items-center gap-5 px-6 py-8 justify-center">
-						<Video
-							size={42}
-							className="text-white/80 transition-transform duration-1000 transform group-hover:transform-[rotateY(360deg)]"
-						/>
-						<div>
-							<h3 className="text-3xl font-bold">1090+</h3>
-							<p className="text-white/80 text-sm mt-1 bg-gradient-to-l from-primary to-accent-blue">
-								Our Video Contents
-							</p>
-						</div>
-					</div>
-
-					<div className="group flex items-center gap-5 px-6 py-8 justify-center md:justify-start">
-						<GraduationCap
-							size={42}
-							className="text-white/80 transition-transform duration-1000 transform group-hover:transform-[rotateY(360deg)]"
-						/>
-						<div>
-							<h3 className="text-3xl font-bold">5000+</h3>
-							<p className="text-white/80 text-sm mt-1 bg-gradient-to-l from-primary to-accent-blue">
-								Our Graduated Students
-							</p>
-						</div>
-					</div>
+					))}
 				</div>
 			</div>
 

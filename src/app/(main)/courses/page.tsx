@@ -1,12 +1,16 @@
 import { getCategories } from "@/queries/categories";
-import CoursesClient from "./_components/CoursesClient";
 import { getCourseList } from "@/queries/courses";
 import { auth } from "@/auth";
 import { getUserByEmail } from "@/queries/users";
+import CoursesClient from "./_components/CoursesClient";
 
-export default async function CoursesPage() {
+type PageProps = {
+	searchParams: Promise<{ category?: string }>;
+};
+
+export default async function CoursesPage({ searchParams }: PageProps) {
+	const { category: categorySlug } = await searchParams;
 	const session = await auth();
-
 	const loggedInUser = await getUserByEmail(session?.user?.email);
 
 	const courses = (await getCourseList()).map((course) => ({
@@ -50,12 +54,24 @@ export default async function CoursesPage() {
 		thumbnail: cat?.thumbnail,
 	}));
 
+	const toSlug = (str: string) =>
+		str
+			.toLowerCase()
+			.replace(/\s+/g, "-")
+			.replace(/[^a-z0-9-]/g, "");
+
+	const initialCategoryId = categorySlug
+		? (categories.find((c) => toSlug(c.title ?? "") === categorySlug)?.id ??
+			null)
+		: null;
+
 	return (
 		<div className="container mt-24 mb-48">
 			<CoursesClient
 				courses={courses}
 				categories={categories}
 				loggedInUser={loggedInUser}
+				initialCategoryId={initialCategoryId} // ← new prop
 			/>
 		</div>
 	);

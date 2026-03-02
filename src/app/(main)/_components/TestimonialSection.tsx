@@ -1,16 +1,10 @@
-// components/TestimonialSection.tsx
-// Usage (server component parent):
-//   const testimonials = await getAllTestimonials(); // fetch all or featured
-//   <TestimonialSection testimonials={testimonials} />
-
 "use client";
 
-import { ArrowLeft, ArrowRight, Play, Star } from "lucide-react";
+import { ArrowLeft, ArrowRight, Frame, Play, Star } from "lucide-react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Autoplay } from "swiper/modules";
 import { useRef } from "react";
 import "swiper/css";
-import "swiper/css/pagination";
 
 // ── Types matching your Testimonial schema ────────────────────────────────────
 interface TestimonialUser {
@@ -67,47 +61,44 @@ export default function TestimonialsSection({ testimonials }: Props) {
 			<div className="relative container mx-auto px-6">
 				{/* Heading */}
 				<div className="mb-16 text-center">
-					<p className="inline-flex items-center text-gray-50 mb-6 gap-2 px-4 py-2 rounded-full bg-primary/5 backdrop-blur shadow-sm border border-green-200 text-sm font-medium">
+					<p className="inline-flex items-center mb-4 md:mb-6 gap-2 px-4 py-2 rounded-full bg-primary/5 backdrop-blur shadow-sm border border-green-200 text-xs md:text-sm font-medium">
 						Testimonials
 					</p>
-					<h2 className="text-5xl md:text-6xl font-bold leading-tight text-gray-200">
-						Our Learners Say About{" "}
-						<span className="relative inline-block text-primary">
-							Edu<span className="font-light">Nation</span>
+					<h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight">
+						Our Learners <br /> Say About{" "}
+						<span className="relative inline-block bg-gradient-to-r from-primary to-teal-400 bg-clip-text text-transparent">
+							<span className="font-bold">Edu</span>
+							<span className="font-light">Nation</span>
 							<svg
-								className="absolute -bottom-2 left-0 w-full"
+								className="absolute -bottom-2 md:-bottom-2 left-0 w-full h-2 md:h-4"
 								viewBox="0 0 200 20"
 								fill="none"
 								preserveAspectRatio="none"
 							>
+								<path
+									d="M0 15 Q100 0 200 15"
+									stroke="url(#lineGradientCourses)"
+									strokeWidth="6"
+									strokeLinecap="round"
+								/>
 								<defs>
 									<linearGradient
-										id="heroGradient"
+										id="lineGradientCourses"
 										x1="0%"
 										y1="0%"
 										x2="100%"
-										y2="100%"
+										y2="0%"
 									>
 										<stop
 											offset="0%"
-											stopColor="var(--color-hero-light)"
-										/>
-										<stop
-											offset="50%"
-											stopColor="var(--color-background)"
+											stopColor="var(--primary)"
 										/>
 										<stop
 											offset="100%"
-											stopColor="var(--color-hero-gradient)"
+											stopColor="#2dd4bf"
 										/>
 									</linearGradient>
 								</defs>
-								<path
-									d="M0 15 Q100 0 200 15"
-									stroke="url(#heroGradient)"
-									strokeWidth="4"
-									strokeLinecap="round"
-								/>
 							</svg>
 						</span>
 						's
@@ -120,7 +111,7 @@ export default function TestimonialsSection({ testimonials }: Props) {
 					{/* Left arrow */}
 					<button
 						onClick={() => swiperRef.current?.slidePrev()}
-						className="hidden cursor-pointer text-white md:flex absolute left-2 top-2/5 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-gradient-to-r from-primary to-teal-400 backdrop-blur-md border border-white items-center justify-center hover:shadow-xl transition-all duration-300 hover:scale-105"
+						className="hidden cursor-pointer text-white md:flex absolute left-2 top-27.5 z-10 w-12 h-12 rounded-full bg-gradient-to-r from-primary to-teal-400 backdrop-blur-md border border-white items-center justify-center hover:shadow-xl transition-all duration-300 hover:scale-105"
 					>
 						<ArrowLeft size={20} />
 					</button>
@@ -134,7 +125,17 @@ export default function TestimonialsSection({ testimonials }: Props) {
 						speed={900}
 						autoplay={{ delay: 3000, disableOnInteraction: false }}
 						pagination={{ clickable: true }}
-						breakpoints={{ 768: { slidesPerView: 2 } }}
+						breakpoints={{
+							640: {
+								slidesPerView: 1.5,
+							},
+							768: {
+								slidesPerView: 2,
+							},
+							1024: {
+								slidesPerView: 2,
+							},
+						}}
 						modules={[Pagination, Autoplay]}
 						className="mySwiper !pb-10"
 					>
@@ -153,11 +154,11 @@ export default function TestimonialsSection({ testimonials }: Props) {
 								: "";
 
 							return (
-								<SwiperSlide key={t.id}>
-									<div className="bg-white/90 backdrop-blur-xl rounded-3xl overflow-hidden border border-primary h-full">
+								<SwiperSlide key={t.id} className="h-full pb-4">
+									<div className="group bg-white/90 backdrop-blur-xl rounded-[2.5rem] overflow-hidden border border-primary/20 h-full shadow-sm hover:shadow-xl transition-all duration-500 relative">
 										<div className="flex flex-col md:flex-row h-full">
-											{/* Avatar / image panel */}
-											<div className="relative md:w-1/3 bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center min-h-[180px]">
+											{/* Avatar / Image Panel */}
+											<div className="relative md:w-5/12 bg-gradient-to-br from-primary/20 via-primary/5 to-transparent flex items-center justify-center min-h-[220px] overflow-hidden">
 												{t.user.profilePicture ? (
 													<img
 														src={
@@ -165,56 +166,81 @@ export default function TestimonialsSection({ testimonials }: Props) {
 																.profilePicture
 														}
 														alt={fullName}
-														className="h-full w-full object-cover"
+														className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
 													/>
 												) : (
-													// Fallback — initials avatar
-													<div className="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center">
-														<span className="text-2xl font-bold text-primary">
+													<div className="w-24 h-24 rounded-full bg-white shadow-xl flex items-center justify-center border-4 border-primary/10">
+														<span className="text-3xl font-black text-primary">
 															{initials}
 														</span>
 													</div>
 												)}
-												{/* Decorative play overlay — purely cosmetic */}
-												<div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-													<div className="w-14 h-14 bg-white/80 rounded-full flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 transition-opacity">
-														<Play className="text-primary" />
-													</div>
-												</div>
 											</div>
 
-											{/* Content */}
-											<div className="p-8 md:w-2/3 flex flex-col justify-between">
-												<div>
-													<h3 className="text-xl font-semibold text-gray-900 mb-0.5">
-														{fullName}
-													</h3>
-													{t.user.designation && (
-														<p className="text-sm text-gray-500 mb-3">
-															{t.user.designation}
-														</p>
-													)}
+											{/* Content Area */}
+											<div className="p-8 md:w-7/12 flex flex-col relative">
+												<div className="relative z-10">
+													<div className="flex justify-between items-start mb-4">
+														<div>
+															<h3 className="text-xl font-bold text-gray-900 leading-tight">
+																{fullName}
+															</h3>
+															{t.user
+																.designation && (
+																<p className="text-xs font-bold text-primary uppercase tracking-widest mt-1">
+																	{
+																		t.user
+																			.designation
+																	}
+																</p>
+															)}
+														</div>
+													</div>
 
-													{/* Stars from real rating */}
-													<Stars rating={t.rating} />
+													<div className="mb-4">
+														<Stars
+															rating={t.rating}
+														/>
+													</div>
 
-													{/* content is the schema field */}
-													<p className="text-gray-600 leading-relaxed">
-														{t.content}
+													<p className="text-gray-600 leading-relaxed text-sm md:text-base italic relative z-10">
+														"{t.content}"
 													</p>
 												</div>
 
-												{/* Footer row */}
-												<div className="flex justify-between items-center text-gray-400 text-sm mt-6">
-													<span className="text-5xl leading-none font-serif">
-														"
-													</span>
-													{dateStr && (
-														<span>{dateStr}</span>
-													)}
+												{/* Redesigned Bottom Right Section */}
+												<div className="mt-auto pt-6 flex justify-between items-end">
+													<div className="text-[10px] text-gray-400 font-medium uppercase tracking-tighter">
+														{dateStr && (
+															<span>
+																Verified Review
+																• {dateStr}
+															</span>
+														)}
+													</div>
+
+													{/* Animated Shape & Quote Symbol */}
+													<div className="relative">
+														{/* The Animated Ring */}
+														<div className="absolute inset-0 bg-primary/20 rounded-full animate-ping scale-150 opacity-20 group-hover:block hidden"></div>
+
+														{/* The Shape Container */}
+														<div className="relative w-14 h-14 bg-primary text-white flex items-center justify-center rounded-br-[1.5rem] rounded-tl-3xl shadow-lg shadow-primary/30 transform group-hover:-rotate-12 transition-transform duration-500">
+															<span className="text-4xl font-serif mt-4">
+																”
+															</span>
+
+															{/* Extra CSS accent dots */}
+															<div className="absolute top-2 right-2 w-1 h-1 bg-white/40 rounded-full"></div>
+															<div className="absolute top-4 right-3 w-1 h-1 bg-white/20 rounded-full"></div>
+														</div>
+													</div>
 												</div>
 											</div>
 										</div>
+
+										{/* Subtle CSS top-border gradient line */}
+										<div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/40 to-transparent"></div>
 									</div>
 								</SwiperSlide>
 							);
@@ -224,7 +250,7 @@ export default function TestimonialsSection({ testimonials }: Props) {
 					{/* Right arrow */}
 					<button
 						onClick={() => swiperRef.current?.slideNext()}
-						className="hidden cursor-pointer text-white md:flex absolute right-2 top-2/5 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-gradient-to-r from-primary to-teal-400 backdrop-blur-md border border-white items-center justify-center hover:shadow-xl transition-all duration-300 hover:scale-105"
+						className="hidden cursor-pointer text-white md:flex absolute right-2 top-27.5 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-gradient-to-r from-primary to-teal-400 backdrop-blur-md border border-white items-center justify-center hover:shadow-xl transition-all duration-300 hover:scale-105"
 					>
 						<ArrowRight size={20} />
 					</button>
