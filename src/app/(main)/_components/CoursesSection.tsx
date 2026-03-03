@@ -85,7 +85,7 @@ export default function CoursesSection({ courses, categories, loggedInUser }) {
 								<TabsTrigger
 									value="All"
 									ref={(el) => (tabsRef.current["All"] = el)}
-									className="relative px-4 pb-4 text-base font-semibold text-muted-foreground data-[state=active]:text-black"
+									className="relative px-4 py-4 text-base font-semibold text-muted-foreground data-[state=active]:text-black"
 								>
 									All Courses
 								</TabsTrigger>
@@ -215,7 +215,7 @@ export default function CoursesSection({ courses, categories, loggedInUser }) {
 					<div className="text-center mt-16">
 						<Link
 							href="/courses"
-							className="px-8 py-3 bg-gradient-to-r from-primary to-teal-400 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 inline-block hover:font-bold"
+							className="px-8 py-3 bg-gradient-to-r from-primary to-teal-400 text-white rounded-full hover:shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 inline-block hover:font-semibold"
 						>
 							View All Courses
 						</Link>

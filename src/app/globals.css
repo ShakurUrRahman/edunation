@@ -291,11 +291,6 @@
 		}
 	}
 
-	.hyphen-animate {
-		display: inline-block;
-		animation: hyphenFloat 1.5s ease-in-out infinite;
-	}
-
 	.sparkle {
 		position: absolute;
 		width: 10px;
@@ -382,7 +377,12 @@
 
 /* SWIPER */
 .categories-swiper {
-	padding-bottom: 70px; /* space for pagination */
+	padding-bottom: 70px; /* Desktop */
+
+	/* Mobile */
+	@media (max-width: 768px) {
+		padding-bottom: 30px;
+	}
 }
 
 /* SLIDE */

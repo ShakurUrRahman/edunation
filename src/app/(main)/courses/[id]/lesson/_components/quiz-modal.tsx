@@ -1,179 +1,199 @@
+"use client";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogFooter } from "@/components/ui/dialog";
+import {
+	Dialog,
+	DialogContent,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import {
+	ArrowLeft,
+	ArrowRight,
+	HelpCircle,
+	Info,
+	Loader2,
+	CheckCircle2,
+} from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-
 import { addQuizAssessment } from "@/app/actions/quiz";
-import { DialogTitle } from "@radix-ui/react-dialog";
 
 function QuizModal({ courseId, quizSetId, quizzes, open, setOpen, isTaken }) {
 	const router = useRouter();
-	const totalQuizzes = quizzes?.length;
 	const [quizIndex, setQuizIndex] = useState(0);
 	const [answers, setAnswers] = useState([]);
+	const [isSubmitting, setIsSubmitting] = useState(false);
+
+	const totalQuizzes = quizzes?.length || 0;
 	const lastQuizIndex = totalQuizzes - 1;
 	const currentQuiz = quizzes[quizIndex];
 
-	// change quiz
 	const quizChangeHandler = (type) => {
-		const nextQuizIndex = quizIndex + 1;
-		const prevQuizIndex = quizIndex - 1;
-		if (type === "next" && nextQuizIndex <= lastQuizIndex) {
-			console.log("next");
-			return setQuizIndex((prev) => prev + 1);
-		}
-		if (type === "prev" && prevQuizIndex >= 0) {
+		if (type === "next" && quizIndex < lastQuizIndex) {
+			setQuizIndex((prev) => prev + 1);
+		} else if (type === "prev" && quizIndex > 0) {
 			setQuizIndex((prev) => prev - 1);
 		}
 	};
 
-	const updateAnswer = (event, quizId, quizTitle, selected) => {
-		const key = event.target.name;
+	const updateAnswer = (event, quizId, optionLabel) => {
 		const checked = event.target.checked;
+		if (!checked) return;
 
-		const obj = {};
-		if (checked) {
-			obj["option"] = selected;
-		}
-
-		const answer = {
+		const newAnswer = {
 			quizId: quizId,
-			options: [obj],
+			options: [{ option: optionLabel }],
 		};
 
-		// console.log(answer);
-		const found = answers.find((a) => a.quizId === answer.quizId);
-
-		if (found) {
-			const filtered = answers.filter((a) => a.quizId !== answer.quizId);
-			setAnswers([...filtered, answer]);
-		} else {
-			setAnswers([...answers, answer]);
-		}
+		setAnswers((prev) => {
+			const filtered = prev.filter((a) => a.quizId !== quizId);
+			return [...filtered, newAnswer];
+		});
 	};
 
-	const submitQuiz = async (event) => {
+	const submitQuiz = async () => {
+		if (answers.length < totalQuizzes) {
+			toast.error("Please answer all questions before submitting.");
+			// Optional: return;
+		}
+
+		setIsSubmitting(true);
 		try {
-			// console.log(answers);
 			await addQuizAssessment(courseId, quizSetId, answers);
 			setOpen(false);
 			router.refresh();
 			toast.success(`Thanks for submitting the quiz.`);
 		} catch (error) {
 			toast.error("Problem in submitting the quiz");
+		} finally {
+			setIsSubmitting(false);
 		}
 	};
 
+	// Check if current option is selected
+	const isSelected = (optionLabel) => {
+		const found = answers.find((a) => a.quizId === currentQuiz.id);
+		return found?.options[0]?.option === optionLabel;
+	};
+
 	return (
-		<>
-			<Dialog open={open} onOpenChange={setOpen}>
-				<DialogTitle className="text-center">Quiz</DialogTitle>
-				<DialogContent className="sm:max-w-[95%] block">
-					<div className="pb-4 border-b border-border text-sm">
-						<span className="text-success inline-block mr-1">
-							{quizIndex + 1} / {quizzes.length}
-						</span>{" "}
-						টি প্রশ্ন
+		<Dialog open={open} onOpenChange={setOpen}>
+			<DialogContent className="max-w-[95vw] md:max-w-[700px] p-0 overflow-hidden rounded-2xl">
+				<DialogHeader className="p-6 pb-0">
+					<div className="flex items-center justify-between mb-2">
+						<DialogTitle className="text-xl font-bold">
+							Quiz Assessment
+						</DialogTitle>
+						<Badge
+							variant="outline"
+							className="text-primary border-primary/20"
+						>
+							{quizIndex + 1} of {totalQuizzes}
+						</Badge>
 					</div>
-					<div className="py-4">
-						<h3 className="text-xl font-medium mb-10">
-							<svg
-								className="text-success inline"
-								strokeWidth="0"
-								viewBox="0 0 512 512"
-								height="1em"
-								width="1em"
-								xmlns="http://www.w3.org/2000/svg"
-							>
-								<path
-									fill="currentColor"
-									stroke="currentColor"
-									d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 448c-110.532 0-200-89.431-200-200 0-110.495 89.472-200 200-200 110.491 0 200 89.471 200 200 0 110.53-89.431 200-200 200zm107.244-255.2c0 67.052-72.421 68.084-72.421 92.863V300c0 6.627-5.373 12-12 12h-45.647c-6.627 0-12-5.373-12-12v-8.659c0-35.745 27.1-50.034 47.579-61.516 17.561-9.845 28.324-16.541 28.324-29.579 0-17.246-21.999-28.693-39.784-28.693-23.189 0-33.894 10.977-48.942 29.969-4.057 5.12-11.46 6.071-16.666 2.124l-27.824-21.098c-5.107-3.872-6.251-11.066-2.644-16.363C184.846 131.491 214.94 112 261.794 112c49.071 0 101.45 38.304 101.45 88.8zM298 368c0 23.159-18.841 42-42 42s-42-18.841-42-42 18.841-42 42-42 42 18.841 42 42z"
-								></path>
-							</svg>{" "}
-							{quizzes[quizIndex].title}
-						</h3>
-						<span className="text-[10px] block text-end">
-							<svg
-								stroke="currentColor"
-								fill="currentColor"
-								strokeWidth="0"
-								version="1.1"
-								viewBox="0 0 16 16"
-								className="text-success inline"
-								height="12"
-								width="12"
-								xmlns="http://www.w3.org/2000/svg"
-							>
-								<path d="M7 4.75c0-0.412 0.338-0.75 0.75-0.75h0.5c0.412 0 0.75 0.338 0.75 0.75v0.5c0 0.412-0.338 0.75-0.75 0.75h-0.5c-0.412 0-0.75-0.338-0.75-0.75v-0.5z"></path>
-								<path d="M10 12h-4v-1h1v-3h-1v-1h3v4h1z"></path>
-								<path d="M8 0c-4.418 0-8 3.582-8 8s3.582 8 8 8 8-3.582 8-8-3.582-8-8-8zM8 14.5c-3.59 0-6.5-2.91-6.5-6.5s2.91-6.5 6.5-6.5 6.5 2.91 6.5 6.5-2.91 6.5-6.5 6.5z"></path>
-							</svg>{" "}
-							There is no negative marking.
-						</span>
+					{/* Progress bar */}
+					<div className="w-full bg-secondary h-1.5 rounded-full overflow-hidden">
+						<div
+							className="bg-primary h-full transition-all duration-300"
+							style={{
+								width: `${((quizIndex + 1) / totalQuizzes) * 100}%`,
+							}}
+						/>
 					</div>
-					<div className="grid md:grid-cols-2 gap-5 mb-6">
-						{currentQuiz?.options.map((option) => (
-							<div key={option.label}>
-								<input
-									className="opacity-0 invisible absolute [&:checked_+_label]:bg-success/5"
-									type="radio"
-									name="answer"
-									onChange={(
-										e,
-										quizId,
-										quizTitle,
-										selected,
-									) =>
-										updateAnswer(
-											e,
-											quizzes[quizIndex].id,
-											quizzes[quizIndex].title,
-											option.label,
-										)
-									}
-									id={`option-${option.label}`}
-								/>
-								<Label
-									className="border border-border rounded px-2 py-3 block cursor-pointer hover:bg-gray-50 transition-all font-normal"
-									htmlFor={`option-${option.label}`}
-								>
-									{option.label}
-								</Label>
+				</DialogHeader>
+
+				<div className="p-6">
+					<div className="space-y-6">
+						<div>
+							<div className="flex gap-3 items-start">
+								<HelpCircle className="w-6 h-6 text-primary shrink-0 mt-0.5" />
+								<h3 className="text-lg md:text-xl font-semibold leading-tight">
+									{currentQuiz?.title}
+								</h3>
 							</div>
-						))}
+							<div className="flex items-center gap-1.5 text-muted-foreground mt-3 text-xs uppercase tracking-wider font-medium">
+								<Info className="w-3.5 h-3.5" />
+								No negative marking for this quiz
+							</div>
+						</div>
+
+						{/* Options Grid */}
+						<div className="grid grid-cols-1 gap-3">
+							{currentQuiz?.options.map((option) => (
+								<div key={option.label} className="relative">
+									<input
+										className="peer absolute opacity-0"
+										type="radio"
+										name={`quiz-${currentQuiz.id}`}
+										id={`opt-${option.label}`}
+										checked={isSelected(option.label)}
+										onChange={(e) =>
+											updateAnswer(
+												e,
+												currentQuiz.id,
+												option.label,
+											)
+										}
+									/>
+									<Label
+										htmlFor={`opt-${option.label}`}
+										className="flex items-center gap-3 p-4 rounded-xl border-2 border-muted bg-card hover:bg-accent/50 cursor-pointer transition-all peer-checked:border-primary peer-checked:bg-primary/5 font-medium"
+									>
+										<div
+											className={`w-5 h-5 rounded-full border-2 shrink-0 flex items-center justify-center ${isSelected(option.label) ? "border-primary" : "border-muted-foreground"}`}
+										>
+											{isSelected(option.label) && (
+												<div className="w-2.5 h-2.5 rounded-full bg-primary" />
+											)}
+										</div>
+										{option.label}
+									</Label>
+								</div>
+							))}
+						</div>
 					</div>
-					<DialogFooter className="flex gap-4 justify-between w-full sm:justify-between">
+				</div>
+
+				<DialogFooter className="p-6 bg-secondary/30 flex flex-col-reverse sm:flex-row gap-3 sm:justify-between items-center">
+					<div className="flex w-full sm:w-auto gap-2">
 						<Button
-							className="gap-2 rounded-3xl"
+							variant="outline"
+							className="flex-1 sm:flex-none rounded-xl"
 							disabled={quizIndex === 0}
 							onClick={() => quizChangeHandler("prev")}
 						>
-							<ArrowLeft /> Previous Quiz
+							<ArrowLeft className="w-4 h-4 mr-2" /> Prev
 						</Button>
 						<Button
-							className="gap-2 rounded-3xl bg-green-600"
-							onClick={submitQuiz}
-							type="submit"
-							disabled={isTaken}
-						>
-							{isTaken ? "Quiz Taken" : "Submit Quiz"}
-						</Button>
-						<Button
-							className="gap-2 rounded-3xl"
-							disabled={quizIndex >= lastQuizIndex}
+							variant="outline"
+							className="flex-1 sm:flex-none rounded-xl"
+							disabled={quizIndex === lastQuizIndex}
 							onClick={() => quizChangeHandler("next")}
 						>
-							Next Quiz <ArrowRight />
+							Next <ArrowRight className="w-4 h-4 ml-2" />
 						</Button>
-					</DialogFooter>
-				</DialogContent>
-			</Dialog>
-		</>
+					</div>
+
+					<Button
+						className="w-full sm:w-auto rounded-xl bg-green-600 hover:bg-green-700 text-white min-w-[140px]"
+						onClick={submitQuiz}
+						disabled={isTaken || isSubmitting}
+					>
+						{isSubmitting ? (
+							<Loader2 className="w-4 h-4 animate-spin mr-2" />
+						) : isTaken ? (
+							<CheckCircle2 className="w-4 h-4 mr-2" />
+						) : null}
+						{isTaken ? "Submitted" : "Submit Quiz"}
+					</Button>
+				</DialogFooter>
+			</DialogContent>
+		</Dialog>
 	);
 }
 

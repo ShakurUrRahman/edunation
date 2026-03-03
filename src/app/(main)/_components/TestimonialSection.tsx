@@ -53,7 +53,7 @@ export default function TestimonialsSection({ testimonials }: Props) {
 	}
 
 	return (
-		<section className="relative pt-24 pb-36 overflow-hidden">
+		<section className="relative pt-12 pb-8 md:pt-24 md:pb-36 overflow-hidden">
 			{/* Background */}
 			<div className="absolute inset-0 bg-gradient-to-br from-[#435d99] via-secondary to-[#843b65]" />
 			<div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(88,140,224,0.3),transparent_40%)]" />
@@ -220,7 +220,7 @@ export default function TestimonialsSection({ testimonials }: Props) {
 													</div>
 
 													{/* Animated Shape & Quote Symbol */}
-													<div className="relative">
+													<div className="relative md:hidden lg:block">
 														{/* The Animated Ring */}
 														<div className="absolute inset-0 bg-primary/20 rounded-full animate-ping scale-150 opacity-20 group-hover:block hidden"></div>
 

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { Loader2, Camera, UploadCloud } from "lucide-react"; // Added icons
 import Menu from "./account-menu";
 import { Input } from "@/components/ui/input";
 import { getAvatarGradient, getInitials } from "@/lib/utils";
@@ -26,7 +26,6 @@ const AccountSidebar = ({ user }: Props) => {
 		user?.profilePicture ?? null,
 	);
 
-	// ── Same useEffect pattern as ImageForm ──────────────────────────────────
 	useEffect(() => {
 		if (!file || file.length === 0) return;
 
@@ -35,7 +34,7 @@ const AccountSidebar = ({ user }: Props) => {
 			try {
 				const formData = new FormData();
 				formData.append("files", file[0]);
-				formData.append("email", user.email); // email as identifier like your actions
+				formData.append("email", user.email);
 
 				const response = await fetch("/api/upload-profile", {
 					method: "POST",
@@ -59,16 +58,15 @@ const AccountSidebar = ({ user }: Props) => {
 		}
 
 		upload();
-	}, [file]);
+	}, [file, user.email, router]);
 
 	const fullName = `${user.firstName} ${user.lastName}`;
 
 	return (
-		<div className="lg:w-1/4 md:px-3">
+		<div className="w-full lg:w-1/4 ">
 			<div className="relative">
-				<div className="p-6 rounded-lg shadow hero border border-primary/40">
+				<div className="p-6 rounded-lg shadow-lg hero border border-primary/20">
 					<div className="profile-pic text-center mb-5">
-						{/* Hidden file input — same id as before */}
 						<Input
 							id="pro-img"
 							name="profile-image"
@@ -80,74 +78,68 @@ const AccountSidebar = ({ user }: Props) => {
 							}
 						/>
 
-						<div>
+						<div className="relative group mx-auto size-28">
 							{/* Loading overlay */}
 							{isUploading && (
-								<div className="relative size-28 mx-auto mb-1">
-									<div className="size-28 rounded-full bg-gray-200 flex items-center justify-center ring-4 ring-slate-50">
-										<Loader2 className="w-8 h-8 text-primary animate-spin" />
-									</div>
+								<div className="absolute inset-0 z-10 flex items-center justify-center rounded-full bg-background/80 backdrop-blur-sm ring-4 ring-slate-50 dark:ring-slate-800">
+									<Loader2 className="w-8 h-8 text-primary animate-spin" />
 								</div>
 							)}
 
-							{/* Avatar — hidden while uploading */}
-							{!isUploading &&
-								(profilePicture ? (
-									<div className="relative size-28 mx-auto">
-										<Image
-											src={profilePicture}
-											className="rounded-full shadow dark:shadow-gray-800 ring-4 ring-slate-50 dark:ring-slate-800 object-cover"
-											id="profile-banner"
-											alt={fullName}
-											width={112}
-											height={112}
-										/>
-										{/* Clicking avatar opens file picker */}
-										<label
-											htmlFor="pro-img"
-											className="absolute inset-0 cursor-pointer rounded-full hover:bg-black/20 transition-colors flex items-center justify-center"
-											title="Change photo"
-										/>
-									</div>
+							{/* Avatar Container */}
+							<div className="relative size-28 overflow-hidden rounded-full ring-4 ring-slate-50 dark:ring-slate-800 shadow-md">
+								{profilePicture ? (
+									<Image
+										src={profilePicture}
+										className="object-cover transition-transform duration-500 group-hover:scale-110"
+										alt={fullName}
+										fill
+									/>
 								) : (
-									<div className="relative mx-auto w-fit">
-										<div
-											className={`size-28 rounded-full flex items-center justify-center
-                        bg-linear-to-br ${getAvatarGradient(user.email)}
-                        text-white text-3xl font-semibold shadow ring-4 ring-slate-50 dark:ring-slate-800`}
-										>
-											{getInitials(
-												user.firstName,
-												user.lastName,
-											)}
-										</div>
-										<label
-											htmlFor="pro-img"
-											className="absolute inset-0 cursor-pointer"
-											title="Upload photo"
-										/>
-									</div>
-								))}
-
-							<div className="mt-4">
-								<h5 className="text-lg font-semibold">
-									{fullName}
-								</h5>
-								<p className="text-slate-400">{user.email}</p>
-								{/* Small hint */}
-								<p className="text-xs text-slate-400 mt-1 cursor-pointer hover:text-primary transition-colors">
-									<label
-										htmlFor="pro-img"
-										className="cursor-pointer"
+									<div
+										className={`size-full flex items-center justify-center
+                                            bg-gradient-to-br ${getAvatarGradient(user.email)}
+                                            text-white text-3xl font-semibold`}
 									>
-										Click photo to change
-									</label>
-								</p>
+										{getInitials(
+											user.firstName,
+											user.lastName,
+										)}
+									</div>
+								)}
+
+								{/* The Hover/Upload Overlay */}
+								<label
+									htmlFor="pro-img"
+									className="absolute inset-0 cursor-pointer bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white"
+								>
+									<Camera className="w-6 h-6 mb-1" />
+									<span className="text-[10px] font-medium uppercase tracking-wider">
+										Update
+									</span>
+								</label>
 							</div>
+
+							{/* Floating Icon Badge (Visible on mobile/desktop as a hint) */}
+							<label
+								htmlFor="pro-img"
+								className="absolute bottom-1 right-1 size-8 bg-primary text-white rounded-full flex items-center justify-center border-2 border-background cursor-pointer shadow-lg hover:bg-primary/90 transition-colors z-20"
+							>
+								<UploadCloud className="w-4 h-4" />
+							</label>
+						</div>
+
+						<div className="mt-4">
+							<h5 className="text-lg font-bold truncate">
+								{fullName}
+							</h5>
+							<p className="text-sm text-muted-foreground truncate">
+								{user.email}
+							</p>
 						</div>
 					</div>
 
-					<div className="border-t border-gray-100 dark:border-gray-700">
+					<div className="border-t border-gray-100 dark:border-gray-800 pt-2">
 						<Menu />
 					</div>
 				</div>
@@ -157,34 +149,3 @@ const AccountSidebar = ({ user }: Props) => {
 };
 
 export default AccountSidebar;
-
-// ── Server wrapper — keeps auth + data fetching server-side ──────────────────
-// Save this as a separate file e.g. AccountSidebarServer.tsx
-// and use it in your layout instead of the old AccountSidebar
-
-/*
-import { auth }           from "@/auth";
-import { redirect }       from "next/navigation";
-import { getUserByEmail } from "@/queries/users";
-import AccountSidebar     from "./AccountSidebar";
-
-const AccountSidebarServer = async () => {
-  const session = await auth();
-  if (!session?.user) redirect("/login");
-
-  const loggedInUser = await getUserByEmail(session.user.email);
-
-  return (
-    <AccountSidebar
-      user={{
-        email:          loggedInUser.email,
-        firstName:      loggedInUser.firstName,
-        lastName:       loggedInUser.lastName,
-        profilePicture: loggedInUser.profilePicture ?? null,
-      }}
-    />
-  );
-};
-
-export default AccountSidebarServer;
-*/

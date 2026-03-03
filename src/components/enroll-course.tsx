@@ -35,7 +35,7 @@ export const EnrollCourse: React.FC<EnrollCourseProps> = ({
 				<Button
 					type="submit"
 					variant="ghost"
-					className="text-xs text-amber-50 h-7 gap-1"
+					className="text-xs cursor-pointer  text-amber-50 h-7 gap-1"
 				>
 					{isPending ? (
 						<>
@@ -54,7 +54,7 @@ export const EnrollCourse: React.FC<EnrollCourseProps> = ({
 				<Button
 					type="submit"
 					disabled={isPending}
-					className="w-full h-12 bg-primary hover:opacity-90 disabled:opacity-70 text-white font-semibold rounded-xl transition-all duration-300 flex items-center justify-center gap-2 shadow-md active:scale-95"
+					className="w-full h-12 cursor-pointer  bg-primary hover:opacity-90 disabled:opacity-70 text-white font-semibold rounded-xl transition-all duration-300 flex items-center justify-center gap-2 shadow-md active:scale-95"
 				>
 					{isPending ? (
 						<>

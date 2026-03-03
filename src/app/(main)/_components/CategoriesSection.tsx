@@ -29,7 +29,7 @@ export default function CategoriesSection({ categories }) {
 					<p className="inline-flex items-center mb-4 md:mb-6 gap-2 px-4 py-2 rounded-full bg-primary/5 backdrop-blur shadow-sm border border-green-200 text-xs md:text-sm font-semibold text-primary">
 						📂 Categories
 					</p>
-					<h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight text-gray-900">
+					<h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold  text-gray-900">
 						Explore{" "}
 						<span className="relative inline-block bg-gradient-to-r from-primary to-teal-400 bg-clip-text text-transparent">
 							Top Courses

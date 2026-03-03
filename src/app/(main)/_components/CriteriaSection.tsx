@@ -13,7 +13,7 @@ export default function CriteriaSection() {
 			{/* Top Decorative Edge */}
 			<div className="absolute top-0 left-0 w-full h-6 hero rounded-b-[40px]" />
 
-			<div className="container mx-auto px-6 py-12 md:py-20">
+			<div className="container mx-auto px-6 py-8 md:py-20">
 				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-0 lg:gap-4">
 					{stats.map((stat, index) => (
 						<div

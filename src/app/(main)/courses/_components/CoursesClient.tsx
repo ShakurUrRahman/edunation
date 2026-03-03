@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
+import { SlidersHorizontal, X } from "lucide-react";
 import ViewMode from "./ViewMode";
 import SearchBox from "./SearchBox";
 import SortCourse from "./SortCourse";
@@ -13,11 +14,9 @@ import RecentCourses from "./RecentCourses";
 import PopularTags from "./PopularTags";
 import Pagination from "./Pagination";
 import CourseCard from "./CourseCard";
-import { toLowerCase } from "zod";
 
 const ITEMS_PER_PAGE = 8;
 
-// ── Avg rating from testimonials ─────────────────────────────────────────────
 function getAvgRating(course: any): number {
 	if (!course.testimonials?.length) return 0;
 	return (
@@ -35,6 +34,7 @@ export default function CoursesClient({
 	initialCategoryId,
 }) {
 	const [viewMode, setViewMode] = useState("grid");
+	const [isFilterOpen, setIsFilterOpen] = useState(false);
 	const [searchQuery, setSearchQuery] = useState("");
 	const [sortOption, setSortOption] = useState("");
 	const [selectedCategories, setSelectedCategories] = useState<string[]>(
@@ -43,6 +43,7 @@ export default function CoursesClient({
 	const [selectedRatings, setSelectedRatings] = useState<number[]>([]);
 	const [selectedTags, setSelectedTags] = useState<string[]>([]);
 	const [currentPage, setCurrentPage] = useState(1);
+
 	const router = useRouter();
 	const pathname = usePathname();
 
@@ -59,8 +60,6 @@ export default function CoursesClient({
 		maxPrice,
 	]);
 
-	// ── Live rating counts for the sidebar (based on ALL courses, not filtered) ──
-	// Shows how many courses have floor(avgRating) === star
 	const ratingCounts = useMemo(() => {
 		const counts: Record<number, number> = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
 		courses.forEach((course: any) => {
@@ -70,8 +69,7 @@ export default function CoursesClient({
 		return counts;
 	}, [courses]);
 
-	// ── Handlers
-
+	// ── Handlers ─────────────────────────────────────────────────────────────
 	const removeFilter = (id: string) =>
 		setSelectedCategories((prev) => prev.filter((c) => c !== id));
 
@@ -80,11 +78,9 @@ export default function CoursesClient({
 			typeof updater === "function"
 				? updater(selectedCategories)
 				: updater;
-
 		setSelectedCategories(next);
 		setCurrentPage(1);
 
-		// Sync URL — use the first selected category's title as slug
 		const params = new URLSearchParams();
 		if (next.length === 1) {
 			const cat = categories.find((c) => c.id === next[0]);
@@ -96,7 +92,6 @@ export default function CoursesClient({
 				params.set("category", slug);
 			}
 		}
-		// Multiple or none → clear param
 		const query = params.toString();
 		router.push(query ? `${pathname}?${query}` : pathname, {
 			scroll: false,
@@ -124,22 +119,19 @@ export default function CoursesClient({
 		setCurrentPage(1);
 	};
 
-	// ── 1. Filter ────────────────────────────────────────────────────────────────
+	// ── Filter ────────────────────────────────────────────────────────────────
 	const filteredCourses = useMemo(() => {
 		return courses.filter((course: any) => {
-			// Category
 			if (
 				selectedCategories.length > 0 &&
 				!selectedCategories.includes(course.category?.id)
 			)
 				return false;
 
-			// Price
 			const price = course.price ?? 0;
 			if (price < appliedRange[0] || price > appliedRange[1])
 				return false;
 
-			// Search — title, description, or instructor full name
 			if (searchQuery.trim() !== "") {
 				const q = searchQuery.toLowerCase();
 				const matchesTitle = course.title?.toLowerCase().includes(q);
@@ -154,7 +146,6 @@ export default function CoursesClient({
 					return false;
 			}
 
-			// Average rating filter — floor(avg) must match one of selectedRatings
 			if (selectedRatings.length > 0) {
 				const floor = Math.floor(getAvgRating(course));
 				if (!selectedRatings.includes(floor)) return false;
@@ -170,7 +161,7 @@ export default function CoursesClient({
 		selectedRatings,
 	]);
 
-	// ── 2. Sort ──────────────────────────────────────────────────────────────────
+	// ── Sort ──────────────────────────────────────────────────────────────────
 	const sortedCourses = useMemo(() => {
 		const copy = [...filteredCourses];
 		switch (sortOption) {
@@ -184,7 +175,6 @@ export default function CoursesClient({
 						new Date(b.createdOn ?? 0).getTime() -
 						new Date(a.createdOn ?? 0).getTime(),
 				);
-			// "popular" = highest average rating (most average rated)
 			case "popular":
 				return copy.sort((a, b) => getAvgRating(b) - getAvgRating(a));
 			default:
@@ -192,7 +182,7 @@ export default function CoursesClient({
 		}
 	}, [filteredCourses, sortOption]);
 
-	// ── 3. Paginate ──────────────────────────────────────────────────────────────
+	// ── Paginate ──────────────────────────────────────────────────────────────
 	const totalPages = Math.max(
 		1,
 		Math.ceil(sortedCourses.length / ITEMS_PER_PAGE),
@@ -202,109 +192,185 @@ export default function CoursesClient({
 		currentPage * ITEMS_PER_PAGE,
 	);
 
+	// ── Shared sidebar filters ────────────────────────────────────────────────
+	const SidebarContent = (
+		<div className="space-y-5">
+			<CategoryFilter
+				categories={categories}
+				courses={courses}
+				toggleCategory={toggleCategory}
+				selectedCategories={selectedCategories}
+				setSelectedCategories={handleCategoryChange}
+			/>
+			<PriceFilter
+				minPrice={minPrice}
+				maxPrice={maxPrice}
+				appliedRange={appliedRange}
+				onApply={handleApplyPrice}
+			/>
+			<AverageRatingFilter
+				selectedRatings={selectedRatings}
+				setSelectedRatings={setSelectedRatings}
+				ratingCounts={ratingCounts}
+			/>
+			<div className="hidden lg:block">
+				<RecentCourses />
+			</div>
+			<PopularTags
+				selectedTags={selectedTags}
+				onTagChange={setSelectedTags}
+			/>
+		</div>
+	);
+
 	return (
-		<>
-			{/* Top bar */}
-			<div className="flex items-center justify-between flex-wrap gap-3 mb-5">
-				<ViewMode
-					viewMode={viewMode}
-					setViewMode={setViewMode}
-					totalCourses={sortedCourses.length}
-				/>
-				<div className="flex items-center gap-2.5">
-					<SearchBox onSearch={handleSearch} />
-					<SortCourse
-						sortOption={sortOption}
-						setSortOption={handleSort}
+		<div>
+			{/* ── Top bar ──────────────────────────────────────────────────── */}
+			<div className="flex flex-col gap-3 mb-6">
+				{/* Row 1: view mode left | sort + filter-toggle right */}
+				<div className="flex items-center justify-between gap-2">
+					<ViewMode
+						viewMode={viewMode}
+						setViewMode={setViewMode}
+						totalCourses={sortedCourses.length}
 					/>
+
+					<div className="flex items-center gap-2 shrink-0">
+						<SortCourse
+							sortOption={sortOption}
+							setSortOption={handleSort}
+						/>
+						{/* Mobile filter toggle — hidden on desktop */}
+						<button
+							onClick={() => setIsFilterOpen(true)}
+							className="lg:hidden flex items-center gap-1.5 px-3 py-2 bg-white border border-gray-200 rounded-lg shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors whitespace-nowrap"
+						>
+							<SlidersHorizontal size={15} />
+							<span className="hidden sm:inline">Filters</span>
+						</button>
+					</div>
 				</div>
+
+				{/* Row 2: search full width */}
+				<SearchBox onSearch={handleSearch} />
 			</div>
 
-			{/* Active filter pills */}
-			<ActiveFilters
-				categories={categories}
-				selectedCategories={selectedCategories}
-				selectedRatings={selectedRatings}
-				selectedTags={selectedTags}
-				removeFilter={removeFilter}
-			/>
+			{/* ── Active filter pills ───────────────────────────────────────── */}
+			<div className="mb-6">
+				<ActiveFilters
+					categories={categories}
+					selectedCategories={selectedCategories}
+					selectedRatings={selectedRatings}
+					selectedTags={selectedTags}
+					removeFilter={removeFilter}
+				/>
+			</div>
 
-			{/* Two-column layout */}
-			<div className="grid grid-cols-[260px_1fr] gap-7">
-				<aside>
-					<CategoryFilter
-						categories={categories}
-						courses={courses}
-						toggleCategory={toggleCategory}
-						selectedCategories={selectedCategories}
-						setSelectedCategories={handleCategoryChange}
-					/>
-					<PriceFilter
-						minPrice={minPrice}
-						maxPrice={maxPrice}
-						appliedRange={appliedRange}
-						onApply={handleApplyPrice}
-					/>
-					{/* Pass live counts and lifted state */}
-					<AverageRatingFilter
-						selectedRatings={selectedRatings}
-						setSelectedRatings={setSelectedRatings}
-						ratingCounts={ratingCounts}
-					/>
-					<RecentCourses />
-					<PopularTags
-						selectedTags={selectedTags}
-						onTagChange={setSelectedTags}
-					/>
+			{/* ── Main layout ───────────────────────────────────────────────── */}
+			<div className="flex flex-col lg:grid lg:grid-cols-[260px_1fr] gap-8">
+				{/* Desktop sidebar — hidden on mobile */}
+				<aside className="hidden lg:block shrink-0">
+					{SidebarContent}
 				</aside>
 
-				<div>
+				{/* Mobile drawer backdrop */}
+				{isFilterOpen && (
 					<div
-						className={`grid gap-5 mb-8 ${
-							viewMode === "grid" ? "grid-cols-2" : "grid-cols-1"
-						}`}
-					>
-						{paginatedCourses.length > 0 ? (
-							paginatedCourses.map((course) => (
+						className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+						onClick={() => setIsFilterOpen(false)}
+					/>
+				)}
+
+				{/* Mobile drawer */}
+				<div
+					className={`
+						fixed top-0 left-0 h-full w-[290px] z-50
+						bg-white shadow-2xl overflow-y-auto
+						transition-transform duration-300 ease-in-out
+						lg:hidden
+						${isFilterOpen ? "translate-x-0" : "-translate-x-full"}
+					`}
+				>
+					{/* Drawer header */}
+					<div className="sticky top-0 flex items-center justify-between px-5 py-4 border-b bg-white z-10">
+						<h2 className="text-base font-bold text-gray-900">
+							Filters
+						</h2>
+						<button
+							onClick={() => setIsFilterOpen(false)}
+							className="p-1.5 rounded-md hover:bg-gray-100 transition-colors"
+						>
+							<X size={18} />
+						</button>
+					</div>
+
+					{/* Drawer filters */}
+					<div className="p-5">{SidebarContent}</div>
+
+					{/* Sticky show results */}
+					<div className="sticky bottom-0 p-4 bg-white border-t">
+						<button
+							onClick={() => setIsFilterOpen(false)}
+							className="w-full py-2.5 bg-primary text-white rounded-xl font-semibold text-sm hover:bg-primary/90 transition-colors"
+						>
+							Show {sortedCourses.length} Results
+						</button>
+					</div>
+				</div>
+
+				{/* ── Course grid ───────────────────────────────────────────── */}
+				<div className="flex-1 min-w-0">
+					{paginatedCourses.length > 0 ? (
+						<div
+							className={`grid gap-5 mb-8 ${
+								viewMode === "grid"
+									? "grid-cols-1 sm:grid-cols-2"
+									: "grid-cols-1"
+							}`}
+						>
+							{paginatedCourses.map((course) => (
 								<CourseCard
 									key={course.id}
 									course={course}
 									loggedInUser={loggedInUser}
+									viewMode={viewMode}
 								/>
-							))
-						) : (
-							<div className="col-span-2 flex flex-col items-center justify-center py-20 text-gray-400">
-								<svg
-									width="48"
-									height="48"
-									viewBox="0 0 24 24"
-									fill="none"
-									stroke="currentColor"
-									strokeWidth="1.5"
-									className="mb-3 opacity-40"
-								>
-									<circle cx="11" cy="11" r="8" />
-									<path d="m21 21-4.35-4.35" />
-								</svg>
-								<p className="text-sm font-medium">
-									{searchQuery
-										? `No courses found for "${searchQuery}"`
-										: "No courses found"}
-								</p>
-								<p className="text-xs mt-1">
-									Try adjusting your filters
-								</p>
-							</div>
-						)}
-					</div>
+							))}
+						</div>
+					) : (
+						<div className="flex flex-col items-center justify-center py-24 text-gray-400">
+							<svg
+								width="44"
+								height="44"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								strokeWidth="1.5"
+								className="mb-3 opacity-40"
+							>
+								<circle cx="11" cy="11" r="8" />
+								<path d="m21 21-4.35-4.35" />
+							</svg>
+							<p className="text-sm font-medium">
+								{searchQuery
+									? `No courses found for "${searchQuery}"`
+									: "No courses found"}
+							</p>
+							<p className="text-xs mt-1 text-gray-300">
+								Try adjusting your filters
+							</p>
+						</div>
+					)}
 
-					<Pagination
-						currentPage={currentPage}
-						totalPages={totalPages}
-						onPageChange={setCurrentPage}
-					/>
+					<div className="mt-6 border-t pt-6">
+						<Pagination
+							currentPage={currentPage}
+							totalPages={totalPages}
+							onPageChange={setCurrentPage}
+						/>
+					</div>
 				</div>
 			</div>
-		</>
+		</div>
 	);
 }

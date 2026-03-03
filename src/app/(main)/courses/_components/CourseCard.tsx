@@ -28,84 +28,70 @@ function RatingBadge({ rating, count }: { rating: number; count: number }) {
 	);
 }
 
-// ── Component ─────────────────────────────────────────────────────────────────
 const CourseCard = ({
 	course,
 	loggedInUser,
+	viewMode = "grid", // Default to grid
 }: {
 	course: any;
 	loggedInUser: any;
+	viewMode?: string;
 }) => {
 	const router = useRouter();
 	const avgRating = getAvgRating(course?.testimonials ?? []);
 	const totalReviews = course?.testimonials?.length ?? 0;
 	const isFree = !course?.price || course.price === 0;
+	const isList = viewMode === "list";
 
 	return (
 		<div
-			className="
-        group relative flex flex-col
+			className={`
+        group relative flex 
+        ${isList ? "flex-col md:flex-row min-h-[220px]" : "flex-col"}
         bg-[#0f2314] rounded-2xl overflow-hidden
         border border-white/8
         shadow-[0_4px_24px_rgba(0,0,0,0.35)]
         hover:shadow-[0_8px_48px_rgba(42,157,92,0.18)]
-        hover:-translate-y-1.5
-        transition-all duration-400 ease-out
-      "
+        hover:-translate-y-1 transition-all duration-400 ease-out
+      `}
 		>
-			{/* ── Thumbnail ──────────────────────────────────────────────────────── */}
-			<div className="relative h-48 overflow-hidden shrink-0">
+			{/* ── Thumbnail Section ────────────────────────────────────────── */}
+			<div
+				className={`
+            relative overflow-hidden shrink-0
+            ${isList ? "h-48 md:h-auto md:w-72 lg:w-80" : "h-48"}
+         `}
+			>
 				<Link href={`/courses/${course.id}`}>
 					<Image
 						src={course?.thumbnail}
 						alt={course?.title ?? "Course"}
 						fill
-						className="object-cover transition-transform duration-700 ease-out group-hover:scale-108"
+						className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
 					/>
 				</Link>
 
-				{/* Deep gradient scrim bottom */}
 				<div className="absolute inset-0 bg-gradient-to-t from-[#072e0d] via-[#0f2314]/30 to-transparent" />
 
-				{/* Top row badges */}
+				{/* Price pill (Positioned differently for list if desired, but top-left/right works) */}
 				<div className="absolute top-3 left-3 right-3 flex items-center justify-between">
-					{/* Category */}
 					{course?.category?.title && (
 						<span className="text-[10px] font-bold uppercase tracking-widest text-white/90 bg-white/10 backdrop-blur-md border border-white/20 px-2.5 py-1 rounded-full">
 							{course.category.title}
 						</span>
 					)}
-
-					{/* Price pill */}
 					<span
-						className={`
-              ml-auto text-xs font-extrabold px-3 py-1 rounded-full shadow-lg
-              ${isFree ? "bg-emerald-500 text-white" : "bg-primary text-white"}
-            `}
+						className={`text-xs font-extrabold px-3 py-1 rounded-full shadow-lg ${isFree ? "bg-emerald-500 text-white" : "bg-primary text-white"}`}
 					>
 						{isFree ? "Free" : formatPrice(course.price)}
 					</span>
 				</div>
-
-				{/* Hover arrow link */}
-				<Link
-					href={`/courses/${course.id}`}
-					className="
-            absolute bottom-3 right-3
-            w-9 h-9 rounded-full
-            bg-primary text-white
-            flex items-center justify-center
-            opacity-0 translate-y-2
-            group-hover:opacity-100 group-hover:translate-y-0
-            transition-all duration-300 shadow-lg border border-amber-50
-          "
-				>
-					<ArrowUpRight className="w-4 h-4" />
-				</Link>
 			</div>
-			<div className="flex flex-col flex-1 px-5 pt-4 pb-5 gap-3">
-				{/* Rating + modules row */}
-				<div className="flex items-center justify-between">
+
+			{/* ── Content Section ──────────────────────────────────────────── */}
+			<div className="flex flex-col flex-1 px-5 py-5 lg:px-7">
+				{/* Top row: Rating + Meta */}
+				<div className="flex items-center justify-between mb-2">
 					{totalReviews > 0 ? (
 						<RatingBadge rating={avgRating} count={totalReviews} />
 					) : (
@@ -114,42 +100,50 @@ const CourseCard = ({
 						</span>
 					)}
 					<div className="flex items-center gap-1 text-[11px] text-white/70">
-						<BookOpen className="w-3 h-3" />
+						<BookOpen className="w-3.5 h-3.5" />
 						<span>{course?.modules?.length ?? 0} chapter(s)</span>
 					</div>
 				</div>
 
 				{/* Title */}
 				<Link href={`/courses/${course.id}`}>
-					<h3 className="text-[16px] font-bold text-white/90 leading-snug line-clamp-2 group-hover:text-amber-50 transition-colors duration-200">
+					<h3
+						className={`font-bold text-white/90 leading-snug group-hover:text-amber-100 transition-colors duration-200 ${isList ? "text-xl mb-2" : "text-[16px] line-clamp-2"}`}
+					>
 						{course?.title}
 					</h3>
 				</Link>
 
-				{/* Instructor name if available */}
+				{/* Instructor */}
 				{(course?.instructor?.firstName ||
 					course?.instructor?.name) && (
-					<p className="text-[11px] text-white/50 -mt-1 truncate">
+					<p className="text-xs text-white/50 mb-3">
 						by{" "}
 						{course.instructor.firstName
-							? `${course.instructor.firstName} ${course.instructor.lastName ?? ""}`.trim()
+							? `${course.instructor.firstName} ${course.instructor.lastName ?? ""}`
 							: course.instructor.name}
 					</p>
 				)}
 
-				<div className="flex-1 mb-4" />
+				{/* Only show short description in List mode */}
+				{isList && (
+					<p className="text-sm text-white/60 line-clamp-2 mb-4 hidden md:block">
+						{course?.description ||
+							"Master the skills needed to excel in this field with our comprehensive course content."}
+					</p>
+				)}
 
-				{/* ── Divider ── */}
-				<div className="h-px bg-white/20 mt-1" />
+				<div className="flex-1" />
 
-				{/* ── Footer ──────────────────────────────────────────────────────── */}
-				<div className="flex items-center justify-between pt-1 gap-2">
-					{/* Stars visual strip */}
+				{/* Footer / CTA Area */}
+				<div
+					className={`flex items-center justify-between pt-4 border-t border-white/10 ${isList ? "mt-2" : "mt-4"}`}
+				>
 					<div className="flex items-center gap-0.5">
 						{[1, 2, 3, 4, 5].map((s) => (
 							<Star
 								key={s}
-								className="w-3 h-3"
+								className="w-3.5 h-3.5"
 								fill={
 									s <= Math.round(avgRating)
 										? "#f5a623"
@@ -158,47 +152,45 @@ const CourseCard = ({
 								stroke={
 									s <= Math.round(avgRating)
 										? "#f5a623"
-										: "#ffffff20"
+										: "#ffffff56"
 								}
 								strokeWidth={1.5}
 							/>
 						))}
 					</div>
 
-					{/* Enroll CTA */}
-					{!loggedInUser ? (
-						<button
-							onClick={() =>
-								router.push(
-									`/signin?redirect=/courses/${course?.id}`,
-								)
-							}
-							className="
-                flex items-center gap-1.5
-                text-[11px] font-bold text-white
-                bg-primary hover:bg-primary
-                px-3.5 py-1.5 rounded-full
-                transition-colors duration-200 shadow-md
-              "
-						>
-							<Sparkles className="w-3 h-3" />
-							Enroll Now
-						</button>
-					) : (
-						<EnrollCourse asLink={true} courseId={course.id} />
-					)}
+					<div className="flex items-center gap-3">
+						{/* Optional "Learn More" link for List mode */}
+						{isList && (
+							<Link
+								href={`/courses/${course.id}`}
+								className="hidden lg:flex items-center gap-1 text-xs text-white/70 hover:text-white transition-colors"
+							>
+								Details <ArrowUpRight className="w-3 h-3" />
+							</Link>
+						)}
+
+						{!loggedInUser ? (
+							<button
+								onClick={() =>
+									router.push(
+										`/signin?redirect=/courses/${course?.id}`,
+									)
+								}
+								className="flex items-center gap-1.5 text-[11px] font-bold text-white bg-primary hover:brightness-110 px-4 py-2 rounded-full transition-all shadow-md"
+							>
+								<Sparkles className="w-3 h-3" />
+								Enroll Now
+							</button>
+						) : (
+							<EnrollCourse asLink={true} courseId={course.id} />
+						)}
+					</div>
 				</div>
 			</div>
 
-			{/* Glow edge on hover */}
-			<div
-				className="
-          absolute inset-x-0 bottom-0 h-0.5
-          bg-gradient-to-r from-transparent via-primary to-transparent
-          opacity-0 group-hover:opacity-100
-          transition-opacity duration-500
-        "
-			/>
+			{/* Hover decoration */}
+			<div className="absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-transparent via-primary to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 		</div>
 	);
 };

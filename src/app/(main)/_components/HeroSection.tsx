@@ -22,7 +22,7 @@ export default function HeroSection() {
 			<div className="container mx-auto px-4 sm:px-6 lg:px-8 min-h-[90vh] flex items-center">
 				<div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center w-full py-12 md:py-20">
 					{/* LEFT CONTENT */}
-					<div className="space-y-6 md:space-y-8 text-center lg:text-left order-2 lg:order-2">
+					<div className="space-y-6 md:space-y-8 text-center lg:text-left order-1">
 						{/* Badge */}
 						<div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-xs md:text-sm font-bold text-primary animate-fade-in">
 							🚀 15,000+ Students Learning Worldwide
@@ -116,8 +116,8 @@ export default function HeroSection() {
 					</div>
 
 					{/* RIGHT VISUAL SECTION */}
-					<div className="relative flex justify-center lg:justify-end items-center order-2 lg:order-1 px-4 md:px-0">
-						<div className="relative w-full max-w-[500px]">
+					<div className="relative flex justify-center lg:justify-end items-center order-2 lg:order-2 px-4 md:px-0">
+						<div className="relative w-full ">
 							{/* Glow Background */}
 							<div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-blue-400/20 rounded-full blur-3xl transform scale-110" />
 
@@ -129,7 +129,7 @@ export default function HeroSection() {
 							/>
 
 							{/* Floating Card 1: UI/UX (Hides on very small mobile) */}
-							<div className="absolute -top-4 -left-4 md:top-10 md:left-0 bg-gradient-to-r from-indigo-600 to-purple-500 p-3 md:p-4 rounded-2xl shadow-xl text-white z-20 animate-bounce-slow max-w-[140px] md:max-w-[200px]">
+							<div className="absolute -top-4 right-48 md:top-10 md:right-3 bg-gradient-to-r from-indigo-600 to-purple-500 p-4 rounded-2xl shadow-xl text-white z-20 animate-bounce-slow ">
 								<p className="font-bold text-[10px] md:text-sm">
 									UI/UX Design Masterclass
 								</p>
@@ -139,23 +139,23 @@ export default function HeroSection() {
 							</div>
 
 							{/* Floating Card 2: Progress */}
-							<div className="absolute bottom-10 -right-4 md:bottom-20 md:-right-8 bg-white/95 backdrop-blur-sm p-3 md:p-4 rounded-2xl shadow-2xl z-20 w-40 md:w-52 border border-white/20">
-								<p className="text-[10px] md:text-sm font-bold text-gray-800">
+							<div className="absolute bottom-16 -right-4 md:-bottom-8 md:-right-8 bg-white/95 backdrop-blur-sm p-3 rounded-2xl shadow-2xl z-20 w-40 md:w-52 border border-white/20">
+								<p className="text-[10px] px-1 md:text-sm font-bold text-gray-800">
 									Your Progress
 								</p>
-								<div className="w-full h-1.5 bg-gray-100 rounded-full mt-2 overflow-hidden">
+								<div className="w-full px-1 h-1.5 bg-gray-100 rounded-full mt-2 overflow-hidden">
 									<div
 										className="h-full bg-primary rounded-full transition-all duration-1000 ease-out"
 										style={{ width: `${progress}%` }}
 									/>
 								</div>
-								<p className="text-[8px] md:text-xs mt-1 font-bold text-primary">
+								<p className="text-[8px] px-1 md:text-xs mt-1 font-bold text-primary">
 									{progress}% Complete
 								</p>
 							</div>
 
 							{/* Floating Card 3: Mentorship (Hidden on mobile) */}
-							<div className="absolute bottom-24 -left-4 md:bottom-40 md:-left-12 bg-white/95 backdrop-blur-sm p-3 md:p-4 rounded-2xl shadow-2xl z-20 hidden sm:block border border-white/20">
+							<div className="absolute bottom-24 -left-4 md:bottom-52 md:-left-2 bg-white/95 backdrop-blur-sm p-3 md:p-4 rounded-2xl shadow-2xl w-48 z-20 hidden sm:block border border-white/20">
 								<div className="flex items-center gap-3">
 									<div className="relative">
 										<div className="p-2 bg-primary/10 rounded-lg">

@@ -11,8 +11,8 @@ export default function AboutUsSection() {
 	];
 
 	return (
-		<section className="py-16 md:py-24 lg:py-32 overflow-hidden bg-white">
-			<div className="container mx-auto px-6 lg:px-12">
+		<section className="py-16 md:py-24 lg:py-32 overflow-hidden ">
+			<div className="container mx-auto px-6">
 				<div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
 					{/* LEFT CONTENT: IMAGE COMPOSITION */}
 					<div className="relative order-2 lg:order-1">
@@ -55,12 +55,12 @@ export default function AboutUsSection() {
 					</div>
 
 					{/* RIGHT CONTENT: TEXT & FEATURES */}
-					<div className="order-1 lg:order-2 text-center lg:text-left">
+					<div className="order-1 lg:order-2 text-center lg:text-left ">
 						<p className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/5 backdrop-blur shadow-sm border border-green-300 text-sm font-semibold text-primary mb-6">
 							Who We Are?
 						</p>
 
-						<h2 className="text-3xl md:text-5xl lg:text-6xl font-extrabold leading-tight text-gray-900 mb-6">
+						<h2 className="text-3xl md:text-5xl lg:text-6xl md:leading-16 md:mb-12 font-extrabold text-gray-900 mb-6">
 							Empowering Learners Through{" "}
 							<span className="relative inline-block bg-gradient-to-r from-primary to-teal-400 bg-clip-text text-transparent">
 								Smart Education

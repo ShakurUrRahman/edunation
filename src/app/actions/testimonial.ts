@@ -29,11 +29,13 @@ export async function createTestimonial({
 		if (existing) throw new Error("You have already reviewed this course");
 
 		// 1. Save testimonial doc
+		// actions/testimonial.actions.ts
 		const testimonial = await Testimonial.create({
 			content,
 			rating,
 			user: loggedInUser.id,
 			courseId,
+			createdOn: new Date(), // ← add this
 		});
 
 		// 2. Push ObjectId into course.testimonials[]

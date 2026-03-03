@@ -8,8 +8,33 @@ import { Button } from "./ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { useSession, signOut } from "next-auth/react";
 import { redirect, usePathname } from "next/navigation";
-import { Menu, X } from "lucide-react";
+import {
+	Menu,
+	X,
+	GraduationCap,
+	BookOpen,
+	LogOut,
+	User,
+	LayoutDashboard,
+	BookMarked,
+} from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
+
+const dropdownVariants = {
+	hidden: { opacity: 0, y: -8, scale: 0.96 },
+	visible: {
+		opacity: 1,
+		y: 0,
+		scale: 1,
+		transition: { duration: 0.18, ease: "easeOut" },
+	},
+	exit: {
+		opacity: 0,
+		y: -8,
+		scale: 0.96,
+		transition: { duration: 0.14, ease: "easeIn" },
+	},
+};
 
 export function MainNav({ items, children }) {
 	const { data: session } = useSession();
@@ -18,9 +43,7 @@ export function MainNav({ items, children }) {
 	const pathname = usePathname();
 	const [loggedInUser, setLoggedInUser] = useState(null);
 
-	if (session?.error === "RefreshAccessTokenError") {
-		redirect("/login");
-	}
+	if (session?.error === "RefreshAccessTokenError") redirect("/login");
 
 	const [open, setOpen] = useState(false);
 	const [openRegistrar, setOpenRegistrar] = useState(false);
@@ -29,60 +52,48 @@ export function MainNav({ items, children }) {
 
 	useEffect(() => {
 		setLoginSession(session);
-
 		async function fetchMe() {
 			try {
-				const response = await fetch("/api/me");
-				const data = await response.json();
+				const res = await fetch("/api/me");
+				const data = await res.json();
 				setLoggedInUser(data);
 			} catch (err) {
 				console.log(err);
 			}
 		}
-
 		fetchMe();
 	}, [session]);
 
 	useEffect(() => {
-		const handleClickOutside = (event: MouseEvent) => {
-			const target = event.target as Node;
-
+		const handleClickOutside = (e: MouseEvent) => {
+			const t = e.target as Node;
 			if (
-				!avatarRef.current?.contains(target) &&
-				!registerRef.current?.contains(target)
+				!avatarRef.current?.contains(t) &&
+				!registerRef.current?.contains(t)
 			) {
 				setOpen(false);
 				setOpenRegistrar(false);
 			}
 		};
-
 		document.addEventListener("mousedown", handleClickOutside);
 		return () =>
 			document.removeEventListener("mousedown", handleClickOutside);
 	}, []);
 
 	const handleOnOff = () => {
-		if (!openRegistrar) {
-			setOpen((prev) => !prev);
-		} else {
-			setOpenRegistrar(false);
-			setOpen((prev) => !prev);
-		}
+		setOpenRegistrar(false);
+		setOpen((prev) => !prev);
 	};
 
 	const handleOnOffRegistrar = () => {
-		if (!open) {
-			setOpenRegistrar((prev) => !prev);
-		} else {
-			setOpen(false);
-			setOpenRegistrar((prev) => !prev);
-		}
+		setOpen(false);
+		setOpenRegistrar((prev) => !prev);
 	};
 
 	return (
 		<header className="fixed top-0 left-0 right-0 w-full z-[100] px-4 container">
 			<div className="mt-4 md:mt-6 flex items-center justify-between rounded-2xl bg-white/60 backdrop-blur-xl border border-white/40 shadow-lg px-4 md:px-6 py-3">
-				{/* LEFT SIDE */}
+				{/* LEFT — logo + nav */}
 				<div className="flex items-center gap-4 lg:gap-10">
 					<Link href="/" className="shrink-0">
 						<img
@@ -115,10 +126,12 @@ export function MainNav({ items, children }) {
 					) : null}
 				</div>
 
-				{/* RIGHT SIDE */}
+				{/* RIGHT — auth buttons / avatar */}
 				<div className="flex items-center gap-2 md:gap-3">
+					{/* ── Logged OUT ─────────────────────────────────────── */}
 					{!loginSession && (
 						<div className="hidden lg:flex items-center gap-3">
+							{/* Login */}
 							<Link
 								href="/login"
 								className="px-5 py-2 text-sm font-medium rounded-full bg-gradient-to-r from-primary to-accent-blue text-white shadow-md hover:scale-105 transition-all"
@@ -126,6 +139,7 @@ export function MainNav({ items, children }) {
 								Login
 							</Link>
 
+							{/* Register dropdown */}
 							<div className="relative" ref={registerRef}>
 								<Button
 									onClick={handleOnOffRegistrar}
@@ -133,12 +147,67 @@ export function MainNav({ items, children }) {
 								>
 									Register
 								</Button>
-								{/* Desktop Register Dropdown remains the same */}
+
+								<AnimatePresence>
+									{openRegistrar && (
+										<motion.div
+											variants={dropdownVariants}
+											initial="hidden"
+											animate="visible"
+											exit="exit"
+											className="absolute right-0 mt-3 w-52 rounded-2xl bg-white border border-gray-100 shadow-2xl z-50 overflow-hidden p-1.5"
+										>
+											<p className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-gray-400">
+												Register as
+											</p>
+
+											<Link
+												href="/register/student"
+												onClick={() =>
+													setOpenRegistrar(false)
+												}
+												className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-700 hover:bg-primary/5 hover:text-primary transition-colors group"
+											>
+												<span className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+													<GraduationCap className="w-4 h-4 text-primary" />
+												</span>
+												<div>
+													<p className="font-semibold text-[13px]">
+														Student
+													</p>
+													<p className="text-[11px] text-gray-400">
+														Learn new skills
+													</p>
+												</div>
+											</Link>
+
+											<Link
+												href="/register/instructor"
+												onClick={() =>
+													setOpenRegistrar(false)
+												}
+												className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-700 hover:bg-primary/5 hover:text-primary transition-colors group"
+											>
+												<span className="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center group-hover:bg-amber-500/20 transition-colors">
+													<BookOpen className="w-4 h-4 text-amber-500" />
+												</span>
+												<div>
+													<p className="font-semibold text-[13px]">
+														Instructor
+													</p>
+													<p className="text-[11px] text-gray-400">
+														Teach & earn
+													</p>
+												</div>
+											</Link>
+										</motion.div>
+									)}
+								</AnimatePresence>
 							</div>
 						</div>
 					)}
 
-					{/* AVATAR (Visible on all screens if logged in) */}
+					{/* ── Logged IN — avatar + dropdown ─────────────────── */}
 					{loginSession && (
 						<div className="relative" ref={avatarRef}>
 							<div
@@ -162,35 +231,82 @@ export function MainNav({ items, children }) {
 									)}
 								</Avatar>
 							</div>
-							{/* Account Dropdown */}
-							<div
-								className={cn(
-									"absolute right-0 mt-6 w-56 rounded-2xl bg-white border shadow-xl transition-all duration-300 z-50",
-									open
-										? "opacity-100 translate-y-0"
-										: "opacity-0 -translate-y-2 pointer-events-none",
+
+							<AnimatePresence>
+								{open && (
+									<motion.div
+										variants={dropdownVariants}
+										initial="hidden"
+										animate="visible"
+										exit="exit"
+										className="absolute right-0 mt-3 w-56 rounded-2xl bg-white border border-gray-100 shadow-2xl z-50 overflow-hidden p-1.5"
+									>
+										{/* User info header */}
+										{loggedInUser && (
+											<div className="px-3 py-2.5 mb-1 border-b border-gray-100">
+												<p className="text-[13px] font-bold text-gray-800 truncate">
+													{loggedInUser.firstName}{" "}
+													{loggedInUser.lastName}
+												</p>
+												<p className="text-[11px] text-gray-400 truncate">
+													{loggedInUser.email}
+												</p>
+											</div>
+										)}
+
+										{/* Profile */}
+										<Link
+											href="/account"
+											onClick={() => setOpen(false)}
+											className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm text-gray-700 hover:bg-primary/5 hover:text-primary transition-colors group"
+										>
+											<User className="w-4 h-4 text-gray-400 group-hover:text-primary transition-colors" />
+											Profile
+										</Link>
+
+										{/* Dashboard — instructors only */}
+										{loggedInUser?.role ===
+											"instructor" && (
+											<Link
+												href="/dashboard"
+												onClick={() => setOpen(false)}
+												className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm text-gray-700 hover:bg-primary/5 hover:text-primary transition-colors group"
+											>
+												<LayoutDashboard className="w-4 h-4 text-gray-400 group-hover:text-primary transition-colors" />
+												Dashboard
+											</Link>
+										)}
+
+										{/* My Courses */}
+										<Link
+											href="/account/enrolled-courses"
+											onClick={() => setOpen(false)}
+											className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm text-gray-700 hover:bg-primary/5 hover:text-primary transition-colors group"
+										>
+											<BookMarked className="w-4 h-4 text-gray-400 group-hover:text-primary transition-colors" />
+											My Courses
+										</Link>
+
+										{/* Divider */}
+										<div className="my-1 border-t border-gray-100" />
+
+										{/* Logout */}
+										<button
+											onClick={() =>
+												signOut({ callbackUrl: "/" })
+											}
+											className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm text-red-500 hover:bg-red-50 transition-colors group"
+										>
+											<LogOut className="w-4 h-4 text-red-400" />
+											Logout
+										</button>
+									</motion.div>
 								)}
-							>
-								<Link
-									href="/account"
-									className="block px-5 py-3 text-sm hover:bg-primary/5"
-									onClick={() => setOpen(false)}
-								>
-									Profile
-								</Link>
-								<button
-									className="w-full text-left px-5 py-3 text-sm text-red-500 hover:bg-red-50"
-									onClick={() =>
-										signOut({ callbackUrl: "/" })
-									}
-								>
-									Logout
-								</button>
-							</div>
+							</AnimatePresence>
 						</div>
 					)}
 
-					{/* MOBILE MENU BUTTON (Only lg:hidden) */}
+					{/* MOBILE MENU BUTTON */}
 					<button
 						className="p-2 lg:hidden"
 						onClick={() => setShowMobileMenu(!showMobileMenu)}
@@ -212,12 +328,13 @@ export function MainNav({ items, children }) {
 			</div>
 
 			<AnimatePresence>
-				{showMobileMenu && (
+				{showMobileMenu && items && (
 					<MobileNav
 						items={items}
-						loginSession={loginSession}
 						onClose={() => setShowMobileMenu(false)}
-					/>
+					>
+						{children}
+					</MobileNav>
 				)}
 			</AnimatePresence>
 		</header>

@@ -9,12 +9,11 @@ import { Quiz } from "./quiz";
 import { DownloadCertificate } from "./download-certificate";
 import { GiveReview } from "./give-review";
 import { hasUserReviewed } from "@/app/actions/testimonial";
+import { BookOpenCheck, LayoutDashboard } from "lucide-react"; // Icons for flair
 
 export const CourseSidebar = async ({ courseId }) => {
 	const course = await getCourseDetails(courseId);
 	const loggedInUser = await getLoggedInUser();
-
-	console.log(loggedInUser);
 
 	const report = await getAReport({
 		course: courseId,
@@ -26,7 +25,7 @@ export const CourseSidebar = async ({ courseId }) => {
 	const totalProgress =
 		totalModules > 0 ? (totalCompletedModules / totalModules) * 100 : 0;
 
-	// Build modules with watch state
+	// Build modules logic (unchanged)
 	const updatedModules = await Promise.all(
 		course?.modules.map(async (module) => {
 			const moduleId = module._id.toString();
@@ -64,59 +63,84 @@ export const CourseSidebar = async ({ courseId }) => {
 	const quizSet = course?.quizSet
 		? {
 				id: course.quizSet._id?.toString(),
+
 				title: course.quizSet.title,
+
 				active: course.quizSet.active,
+
 				quizIds:
 					course.quizSet.quizIds?.map((quiz: any) => ({
 						id: quiz._id?.toString(),
+
 						title: quiz.title,
+
 						description: quiz.description,
+
 						options:
 							quiz.options?.map((option: any) => ({
 								label: option.text,
+
 								isTrue: option.is_correct,
 							})) ?? [],
 					})) ?? [],
 			}
 		: null;
-
 	const isQuizComplete = !!report?.quizAssessment;
-
-	// ── Check if user already reviewed (server-side) ────────────────────────────
 	const alreadyReviewed = await hasUserReviewed(courseId);
 
 	return (
-		<div className="h-full border-r flex flex-col overflow-y-auto shadow-sm">
-			{/* Title + Progress */}
-			<div className="p-8 flex flex-col border-b">
-				<h1 className="font-semibold">{course.title}</h1>
-				<div className="mt-10">
-					<CourseProgress variant="success" value={totalProgress} />
+		<div className="h-full flex flex-col bg-background border-r shadow-sm overflow-hidden">
+			{/* 1. Header Section: Adaptive Padding */}
+			<div className="p-6 lg:p-8 flex flex-col border-b bg-slate-50/50 dark:bg-slate-900/20">
+				<div className="flex items-center gap-x-2 mb-4">
+					<div className="p-2 bg-primary/10 rounded-lg">
+						<BookOpenCheck className="w-5 h-5 text-primary" />
+					</div>
+					<h1 className="font-bold text-lg leading-tight line-clamp-2">
+						{course.title}
+					</h1>
+				</div>
+
+				<div className="space-y-2">
+					<div className="flex justify-between text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+						<span>Your Progress</span>
+						<span>{Math.round(totalProgress)}%</span>
+					</div>
+					<CourseProgress
+						variant="success"
+						value={totalProgress}
+						size="sm"
+					/>
 				</div>
 			</div>
 
-			{/* Modules list */}
-			<SidebarModules courseId={courseId} modules={courseModules} />
+			{/* 2. Scrollable Modules: Flexible area */}
+			<div className="flex-1 overflow-y-auto custom-scrollbar">
+				<SidebarModules courseId={courseId} modules={courseModules} />
 
-			{/* Quiz */}
-			<div className="w-full px-4 lg:px-14 pt-10 border-t">
+				{/* 3. Quiz Section: Responsive horizontal padding */}
 				{quizSet && (
-					<Quiz
-						courseId={courseId}
-						quizSet={quizSet}
-						isTaken={isQuizComplete}
-					/>
+					<div className="px-4 lg:px-6 py-8 border-t bg-slate-50/30">
+						<div className="flex items-center gap-x-2 mb-4 text-sm font-bold text-slate-600">
+							<LayoutDashboard className="w-4 h-4" />
+							Final Assessment
+						</div>
+						<Quiz
+							courseId={courseId}
+							quizSet={quizSet}
+							isTaken={isQuizComplete}
+						/>
+					</div>
 				)}
 			</div>
 
-			{/* Certificate + Review */}
-			<div className="w-full px-6 pb-6">
+			{/* 4. Footer Section: Actions fixed to bottom */}
+			<div className="p-4 lg:p-6 border-t bg-background space-y-3">
 				<DownloadCertificate
 					courseId={courseId}
 					totalProgress={totalProgress}
 				/>
 
-				{/* GiveReview receives hasReviewed so the button is disabled if already done */}
 				<GiveReview
 					courseId={courseId}
 					hasReviewed={alreadyReviewed}

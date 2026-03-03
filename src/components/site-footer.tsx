@@ -49,7 +49,7 @@ export default function Footer() {
 							home.
 						</p>
 
-						<button className="text-white px-8 py-3 rounded-full bg-gradient-to-r from-emerald-600 to-teal-400 hover:shadow-lg transition-all duration-300 hover:scale-105 font-semibold text-sm">
+						<button className="px-8 py-3 bg-gradient-to-r from-primary to-teal-400 text-white rounded-full hover:shadow-xl transition-all duration-300 hover:scale-105 inline-block hover:font-semibold">
 							Contact Us →
 						</button>
 					</div>

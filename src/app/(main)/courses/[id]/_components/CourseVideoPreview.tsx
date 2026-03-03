@@ -76,10 +76,37 @@ export default function CourseVideoPreview({
 			{/* Overlay Gradient for better visibility of UI elements */}
 			<div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors duration-300" />
 
-			{/* Play Button - Responsive Scaling */}
+			{/* Play Button */}
 			<div className="absolute inset-0 flex items-center justify-center">
-				<div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-white/95 flex items-center justify-center shadow-2xl group-hover:scale-110 group-active:scale-95 transition-transform duration-300">
-					<Play className="w-5 h-5 md:w-7 md:h-7 text-primary fill-primary ml-1" />
+				{/* Outer pulse ring */}
+				<div className="relative flex items-center justify-center">
+					{/* Animated pulse rings */}
+					<span className="absolute inline-flex h-20 w-20 md:h-24 md:w-24 rounded-full bg-white/20 animate-ping" />
+					<span className="absolute inline-flex h-16 w-16 md:h-20 md:w-20 rounded-full bg-white/10 animate-ping [animation-delay:300ms]" />
+
+					{/* Main button */}
+					<div
+						className="
+      relative z-10
+      w-14 h-14 md:w-18 md:h-18
+      rounded-full
+      bg-gradient-to-br from-white via-white to-white/80
+      flex items-center justify-center
+      shadow-[0_0_0_4px_rgba(255,255,255,0.2),0_8px_32px_rgba(0,0,0,0.4)]
+      group-hover:shadow-[0_0_0_6px_rgba(42,157,92,0.4),0_12px_40px_rgba(0,0,0,0.5)]
+      group-hover:scale-110 group-active:scale-95
+      transition-all duration-300
+    "
+					>
+						{/* Triangle play icon — sharper than lucide Play */}
+						<svg
+							viewBox="0 0 24 24"
+							className="w-6 h-6 md:w-7 md:h-7 ml-1 text-primary drop-shadow-sm"
+							fill="currentColor"
+						>
+							<polygon points="6,3 20,12 6,21" />
+						</svg>
+					</div>
 				</div>
 			</div>
 
