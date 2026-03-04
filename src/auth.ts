@@ -6,6 +6,7 @@ import { User } from "./model/user.model";
 
 import bcrypt from "bcryptjs";
 import { authConfig } from "./auth.config";
+import { dbConnect } from "./service/mongo";
 
 async function refreshAccessToken(token) {
 	try {
@@ -59,6 +60,8 @@ export const {
 			async authorize(credentials) {
 				if (credentials == null) return null;
 
+				await dbConnect();
+
 				try {
 					const user = await User.findOne({
 						email: credentials?.email,
@@ -68,7 +71,7 @@ export const {
 					if (user) {
 						const isMatch = await bcrypt.compare(
 							credentials.password,
-							user.password
+							user.password,
 						);
 
 						if (isMatch) {
