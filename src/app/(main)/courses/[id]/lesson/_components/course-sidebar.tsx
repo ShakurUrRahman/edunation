@@ -10,6 +10,7 @@ import { DownloadCertificate } from "./download-certificate";
 import { GiveReview } from "./give-review";
 import { hasUserReviewed } from "@/app/actions/testimonial";
 import { BookOpenCheck, LayoutDashboard } from "lucide-react"; // Icons for flair
+import { Suspense } from "react";
 
 export const CourseSidebar = async ({ courseId }) => {
 	const course = await getCourseDetails(courseId);
