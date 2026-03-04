@@ -25,7 +25,7 @@ const CourseLayout = async ({ children, params }: PageProps) => {
 			    Injects a style tag that sets the site header to display:none.
 			    Works because the header is a <header> tag in MainNav.        */}
 			<style>{`
-				body > div > header,
+				body > div > header,footer,
 				header.fixed { display: none !important; }
 			`}</style>
 

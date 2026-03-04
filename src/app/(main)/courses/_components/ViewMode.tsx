@@ -4,7 +4,7 @@ import { LayoutGrid, List } from "lucide-react";
 
 export default function ViewMode({ viewMode, setViewMode, totalCourses = 25 }) {
 	return (
-		<div className="flex flex-col sm:flex-row sm:items-center gap-3 md:gap-4">
+		<div className="md:flex flex-col sm:flex-row sm:items-center gap-3 md:gap-4 hidden">
 			<div className="flex items-center gap-3">
 				{/* Toggle Container */}
 				<div className="flex border border-gray-200 rounded-md overflow-hidden shadow-sm shrink-0">
@@ -62,7 +62,7 @@ export default function ViewMode({ viewMode, setViewMode, totalCourses = 25 }) {
 				<strong className="text-primary font-bold">
 					{totalCourses}
 				</strong>{" "}
-				Courses Available For you
+				Course(s) Available For you
 			</span>
 		</div>
 	);

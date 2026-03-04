@@ -3,100 +3,154 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-
 import { Button } from "@/components/ui/button";
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
 import { credentialLogin } from "@/app/actions";
+import { Loader2, ArrowLeft, LockKeyhole, Mail } from "lucide-react";
 
 export function LoginForm() {
 	const [error, setError] = useState("");
+	const [isPending, setIsPending] = useState(false);
 	const router = useRouter();
 
 	async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
 		event.preventDefault();
 		setError("");
+		setIsPending(true);
 
 		const formData = new FormData(event.currentTarget);
-		const response = await credentialLogin(formData);
 
-		if (response?.error) {
-			setError(response.error); // ✅ email/password error shown here
-			return;
+		try {
+			const response = await credentialLogin(formData);
+
+			if (response?.error) {
+				setError(response.error);
+				setIsPending(false);
+				return;
+			}
+
+			router.push("/courses");
+		} catch (e) {
+			setError("An unexpected error occurred.");
+			setIsPending(false);
 		}
-
-		router.push("/courses");
 	}
 
 	return (
-		<Card className="mx-auto max-w-sm w-full">
-			<CardHeader>
-				<CardTitle className="text-2xl">Login</CardTitle>
-				<CardDescription>
-					Enter your email below to login to your account
-				</CardDescription>
-			</CardHeader>
+		<div className="w-full max-w-md mx-auto p-4">
+			{/* Back Button */}
+			<Button
+				variant="ghost"
+				asChild
+				className="mb-6 group text-muted-foreground hover:text-primary transition-colors"
+			>
+				<Link href="/">
+					<ArrowLeft className="mr-2 h-4 w-4 transition-transform group-hover:-translate-x-1" />
+					Back to Home
+				</Link>
+			</Button>
 
-			<CardContent>
-				{/* ✅ ERROR MESSAGE */}
+			<div className="p-6 sm:p-8 rounded-2xl shadow-xl bg-card border border-primary/20 hero relative overflow-hidden">
+				{/* Top Accent Line */}
+				<div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/40 to-transparent"></div>
+
+				<div className="mb-8 text-center">
+					<h1 className="text-3xl font-bold tracking-tight">Login</h1>
+					<p className="text-sm text-muted-foreground mt-2">
+						Enter your credentials to access your account
+					</p>
+				</div>
+
 				{error && (
-					<div className="mb-4 rounded-md bg-red-50 px-3 py-2 text-sm text-red-600">
+					<div className="mb-6 rounded-lg bg-destructive/10 border border-destructive/20 px-4 py-3 text-sm text-destructive flex items-center gap-2">
+						<span className="h-1.5 w-1.5 rounded-full bg-destructive animate-pulse" />
 						{error}
 					</div>
 				)}
 
-				<form onSubmit={onSubmit}>
-					<div className="grid gap-4">
-						<div className="grid gap-2">
-							<Label htmlFor="email">Email</Label>
-							<Input
-								id="email"
-								name="email"
-								type="email"
-								placeholder="m@example.com"
-								required
-							/>
-						</div>
-
-						<div className="grid gap-2">
-							<Label htmlFor="password">Password</Label>
-							<Input
-								id="password"
-								name="password"
-								type="password"
-								placeholder="*********"
-								required
-							/>
-						</div>
-
-						<Button type="submit" className="w-full">
-							Login
-						</Button>
+				<form onSubmit={onSubmit} className="space-y-5">
+					<div className="space-y-2">
+						<Label
+							htmlFor="email"
+							className="flex items-center gap-2"
+						>
+							<Mail className="w-4 h-4 text-primary/70" />
+							Email
+						</Label>
+						<Input
+							id="email"
+							name="email"
+							type="email"
+							placeholder="name@example.com"
+							required
+							className="focus-visible:ring-primary h-11"
+						/>
 					</div>
+
+					<div className="space-y-2">
+						<div className="flex items-center justify-between">
+							<Label
+								htmlFor="password"
+								className="flex items-center gap-2"
+							>
+								<LockKeyhole className="w-4 h-4 text-primary/70" />
+								Password
+							</Label>
+							<Link
+								href="#"
+								className="text-xs text-primary hover:underline font-medium"
+							>
+								Forgot password?
+							</Link>
+						</div>
+						<Input
+							id="password"
+							name="password"
+							type="password"
+							placeholder="••••••••"
+							required
+							className="focus-visible:ring-primary h-11"
+						/>
+					</div>
+
+					<Button
+						type="submit"
+						disabled={isPending}
+						className="w-full h-11 font-bold shadow-lg transition-all active:scale-95"
+					>
+						{isPending ? (
+							<>
+								<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+								Signing in...
+							</>
+						) : (
+							"Login"
+						)}
+					</Button>
 				</form>
 
-				<div className="mt-4 text-center text-sm">
-					Don&apos;t have an account?{" "}
-					<p>
-						Register as{" "}
-						<Link href="/register/instructor" className="underline">
+				<div className="mt-8 pt-6 border-t border-primary/10 text-center text-sm">
+					<span className="text-muted-foreground">
+						Don't have an account?
+					</span>
+					<div className="mt-2 flex items-center justify-center gap-2 font-semibold">
+						<Link
+							href="/register/instructor"
+							className="text-primary hover:underline"
+						>
 							Instructor
-						</Link>{" "}
-						or{" "}
-						<Link href="/register/student" className="underline">
+						</Link>
+						<span className="text-muted-foreground/30">•</span>
+						<Link
+							href="/register/student"
+							className="text-primary hover:underline"
+						>
 							Student
 						</Link>
-					</p>
+					</div>
 				</div>
-			</CardContent>
-		</Card>
+			</div>
+		</div>
 	);
 }

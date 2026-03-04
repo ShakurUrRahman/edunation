@@ -226,7 +226,7 @@ export default function CoursesClient({
 	return (
 		<div>
 			{/* ── Top bar ──────────────────────────────────────────────────── */}
-			<div className="flex flex-col gap-3 mb-6">
+			<div className="flex sm:flex-row md:flex-col justify-between lg:flex-row gap-3 mb-6">
 				{/* Row 1: view mode left | sort + filter-toggle right */}
 				<div className="flex items-center justify-between gap-2">
 					<ViewMode
@@ -234,13 +234,7 @@ export default function CoursesClient({
 						setViewMode={setViewMode}
 						totalCourses={sortedCourses.length}
 					/>
-
-					<div className="flex items-center gap-2 shrink-0">
-						<SortCourse
-							sortOption={sortOption}
-							setSortOption={handleSort}
-						/>
-						{/* Mobile filter toggle — hidden on desktop */}
+					<div>
 						<button
 							onClick={() => setIsFilterOpen(true)}
 							className="lg:hidden flex items-center gap-1.5 px-3 py-2 bg-white border border-gray-200 rounded-lg shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors whitespace-nowrap"
@@ -250,9 +244,17 @@ export default function CoursesClient({
 						</button>
 					</div>
 				</div>
-
-				{/* Row 2: search full width */}
-				<SearchBox onSearch={handleSearch} />
+				<div className="sm:flex gap-2 space-y-2">
+					{/* Row 2: search full width */}
+					<SearchBox onSearch={handleSearch} />
+					<div className="flex items-center gap-2 shrink-0">
+						<SortCourse
+							sortOption={sortOption}
+							setSortOption={handleSort}
+						/>
+						{/* Mobile filter toggle — hidden on desktop */}
+					</div>
+				</div>
 			</div>
 
 			{/* ── Active filter pills ───────────────────────────────────────── */}
@@ -284,7 +286,7 @@ export default function CoursesClient({
 				{/* Mobile drawer */}
 				<div
 					className={`
-						fixed top-0 left-0 h-full w-[290px] z-50
+						fixed top-0 left-0 h-full w-[290px] z-100
 						bg-white shadow-2xl overflow-y-auto
 						transition-transform duration-300 ease-in-out
 						lg:hidden

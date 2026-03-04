@@ -66,7 +66,7 @@ export default async function CoursesPage({ searchParams }: PageProps) {
 		: null;
 
 	return (
-		<div className="container mt-24 mb-48">
+		<div className="container mt-12 mb-48">
 			<CoursesClient
 				courses={courses}
 				categories={categories}

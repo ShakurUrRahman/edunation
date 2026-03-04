@@ -91,7 +91,7 @@ export const CourseSidebar = async ({ courseId }) => {
 	return (
 		<div className="h-full flex flex-col bg-background border-r shadow-sm overflow-hidden">
 			{/* 1. Header Section: Adaptive Padding */}
-			<div className="p-6 lg:p-8 flex flex-col border-b bg-slate-50/50 dark:bg-slate-900/20">
+			<div className="p-6 lg:p-8 flex flex-col border-b hero dark:bg-slate-900/20">
 				<div className="flex items-center gap-x-2 mb-4">
 					<div className="p-2 bg-primary/10 rounded-lg">
 						<BookOpenCheck className="w-5 h-5 text-primary" />

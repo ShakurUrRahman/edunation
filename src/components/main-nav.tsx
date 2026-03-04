@@ -155,7 +155,7 @@ export function MainNav({ items, children }) {
 											initial="hidden"
 											animate="visible"
 											exit="exit"
-											className="absolute right-0 mt-3 w-52 rounded-2xl bg-white border border-gray-100 shadow-2xl z-50 overflow-hidden p-1.5"
+											className="absolute right-0 mt-6 w-52 rounded-2xl bg-white border border-gray-100 shadow-2xl z-50 overflow-hidden p-1.5"
 										>
 											<p className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-gray-400">
 												Register as
@@ -239,7 +239,7 @@ export function MainNav({ items, children }) {
 										initial="hidden"
 										animate="visible"
 										exit="exit"
-										className="absolute right-0 mt-3 w-56 rounded-2xl bg-white border border-gray-100 shadow-2xl z-50 overflow-hidden p-1.5"
+										className="absolute right-0 mt-6 w-56 rounded-2xl bg-white border border-gray-100 shadow-2xl z-50 overflow-hidden p-1.5"
 									>
 										{/* User info header */}
 										{loggedInUser && (
