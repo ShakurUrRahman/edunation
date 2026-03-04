@@ -10,7 +10,9 @@ let cached = (global as any).mongoose ?? { conn: null, promise: null };
 (global as any).mongoose = cached;
 
 export async function dbConnect() {
-	console.log("URI:", process.env.MONGODB_URI?.slice(0, 30));
+	console.log("URI length:", process.env.MONGODB_URI?.length);
+	console.log("Has @:", process.env.MONGODB_URI?.includes("@"));
+	console.log("Has .net:", process.env.MONGODB_URI?.includes(".net"));
 	if (cached.conn) return cached.conn;
 
 	if (!cached.promise) {

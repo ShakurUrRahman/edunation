@@ -116,7 +116,18 @@ export const CourseSidebar = async ({ courseId }) => {
 
 			{/* 2. Scrollable Modules: Flexible area */}
 			<div className="flex-1 overflow-y-auto custom-scrollbar">
-				<SidebarModules courseId={courseId} modules={courseModules} />
+				<Suspense
+					fallback={
+						<div className="px-6 py-4 text-sm text-gray-400">
+							Loading...
+						</div>
+					}
+				>
+					<SidebarModules
+						courseId={courseId}
+						modules={courseModules}
+					/>
+				</Suspense>
 
 				{/* 3. Quiz Section: Responsive horizontal padding */}
 				{quizSet && (
