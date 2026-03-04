@@ -1,13 +1,16 @@
 import { Enrollment } from "@/model/enrollment-model";
 import { Course } from "@/model/course-model";
 import { replaceMongoIdInArray } from "@/lib/convertData";
+import { dbConnect } from "@/service/mongo";
 
 export async function getEnrollmentsForCourse(courseId) {
+	await dbConnect();
 	const enrollments = await Enrollment.find({ course: courseId }).lean();
 	return replaceMongoIdInArray(enrollments);
 }
 
 export async function getEnrollmentsForUser(userId) {
+	await dbConnect();
 	try {
 		const enrollments = await Enrollment.find({ student: userId })
 			.populate({
@@ -22,6 +25,7 @@ export async function getEnrollmentsForUser(userId) {
 }
 
 export async function hasEnrollmentForCourse(courseId, studentId) {
+	await dbConnect();
 	try {
 		const enrollment = await Enrollment.findOne({
 			course: courseId,
@@ -42,6 +46,7 @@ export async function hasEnrollmentForCourse(courseId, studentId) {
 }
 
 export async function enrollForCourse(courseId, userId, paymentMethod) {
+	await dbConnect();
 	const newEnrollment = {
 		course: courseId,
 		student: userId,
