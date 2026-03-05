@@ -67,7 +67,7 @@ const CourseCard = ({
 						src={course?.thumbnail}
 						alt={course?.title ?? "Course"}
 						fill
-						className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+						className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
 					/>
 				</Link>
 

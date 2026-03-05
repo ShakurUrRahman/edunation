@@ -17,6 +17,7 @@ import { LessonDescriptionForm } from "./lesson-description-form";
 import { LessonAccessForm } from "./lesson-access-form";
 import { VideoUrlForm } from "./video-url-form";
 import { LessonActions } from "./lesson-action";
+import { useEffect, useState } from "react";
 
 export const LessonModal = ({
 	open,

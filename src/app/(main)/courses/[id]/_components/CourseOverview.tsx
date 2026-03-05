@@ -33,7 +33,7 @@ export default function CourseOverview({ course, totalDuration }: Props) {
 					<h2 className="text-xl md:text-2xl font-bold mb-4 md:mb-6 text-gray-900">
 						Course Description
 					</h2>
-					<p className="text-sm md:text-base text-gray-600 leading-relaxed whitespace-pre-line">
+					<p className=" md:text-base text-gray-600 leading-relaxed whitespace-pre-line">
 						{course.description}
 					</p>
 				</section>
@@ -55,12 +55,12 @@ export default function CourseOverview({ course, totalDuration }: Props) {
 						{course.learning.map((item, i) => (
 							<div
 								key={i}
-								className="group flex items-start gap-3 rounded-xl p-2 md:p-3 transition-all duration-200 hover:bg-white hover:shadow-sm"
+								className="group flex items-center gap-3 rounded-xl p-2 md:p-3 transition-all duration-200 hover:bg-white hover:shadow-sm"
 							>
 								<div className="flex items-center justify-center w-5 h-5 md:w-6 md:h-6 rounded-full bg-primary/10 shrink-0 mt-0.5">
 									<CheckCircle className="w-3.5 h-3.5 md:w-4 md:h-4 text-primary" />
 								</div>
-								<span className="text-sm text-gray-700 leading-snug md:leading-relaxed">
+								<span className=" text-gray-700 leading-snug md:leading-relaxed">
 									{item}
 								</span>
 							</div>
@@ -88,7 +88,7 @@ export default function CourseOverview({ course, totalDuration }: Props) {
 					/>
 					<FeatureItem
 						icon={<Download size={18} />}
-						text="1 downloadable resource"
+						text="200+ downloadable resource"
 					/>
 					<FeatureItem
 						icon={<ClipboardList size={18} />}
@@ -100,7 +100,7 @@ export default function CourseOverview({ course, totalDuration }: Props) {
 					/>
 					<FeatureItem
 						icon={<FileText size={18} />}
-						text="1 article"
+						text="23 articles"
 					/>
 					<FeatureItem
 						icon={<Award size={18} />}
@@ -117,7 +117,7 @@ function FeatureItem({ icon, text }: { icon: React.ReactNode; text: string }) {
 	return (
 		<div className="group flex items-center gap-3 p-2.5 md:p-3 rounded-lg transition-all duration-200 hover:bg-white hover:shadow-sm">
 			<div className="text-primary shrink-0">{icon}</div>
-			<span className="text-sm text-gray-700 font-medium">{text}</span>
+			<span className=" text-gray-700 font-medium">{text}</span>
 		</div>
 	);
 }

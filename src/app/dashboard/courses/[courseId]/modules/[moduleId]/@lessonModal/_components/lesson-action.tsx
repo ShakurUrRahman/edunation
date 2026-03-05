@@ -4,7 +4,7 @@ import { Trash } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { toast } from "sonner";
 
@@ -22,7 +22,7 @@ export const LessonActions = ({ lesson, moduleId, onDelete }) => {
 			switch (action) {
 				case "change-active": {
 					const activeState = await changeLessonPublishState(
-						lesson.id
+						lesson.id,
 					);
 					setPublished(!activeState);
 					toast.success("The lesson has been updated");
@@ -32,7 +32,7 @@ export const LessonActions = ({ lesson, moduleId, onDelete }) => {
 				case "delete": {
 					if (published) {
 						toast.error(
-							"A published lesson can not be deleted. First unpublish it, then delete."
+							"A published lesson can not be deleted. First unpublish it, then delete.",
 						);
 					} else {
 						await deleteLesson(lesson.id, moduleId);

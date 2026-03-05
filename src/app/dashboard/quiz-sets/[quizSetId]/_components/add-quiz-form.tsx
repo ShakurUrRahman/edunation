@@ -32,13 +32,6 @@ const formSchema = z.object({
 		.min(1, {
 			message: "Title is required",
 		}),
-	description: z
-		.string({
-			required_error: "Description is required",
-		})
-		.min(1, {
-			message: "Description is required",
-		}),
 	optionA: z.object({
 		label: z
 			.string({
@@ -382,7 +375,7 @@ export const AddQuizForm = ({ quizSetId }) => {
 							</div>
 						</div>
 						{/* --------------- OPTION D ENDS -------- */}
-						<div className="flex items-center justify-end gap-x-2">
+						<div className="flex items-center justify-center gap-x-2">
 							<Button disabled={isSubmitting} type="submit">
 								Save
 							</Button>

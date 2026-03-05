@@ -5,6 +5,7 @@ import { create } from "@/queries/courses";
 import { Course } from "@/model/course-model";
 import { getLoggedInUser } from "@/lib/loggedIn-user";
 import mongoose from "mongoose";
+import { dbConnect } from "@/service/mongo";
 
 export async function createCourse(data) {
 	try {
@@ -18,6 +19,7 @@ export async function createCourse(data) {
 }
 
 export async function updateCourse(courseId, dataToUpdate) {
+	await dbConnect();
 	try {
 		await Course.findByIdAndUpdate(courseId, dataToUpdate);
 	} catch (e) {
@@ -31,7 +33,7 @@ export async function changeCoursePublishState(courseId) {
 		const res = await Course.findByIdAndUpdate(
 			courseId,
 			{ active: !course.active },
-			{ lean: true }
+			{ lean: true },
 		);
 		return res.active;
 	} catch (err) {

@@ -24,7 +24,7 @@ const EditQuizSet = async ({ params }: PageProps) => {
 	const quizzes = quizSet.quizIds.map((quiz) => {
 		return {
 			id: quiz._id.toString(),
-			title: quiz.question,
+			title: quiz.title,
 			options: quiz.options.map((option) => {
 				return {
 					label: option.text,

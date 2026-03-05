@@ -19,7 +19,6 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { LessonList } from "./lesson-list";
-import { LessonModal } from "./lesson-modal";
 import { getSlug } from "@/lib/convertData";
 
 import { createLesson } from "@/app/actions/lesson";
@@ -40,15 +39,15 @@ const initialLessons = [
 	},
 ];
 export const LessonForm = ({ initialData, moduleId, courseId }) => {
-	const [isEditing, setIsEditing] = useState(false);
 	const [lessons, setLessons] = useState(initialData);
 	const router = useRouter();
 	const [isCreating, setIsCreating] = useState(false);
 	const [isUpdating, setIsUpdating] = useState(false);
 
-	const [lessonToEdit, setLessonToEdit] = useState(null);
-
-	const toggleCreating = () => setIsCreating((current) => !current);
+	const toggleCreating = () => {
+		form.reset(); // ← add this
+		setIsCreating((current) => !current);
+	};
 	const toggleEditing = () => setIsEditing((current) => !current);
 
 	const form = useForm({
@@ -80,6 +79,7 @@ export const LessonForm = ({ initialData, moduleId, courseId }) => {
 				},
 			]);
 			toast.success("Lesson created");
+			form.reset();
 			toggleCreating();
 			router.refresh();
 		} catch (error) {
@@ -101,10 +101,8 @@ export const LessonForm = ({ initialData, moduleId, courseId }) => {
 		}
 	};
 
-	const onEdit = (id) => {
-		const foundLesson = lessons.find((lesson) => lesson.id === id);
-		setLessonToEdit(foundLesson);
-		setIsEditing(true);
+	const onEdit = (id: string) => {
+		router.push(`/dashboard/courses/${courseId}/modules/${moduleId}/${id}`);
 	};
 
 	return (
@@ -163,7 +161,7 @@ export const LessonForm = ({ initialData, moduleId, courseId }) => {
 				<div
 					className={cn(
 						"text-sm mt-2",
-						!lessons?.length && "text-slate-500 italic"
+						!lessons?.length && "text-slate-500 italic",
 					)}
 				>
 					{!lessons?.length && "No Lesson"}
@@ -179,16 +177,6 @@ export const LessonForm = ({ initialData, moduleId, courseId }) => {
 					Drag & Drop to reorder the lessons
 				</p>
 			)}
-			<LessonModal
-				open={isEditing}
-				setOpen={setIsEditing}
-				courseId={courseId}
-				moduleId={moduleId}
-				lesson={lessonToEdit}
-				onclose={() => {
-					window.location.reload();
-				}}
-			/>
 		</div>
 	);
 };

@@ -4,8 +4,10 @@ import { create } from "@/queries/modules";
 import { Course } from "@/model/course-model";
 import { Module } from "@/model/module.model";
 import mongoose from "mongoose";
+import { dbConnect } from "@/service/mongo";
 
 export async function createModule(data) {
+	await dbConnect();
 	try {
 		const title = data.get("title");
 		const slug = data.get("slug");
@@ -46,7 +48,7 @@ export async function reOrderModules(data) {
 				await Module.findByIdAndUpdate(element.id, {
 					order: element.position,
 				});
-			})
+			}),
 		);
 
 		//
@@ -55,6 +57,7 @@ export async function reOrderModules(data) {
 	}
 }
 export async function updateModule(moduleId, data) {
+	await dbConnect();
 	try {
 		await Module.findByIdAndUpdate(moduleId, data);
 	} catch (err) {
@@ -69,7 +72,7 @@ export async function changeModulePublishState(moduleId) {
 		const res = await Module.findByIdAndUpdate(
 			moduleId,
 			{ active: !module.active },
-			{ lean: true }
+			{ lean: true },
 		);
 		return res.active;
 	} catch (err) {

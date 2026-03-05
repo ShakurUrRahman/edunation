@@ -3,7 +3,9 @@
 import { Lesson } from "@/model/lesson.model";
 import { Module } from "@/model/module.model";
 import { create } from "@/queries/lessons";
+import { dbConnect } from "@/service/mongo";
 import mongoose from "mongoose";
+import { revalidatePath } from "next/cache";
 
 export async function createLesson(data) {
 	try {
@@ -34,7 +36,7 @@ export async function reOrderLesson(data) {
 				await Lesson.findByIdAndUpdate(element.id, {
 					order: element.position,
 				});
-			})
+			}),
 		);
 	} catch (err) {
 		throw new Error(err);
@@ -42,23 +44,25 @@ export async function reOrderLesson(data) {
 }
 
 export async function updateLesson(lessonId, data) {
-	console.log("**** updateLesson", lessonId, data);
+	await dbConnect();
 	try {
 		await Lesson.findByIdAndUpdate(lessonId, data);
+		revalidatePath("/dashboard", "layout");
 	} catch (err) {
 		throw new Error(err);
 	}
 }
 
 export async function changeLessonPublishState(lessonId) {
-	console.log("changeLessonPublishState", lessonId);
+	await dbConnect();
 	const lesson = await Lesson.findById(lessonId);
 	try {
 		const res = await Lesson.findByIdAndUpdate(
 			lessonId,
 			{ active: !lesson.active },
-			{ lean: true }
+			{ lean: true },
 		);
+		revalidatePath("/dashboard", "layout");
 		return res.active;
 	} catch (err) {
 		throw new Error(err);

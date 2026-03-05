@@ -23,7 +23,7 @@ import { getCourseDetails } from "@/queries/courses";
 import { getAllQuizSets } from "@/queries/quizzes";
 import { replaceMongoIdInArray } from "@/lib/convertData";
 import { PreviewVideoForm } from "./_components/preview-video-form";
-import { LearningForm } from "./_components/learnin-form";
+import { LearningForm } from "./_components/learning-form";
 
 type PageProps = {
 	params: Promise<{ courseId: string }>;

@@ -34,7 +34,10 @@ export const ModulesForm = ({ initialData, courseId }) => {
 	const [isCreating, setIsCreating] = useState(false);
 	const [isUpdating, setIsUpdating] = useState(false);
 
-	const toggleCreating = () => setIsCreating((current) => !current);
+	const toggleCreating = () => {
+		form.reset();
+		setIsCreating((current) => !current);
+	};
 
 	const form = useForm({
 		resolver: zodResolver(formSchema),
@@ -63,6 +66,7 @@ export const ModulesForm = ({ initialData, courseId }) => {
 				},
 			]);
 			toast.success("Module created");
+			form.reset();
 			toggleCreating();
 			router.refresh();
 		} catch (error) {
@@ -145,7 +149,7 @@ export const ModulesForm = ({ initialData, courseId }) => {
 				<div
 					className={cn(
 						"text-sm mt-2",
-						!modules?.length && "text-slate-500 italic"
+						!modules?.length && "text-slate-500 italic",
 					)}
 				>
 					{!modules?.length && "No module"}

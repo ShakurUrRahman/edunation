@@ -1,7 +1,13 @@
 "use client";
 
 import React, { useState } from "react";
-import { ChevronDown, ChevronUp, PlayCircle } from "lucide-react";
+import {
+	ChevronDown,
+	ChevronUp,
+	KeyRoundIcon,
+	LockIcon,
+	PlayCircle,
+} from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -53,7 +59,7 @@ export default function CourseCurriculum({
 							{totalDuration
 								? (totalDuration / 3600).toFixed(1)
 								: 0}{" "}
-							hours total
+							hours total duration
 						</span>
 					</div>
 				</div>
@@ -126,7 +132,7 @@ export default function CourseCurriculum({
 															className="flex items-start justify-between p-2 rounded-md hover:bg-gray-50 transition-colors group cursor-default"
 														>
 															<div className="flex items-start gap-3 text-sm text-gray-600">
-																<PlayCircle
+																<LockIcon
 																	size={16}
 																	className="text-primary mt-0.5 shrink-0"
 																/>
