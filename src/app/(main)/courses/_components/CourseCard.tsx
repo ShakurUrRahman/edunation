@@ -55,7 +55,6 @@ const CourseCard = ({
         hover:-translate-y-1 transition-all duration-400 ease-out
       `}
 		>
-			{/* ── Thumbnail Section ────────────────────────────────────────── */}
 			<div
 				className={`
             relative overflow-hidden shrink-0
@@ -63,12 +62,38 @@ const CourseCard = ({
          `}
 			>
 				<Link href={`/courses/${course.id}`}>
-					<Image
-						src={course?.thumbnail}
-						alt={course?.title ?? "Course"}
-						fill
-						className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-					/>
+					{course?.thumbnail ? (
+						<Image
+							src={course.thumbnail}
+							alt={course?.title ?? "Course thumbnail"}
+							fill
+							className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
+							sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+						/>
+					) : (
+						<div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-teal-500/10 to-gray-900 flex flex-col items-center justify-center gap-2">
+							<svg
+								className="w-10 h-10 text-primary/40"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								strokeWidth="1.5"
+							>
+								<rect
+									x="3"
+									y="3"
+									width="18"
+									height="18"
+									rx="3"
+								/>
+								<circle cx="8.5" cy="8.5" r="1.5" />
+								<path d="m21 15-5-5L5 21" />
+							</svg>
+							<span className="text-xs text-white/30 font-medium">
+								No thumbnail
+							</span>
+						</div>
+					)}
 				</Link>
 
 				<div className="absolute inset-0 bg-gradient-to-t from-[#072e0d] via-[#0f2314]/30 to-transparent" />
@@ -115,13 +140,10 @@ const CourseCard = ({
 				</Link>
 
 				{/* Instructor */}
-				{(course?.instructor?.firstName ||
-					course?.instructor?.name) && (
+				{course?.instructor?.firstName && (
 					<p className="text-xs text-white/50 mb-3">
-						by{" "}
-						{course.instructor.firstName
-							? `${course.instructor.firstName} ${course.instructor.lastName ?? ""}`
-							: course.instructor.name}
+						by {course.instructor.firstName}{" "}
+						{course.instructor.lastName}
 					</p>
 				)}
 

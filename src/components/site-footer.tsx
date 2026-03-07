@@ -37,11 +37,11 @@ export default function Footer() {
 			<div className="container mx-auto px-6 pb-16 pt-12 md:pt-24 lg:pt-32">
 				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
 					{/* Logo + About */}
-					<div className="flex flex-col items-start">
+					<div className="flex flex-col items-start -mt-[13px]">
 						<img
 							src="/assets/logo.png"
 							alt="EduNation Logo"
-							className="w-auto h-12 md:h-16 mb-4 -ml-2"
+							className="w-auto h-12 md:h-16 mb-4 -ml-3"
 						/>
 						<p className="text-gray-600 leading-relaxed mb-6 text-sm md:text-base">
 							Access expert-led courses designed to help you

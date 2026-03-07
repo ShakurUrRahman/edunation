@@ -29,8 +29,8 @@ export default async function CoursesPage({ searchParams }: PageProps) {
 		instructor: course?.instructor
 			? {
 					id: course.instructor._id?.toString(),
-					name: course.instructor.name ?? null,
-					avatar: course.instructor.avatar ?? null,
+					firstName: course.instructor.firstName ?? null, // ← fix
+					lastName: course.instructor.lastName ?? null, // ← fix
 				}
 			: null,
 

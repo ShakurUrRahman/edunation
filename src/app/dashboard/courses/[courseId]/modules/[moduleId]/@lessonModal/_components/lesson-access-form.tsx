@@ -76,7 +76,7 @@ export const LessonAccessForm = ({ initialData, courseId, lessonId }) => {
 				<p
 					className={cn(
 						"text-sm mt-2",
-						!free && "text-slate-500 italic"
+						!free && "text-slate-500 italic",
 					)}
 				>
 					{free ? (
@@ -99,6 +99,7 @@ export const LessonAccessForm = ({ initialData, courseId, lessonId }) => {
 								<FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
 									<FormControl>
 										<Checkbox
+											className="!border-2 !border-muted-foreground transition-all"
 											checked={field.value}
 											onCheckedChange={field.onChange}
 										/>

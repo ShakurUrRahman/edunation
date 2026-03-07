@@ -5,11 +5,19 @@ import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface Props {
-	children: React.ReactNode; // CourseSidebar passed from server layout
+	children: React.ReactNode;
 }
 
 export const CourseSidebarMobile = ({ children }: Props) => {
 	const [open, setOpen] = useState(false);
+
+	const handleContentClick = (e: React.MouseEvent) => {
+		// Close only when an anchor/link is clicked
+		const target = e.target as HTMLElement;
+		if (target.closest("a")) {
+			setOpen(false);
+		}
+	};
 
 	return (
 		<>
@@ -54,9 +62,13 @@ export const CourseSidebarMobile = ({ children }: Props) => {
 									<X className="w-4 h-4" />
 								</button>
 							</div>
-							<div className="flex-1 overflow-hidden">
-								{children}{" "}
-								{/* ← server component renders here safely */}
+
+							{/* ← close when any link inside is clicked */}
+							<div
+								className="flex-1 overflow-hidden"
+								onClick={handleContentClick}
+							>
+								{children}
 							</div>
 						</motion.div>
 					</>
