@@ -25,7 +25,7 @@ export default function CoursesSection({ courses, categories, loggedInUser }) {
 
 	return (
 		<section className="hero overflow-hidden">
-			<div className="py-16 md:py-24 lg:py-26">
+			<div className="py-16 md:py-22 md:mb-20 mb-10">
 				<div className="container mx-auto px-4 md:px-6">
 					{/* Section Header */}
 					<div className="mb-10 md:mb-16 text-center max-w-3xl mx-auto">
