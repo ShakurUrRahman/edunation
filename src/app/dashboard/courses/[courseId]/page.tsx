@@ -20,10 +20,12 @@ import AlertBanner from "@/components/alert-banner";
 
 import { getCategories } from "@/queries/categories";
 import { getCourseDetails } from "@/queries/courses";
-import { getAllQuizSets } from "@/queries/quizzes";
+import { getAllQuizSets, getQuizSetsByInstructorId } from "@/queries/quizzes";
 import { replaceMongoIdInArray } from "@/lib/convertData";
 import { PreviewVideoForm } from "./_components/preview-video-form";
 import { LearningForm } from "./_components/learning-form";
+import { auth } from "@/auth";
+import { getLoggedInUser } from "@/lib/loggedIn-user";
 
 type PageProps = {
 	params: Promise<{ courseId: string }>;
@@ -54,9 +56,13 @@ const EditCourse = async ({ params }: PageProps) => {
 	}));
 
 	// Quiz sets
-	const allQuizSets = await getAllQuizSets(true);
-	const mappedQuizSet = allQuizSets?.length
-		? allQuizSets.map((qs) => ({ value: qs.id, label: qs.title }))
+	const session = await auth();
+	const loggedInUser = await getLoggedInUser(session?.user?.id);
+	const quizSets = await getQuizSetsByInstructorId(loggedInUser?.id);
+	// console.log(quizSets);
+
+	const mappedQuizSet = quizSets?.length
+		? quizSets.map((qs) => ({ value: qs.id, label: qs.title }))
 		: [];
 
 	return (

@@ -75,17 +75,23 @@ const EditQuizSet = async ({ params }: PageProps) => {
 												return (
 													<div
 														className={cn(
-															"py-1.5 rounded-sm  text-sm flex items-center gap-1 text-gray-600",
+															"py-1.5 rounded-sm  text-sm flex gap-2 text-gray-600",
 														)}
 														key={option.label}
 													>
-														{option.isTrue ? (
-															<CircleCheck className="size-4 text-emerald-500 " />
-														) : (
-															<Circle className="size-4" />
-														)}
+														<div className="self-center">
+															{option.isTrue ? (
+																<CircleCheck className="size-4 text-emerald-500 " />
+															) : (
+																<Circle className="size-4" />
+															)}
+														</div>
 
-														<p>{option.label}</p>
+														<div className="self-start">
+															<p>
+																{option.label}
+															</p>
+														</div>
 													</div>
 												);
 											})}

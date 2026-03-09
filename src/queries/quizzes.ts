@@ -5,6 +5,7 @@ import {
 	replaceMongoIdInObject,
 } from "@/lib/convertData";
 import { dbConnect } from "@/service/mongo";
+import { Course } from "@/model/course-model";
 
 export async function getAllQuizSets(excludeUnPublished) {
 	await dbConnect();
@@ -41,6 +42,19 @@ export async function createQuiz(quizData) {
 	try {
 		const quiz = await Quiz.create(quizData);
 		return quiz._id.toString();
+	} catch (e) {
+		throw new Error(e);
+	}
+}
+
+export async function getQuizSetsByInstructorId(instructorId: string) {
+	await dbConnect();
+	try {
+		const quizSets = await Quizset.find({
+			instructor: instructorId,
+			active: true,
+		}).lean();
+		return replaceMongoIdInArray(quizSets);
 	} catch (e) {
 		throw new Error(e);
 	}

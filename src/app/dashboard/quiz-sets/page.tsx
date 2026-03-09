@@ -1,9 +1,19 @@
+import { auth } from "@/auth";
 import { columns } from "./_components/columns";
 import { DataTable } from "./_components/data-table";
-import { getAllQuizSets } from "@/queries/quizzes";
+import { getAllQuizSets, getQuizSetsByInstructorId } from "@/queries/quizzes";
+import { getLoggedInUser } from "@/lib/loggedIn-user";
 
 const QuizSets = async () => {
-	const quizSets = await getAllQuizSets();
+	const session = await auth();
+	const loggedInUser = await getLoggedInUser(session?.user?.id);
+
+	// console.log(loggedInUser);
+
+	const quizSets = await getQuizSetsByInstructorId(loggedInUser?.id);
+
+	console.log(quizSets);
+
 	const mappedQuizSets = quizSets.map((q) => {
 		return {
 			id: q.id,

@@ -138,9 +138,10 @@ export async function deleteQuiz(quizId: string, quizSetId: string) {
 }
 
 export async function doCreateQuizSet(data) {
-	await dbConnect();
 	try {
+		const loggedInUser = await getLoggedInUser(); // ← get instructor in action
 		data["slug"] = getSlug(data.title);
+		data["instructor"] = loggedInUser.id; // ← attach instructor
 		const createdQuizSet = await Quizset.create(data);
 		return createdQuizSet?._id.toString();
 	} catch (e) {

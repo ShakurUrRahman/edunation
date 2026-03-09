@@ -17,6 +17,7 @@ const quizesetSchema = new Schema({
 		default: false,
 		type: Boolean,
 	},
+	instructor: { type: Schema.ObjectId, ref: "User" },
 });
 
 export const Quizset =
