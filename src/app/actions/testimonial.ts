@@ -56,8 +56,8 @@ export async function createTestimonial({
 }
 
 export async function hasUserReviewed(courseId: string): Promise<boolean> {
+	await dbConnect();
 	try {
-		await dbConnect();
 		const loggedInUser = await getLoggedInUser();
 		if (!loggedInUser) return false;
 

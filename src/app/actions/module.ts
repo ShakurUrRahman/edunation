@@ -39,7 +39,7 @@ export async function reOrderModules(data) {
         { id: '66577a9091726a7429e0b99d', position: 2 }
     ]
     */
-
+	await dbConnect();
 	try {
 		console.log(data);
 
@@ -66,6 +66,7 @@ export async function updateModule(moduleId, data) {
 }
 
 export async function changeModulePublishState(moduleId) {
+	await dbConnect();
 	console.log("changeModulePublishState", moduleId);
 	const module = await Module.findById(moduleId);
 	try {
@@ -81,6 +82,7 @@ export async function changeModulePublishState(moduleId) {
 }
 
 export async function deleteModule(moduleId, courseId) {
+	await dbConnect();
 	console.log("delete", moduleId, courseId);
 	try {
 		const course = await Course.findById(courseId);

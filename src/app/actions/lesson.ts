@@ -8,6 +8,7 @@ import mongoose from "mongoose";
 import { revalidatePath } from "next/cache";
 
 export async function createLesson(data) {
+	await dbConnect();
 	try {
 		const title = data.get("title");
 		const slug = data.get("slug");
@@ -30,6 +31,7 @@ export async function createLesson(data) {
 }
 
 export async function reOrderLesson(data) {
+	await dbConnect();
 	try {
 		await Promise.all(
 			data.map(async (element) => {
@@ -70,6 +72,7 @@ export async function changeLessonPublishState(lessonId) {
 }
 
 export async function deleteLesson(lessonId, moduleId) {
+	await dbConnect();
 	try {
 		const module = await Module.findById(moduleId);
 		module.lessonIds.pull(new mongoose.Types.ObjectId(lessonId));

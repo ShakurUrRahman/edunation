@@ -60,7 +60,7 @@ export async function createPaymentIntent(data) {
 		amount: formatAmountForStripe(
 			coursePrice,
 
-			CURRENCY
+			CURRENCY,
 		),
 
 		automatic_payment_methods: { enabled: true },
