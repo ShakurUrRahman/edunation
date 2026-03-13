@@ -3,7 +3,7 @@
 import { signIn } from "@/auth";
 
 export async function credentialLogin(formData: FormData) {
-	await dbConnect();
+	
 	try {
 		const result = await signIn("credentials", {
 			email: formData.get("email"),
@@ -27,7 +27,7 @@ export async function credentialLogin(formData: FormData) {
 }
 
 export async function doSocialLogin(formData) {
-	await dbConnect();
+	
 	const action = formData.get("action");
 	await signIn(action, { redirectTo: "/courses" });
 }
