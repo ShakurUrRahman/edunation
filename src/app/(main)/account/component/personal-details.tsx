@@ -9,7 +9,7 @@ import { updateUserInfo } from "@/app/actions/account";
 import { toast } from "sonner";
 import { Loader2, Save } from "lucide-react";
 
-const PersonalDetails = ({ userInfo }) => {
+const PersonalDetails = ({ userInfo, isInstructor }) => {
 	const [isPending, setIsPending] = useState(false);
 	const [infoState, setInfoState] = useState({
 		firstName: userInfo?.firstName || "",
@@ -17,6 +17,7 @@ const PersonalDetails = ({ userInfo }) => {
 		email: userInfo?.email || "",
 		designation: userInfo?.designation || "",
 		bio: userInfo?.bio || "",
+		signature: userInfo?.signature || "", // ← add this
 	});
 
 	const handleChange = (event) => {
@@ -140,6 +141,47 @@ const PersonalDetails = ({ userInfo }) => {
 						className="min-h-[120px] resize-none focus-visible:ring-primary"
 					/>
 				</div>
+
+				{isInstructor && (
+					<div className="mt-6 space-y-2">
+						<Label
+							htmlFor="signature"
+							className="text-sm font-medium"
+						>
+							Signature Image URL
+							<span className="ml-2 text-xs font-normal text-muted-foreground">
+								(Cloudinary URL — used on student certificates)
+							</span>
+						</Label>
+						<Input
+							type="url"
+							id="signature"
+							name="signature"
+							value={infoState.signature}
+							onChange={handleChange}
+							placeholder="https://res.cloudinary.com/your-cloud/image/upload/..."
+							className="focus-visible:ring-primary"
+						/>
+						{/* Preview */}
+						{infoState.signature && (
+							<div className="mt-2 p-3 border rounded-lg bg-muted/30 inline-flex flex-col gap-1">
+								<span className="text-xs text-muted-foreground">
+									Preview:
+								</span>
+								<img
+									src={infoState.signature}
+									alt="Signature preview"
+									className="h-[43px] w-[127px] object-contain"
+									onError={(e) => {
+										(
+											e.target as HTMLImageElement
+										).style.display = "none";
+									}}
+								/>
+							</div>
+						)}
+					</div>
+				)}
 
 				<div className="mt-8">
 					<Button

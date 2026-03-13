@@ -50,7 +50,7 @@ export async function GET(request) {
 			courseName: course.title,
 			instructor: `${course?.instructor?.firstName} ${course?.instructor?.lastName}`,
 			instructorDesignation: `${course?.instructor?.designation}`,
-			sign: "/sign.png",
+			sign: course?.instructor?.signature,
 		};
 
 		/* -----------------
@@ -173,42 +173,56 @@ export async function GET(request) {
 		 * Signature
 		 *
 		 *-------------------*/
-		const signatureBoxWidth = 300;
-
 		const signBytes = await fetch(
-			`${process.env.NEXT_PUBLIC_BASE_URL}${completionInfo.sign}`,
+			completionInfo.sign.startsWith("http")
+				? completionInfo.sign // ← Cloudinary URL
+				: `${process.env.NEXT_PUBLIC_BASE_URL}${completionInfo.sign}`, // ← local fallback
 		).then((res) => res.arrayBuffer());
-		const sign = await pdfDoc.embedPng(signBytes);
 
+		// Detect PNG vs JPG from URL
+		const signIsPng =
+			completionInfo.sign.includes(".png") ||
+			completionInfo.sign.includes("cloudinary");
+		const sign = signIsPng
+			? await pdfDoc.embedPng(signBytes)
+			: await pdfDoc.embedJpg(signBytes);
+
+		const signatureBoxX = width - 310; // ← move further left
+
+		// Signature image
 		page.drawImage(sign, {
-			x: width - signatureBoxWidth,
+			x: signatureBoxX,
 			y: 120,
 			width: 180,
 			height: 54,
 		});
 
+		// Line under signature
 		page.drawLine({
-			start: { x: width - signatureBoxWidth, y: 110 },
-			end: { x: width - 60, y: 110 },
+			start: { x: signatureBoxX, y: 110 },
+			end: { x: signatureBoxX + 254, y: 110 },
 			thickness: 1,
 			color: rgb(0, 0, 0),
 		});
 
+		// Instructor name
 		page.drawText(completionInfo.instructor, {
-			x: width - signatureBoxWidth,
+			x: signatureBoxX,
 			y: 90,
 			size: detailsFontSize,
 			font: timesRomanFont,
 			color: rgb(0, 0, 0),
 		});
 
+		// Designation — smaller font + enough maxWidth to fit on one line
 		page.drawText(completionInfo.instructorDesignation, {
-			x: width - signatureBoxWidth,
-			y: 72,
-			size: 10,
+			x: signatureBoxX,
+			y: 70,
+			size: 9, // ← smaller to fit long designations
 			font: timesRomanFont,
 			color: rgb(0, 0, 0),
-			maxWidth: 250,
+			maxWidth: 260, // ← wider so it stays on one line
+			lineHeight: 14,
 		});
 
 		/* -----------------

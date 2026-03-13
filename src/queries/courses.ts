@@ -58,6 +58,7 @@ export async function getCourseDetails(id) {
 		.populate({
 			path: "instructor",
 			model: User,
+			select: "firstName lastName designation signature profilePicture",
 		})
 		.populate({
 			path: "testimonials",

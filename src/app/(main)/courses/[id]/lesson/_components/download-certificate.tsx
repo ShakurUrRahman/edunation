@@ -35,7 +35,7 @@ export const DownloadCertificate = ({ courseId, totalProgress }) => {
 		<Button
 			onClick={handleCertificateDownload}
 			disabled={totalProgress < 100}
-			className="w-full mt-6"
+			className="w-full mt-6 cursor-pointer"
 		>
 			Download Certificate
 		</Button>

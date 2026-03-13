@@ -27,3 +27,9 @@ export async function validatePassword(email, password) {
 	const isMatch = await bcrypt.compare(password, user.password);
 	return isMatch;
 }
+
+export async function updateSignature(email: string, signature: string) {
+	await dbConnect();
+	await User.findOneAndUpdate({ email }, { signature });
+	revalidatePath("/account");
+}

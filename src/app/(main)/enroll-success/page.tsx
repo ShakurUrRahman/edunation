@@ -7,7 +7,7 @@ import { CircleCheck } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { sendEmails } from "@/lib/emails";
-import { enrollForCourse } from "@/queries/enrollments";
+import { enrollForCourse, hasEnrollmentForCourse } from "@/queries/enrollments";
 
 type Props = {
 	searchParams: Promise<{
@@ -55,47 +55,47 @@ const Success = async ({ searchParams }: Props) => {
 	// console.log(productName, customerName, customerEmail);
 
 	if (paymentStatus === "succeeded") {
-		// Update DB(Enrollment collection)
-		// console.log(course?.id, loggedInUser?.id);
-		const enrolled = await enrollForCourse(
+		// ✅ Check if already enrolled before enrolling
+		const alreadyEnrolled = await hasEnrollmentForCourse(
 			course?.id,
 			loggedInUser?.id,
-			"stripe",
 		);
-		// console.log(enrolled);
 
-		// Send Emails to the instructor, student,and the person
-		// who paid
+		if (!alreadyEnrolled) {
+			await enrollForCourse(course?.id, loggedInUser?.id, "stripe");
 
-		const instructorName = `${course?.instructor?.firstName} ${course?.instructor?.lastName}`;
-		const instructorEmail = course?.instructor?.email;
+			// Only send emails on first enrollment
+			const instructorName = `${course?.instructor?.firstName} ${course?.instructor?.lastName}`;
+			const instructorEmail = course?.instructor?.email;
 
-		const emailsToSend = [
-			{
-				to: instructorEmail,
-				subject: `New Enrollment for ${productName}.`,
-				message: `Congratulations, ${instructorName}. A new student, ${customerName} has enrolled to your course ${productName} just now. Please check the instructor dashboard and give a high-five to your new student.`,
-			},
-			{
-				to: customerEmail,
-				subject: `Enrollment Success for ${productName}`,
-				message: `Hey ${customerName} You have successfully enrolled for the course ${productName}`,
-			},
-		];
+			const emailsToSend = [
+				{
+					to: instructorEmail,
+					subject: `New Enrollment for ${productName}.`,
+					message: `Congratulations, ${instructorName}. A new student, ${customerName} has enrolled to your course ${productName} just now.`,
+				},
+				{
+					to: customerEmail,
+					subject: `Enrollment Success for ${productName}`,
+					message: `Hey ${customerName}, you have successfully enrolled for the course ${productName}.`,
+				},
+			];
 
-		const emailSentResponse = await sendEmails(emailsToSend);
-		console.log(emailSentResponse);
+			await sendEmails(emailsToSend);
+		}
 	}
 
 	return (
-		<div className="min-h-screen w-full flex-1 flex flex-col items-center justify-center">
+		<div className="min-h-screen w-full flex-1 flex flex-col items-center justify-start mt-20">
 			<div className="flex flex-col items-center gap-6 text-center">
 				{paymentStatus === "succeeded" && (
 					<>
 						<CircleCheck className="w-32 h-32 bg-success rounded-full p-0 text-white" />
 						<h1 className="text-xl md:text-2xl lg:text-3xl">
 							Congratulations, <strong>{customerName}</strong>!
-							Your Enrollment was Successful for{" "}
+							<br />
+							Your Enrollment was Successful for the course:
+							<br />
 							<strong>{productName}</strong>
 						</h1>
 					</>

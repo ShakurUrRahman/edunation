@@ -42,6 +42,9 @@ const userSchema = new Schema({
 		required: false,
 		type: String,
 	},
+	signature: {
+		type: String, // Cloudinary URL
+	},
 });
 
 export const User = mongoose.models.User ?? mongoose.model("User", userSchema);

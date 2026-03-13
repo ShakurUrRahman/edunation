@@ -111,7 +111,7 @@ export default function TestimonialsSection({ testimonials }: Props) {
 					{/* Left arrow */}
 					<button
 						onClick={() => swiperRef.current?.slidePrev()}
-						className="hidden cursor-pointer text-white md:flex absolute left-2 top-27.5 z-10 w-12 h-12 rounded-full bg-gradient-to-r from-primary to-teal-400 backdrop-blur-md border border-white items-center justify-center hover:shadow-xl transition-all duration-300 hover:scale-105"
+						className="hidden cursor-pointer text-white md:flex absolute left-2 top-1/3 z-10 w-12 h-12 rounded-full bg-gradient-to-r from-primary to-teal-400 backdrop-blur-md border border-white items-center justify-center hover:shadow-xl transition-all duration-300 hover:scale-105"
 					>
 						<ArrowLeft size={20} />
 					</button>
@@ -156,7 +156,7 @@ export default function TestimonialsSection({ testimonials }: Props) {
 							return (
 								<SwiperSlide key={t.id} className="h-full pb-4">
 									<div className="group bg-white/90 backdrop-blur-xl rounded-[2.5rem] overflow-hidden border border-primary/20 h-full shadow-sm hover:shadow-xl transition-all duration-500 relative">
-										<div className="flex flex-col md:flex-row h-full">
+										<div className="flex flex-col md:flex-row h-fit">
 											{/* Avatar / Image Panel */}
 											<div className="relative md:w-5/12 bg-gradient-to-br from-primary/20 via-primary/5 to-transparent flex items-center justify-center min-h-[220px] overflow-hidden">
 												{t.user.profilePicture ? (
@@ -204,7 +204,14 @@ export default function TestimonialsSection({ testimonials }: Props) {
 													</div>
 
 													<p className="text-gray-600 leading-relaxed text-sm md:text-base italic relative z-10">
-														"{t.content}"
+														"
+														{t.content.length > 100
+															? t.content.slice(
+																	0,
+																	100,
+																) + "…"
+															: t.content}
+														"
 													</p>
 												</div>
 
@@ -250,7 +257,7 @@ export default function TestimonialsSection({ testimonials }: Props) {
 					{/* Right arrow */}
 					<button
 						onClick={() => swiperRef.current?.slideNext()}
-						className="hidden cursor-pointer text-white md:flex absolute right-2 top-27.5 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-gradient-to-r from-primary to-teal-400 backdrop-blur-md border border-white items-center justify-center hover:shadow-xl transition-all duration-300 hover:scale-105"
+						className="hidden cursor-pointer text-white md:flex absolute right-2 top-1/3 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-gradient-to-r from-primary to-teal-400 backdrop-blur-md border border-white items-center justify-center hover:shadow-xl transition-all duration-300 hover:scale-105"
 					>
 						<ArrowRight size={20} />
 					</button>
