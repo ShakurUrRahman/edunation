@@ -14,6 +14,7 @@ import RecentCourses from "./RecentCourses";
 import PopularTags from "./PopularTags";
 import Pagination from "./Pagination";
 import CourseCard from "./CourseCard";
+import { motion, AnimatePresence } from "framer-motion";
 
 const ITEMS_PER_PAGE = 8;
 
@@ -48,13 +49,21 @@ export default function CoursesClient({
 	const pathname = usePathname();
 
 	const minPrice = useMemo(
-		() => Math.min(...courses.map((c) => c.price ?? 0)),
+		() =>
+			courses.length > 0
+				? Math.min(...courses.map((c) => c.price ?? 0))
+				: 0,
 		[courses],
 	);
+
 	const maxPrice = useMemo(
-		() => Math.max(...courses.map((c) => c.price ?? 0), 0),
+		() =>
+			courses.length > 0
+				? Math.max(...courses.map((c) => c.price ?? 0))
+				: 1000,
 		[courses],
 	);
+
 	const [appliedRange, setAppliedRange] = useState<[number, number]>([
 		minPrice,
 		maxPrice,
@@ -322,47 +331,60 @@ export default function CoursesClient({
 
 				{/* ── Course grid ───────────────────────────────────────────── */}
 				<div className="flex-1 min-w-0">
-					{paginatedCourses.length > 0 ? (
-						<div
-							className={`grid gap-5 mb-8 ${
-								viewMode === "grid"
-									? "grid-cols-1 sm:grid-cols-2"
-									: "grid-cols-1"
-							}`}
+					<AnimatePresence mode="wait">
+						<motion.div
+							key={currentPage} // ← key change triggers animation
+							initial={{ opacity: 0, y: 20 }}
+							animate={{ opacity: 1, y: 0 }}
+							exit={{ opacity: 0, y: -20 }}
+							transition={{
+								duration: 0.3,
+								ease: [0.22, 1, 0.36, 1],
+							}}
 						>
-							{paginatedCourses.map((course) => (
-								<CourseCard
-									key={course.id}
-									course={course}
-									loggedInUser={loggedInUser}
-									viewMode={viewMode}
-								/>
-							))}
-						</div>
-					) : (
-						<div className="flex flex-col items-center justify-center py-24 text-gray-400">
-							<svg
-								width="44"
-								height="44"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								strokeWidth="1.5"
-								className="mb-3 opacity-40"
-							>
-								<circle cx="11" cy="11" r="8" />
-								<path d="m21 21-4.35-4.35" />
-							</svg>
-							<p className="text-sm font-medium">
-								{searchQuery
-									? `No courses found for "${searchQuery}"`
-									: "No courses found"}
-							</p>
-							<p className="text-xs mt-1 text-gray-300">
-								Try adjusting your filters
-							</p>
-						</div>
-					)}
+							{paginatedCourses.length > 0 ? (
+								<div
+									className={`grid gap-5 mb-8 ${
+										viewMode === "grid"
+											? "grid-cols-1 sm:grid-cols-2"
+											: "grid-cols-1"
+									}`}
+								>
+									{paginatedCourses.map((course) => (
+										<CourseCard
+											key={course.id}
+											course={course}
+											loggedInUser={loggedInUser}
+											viewMode={viewMode}
+										/>
+									))}
+								</div>
+							) : (
+								<div className="flex flex-col items-center justify-center py-24 text-gray-400">
+									<svg
+										width="44"
+										height="44"
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										strokeWidth="1.5"
+										className="mb-3 opacity-40"
+									>
+										<circle cx="11" cy="11" r="8" />
+										<path d="m21 21-4.35-4.35" />
+									</svg>
+									<p className="text-sm font-medium">
+										{searchQuery
+											? `No courses found for "${searchQuery}"`
+											: "No courses found"}
+									</p>
+									<p className="text-xs mt-1 text-gray-300">
+										Try adjusting your filters
+									</p>
+								</div>
+							)}{" "}
+						</motion.div>
+					</AnimatePresence>
 
 					<div className="mt-6 border-t pt-6">
 						<Pagination

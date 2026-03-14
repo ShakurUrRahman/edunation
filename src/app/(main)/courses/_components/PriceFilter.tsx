@@ -14,12 +14,14 @@ export default function PriceFilter({
 		draft[0] !== appliedRange[0] || draft[1] !== appliedRange[1];
 
 	const handleMin = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const val = Math.min(Number(e.target.value), draft[1] - 1);
+		// Ensure min is at least 100 below max
+		const val = Math.min(Number(e.target.value), draft[1] - 100);
 		setDraft([val, draft[1]]);
 	};
 
 	const handleMax = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const val = Math.max(Number(e.target.value), draft[0] + 1);
+		// Ensure max is at least 100 above min
+		const val = Math.max(Number(e.target.value), draft[0] + 100);
 		setDraft([draft[0], val]);
 	};
 
@@ -57,30 +59,22 @@ export default function PriceFilter({
 					max={maxPrice}
 					value={draft[0]}
 					onChange={handleMin}
-					className="
-            absolute inset-0 w-full h-full
-            appearance-none bg-transparent cursor-pointer
-            [&::-webkit-slider-thumb]:appearance-none
-            [&::-webkit-slider-thumb]:w-4
-            [&::-webkit-slider-thumb]:h-4
-            [&::-webkit-slider-thumb]:rounded-full
-            [&::-webkit-slider-thumb]:bg-white
-            [&::-webkit-slider-thumb]:border-2
-            [&::-webkit-slider-thumb]:border-primary
-            [&::-webkit-slider-thumb]:shadow-md
-            [&::-webkit-slider-thumb]:cursor-pointer
-            [&::-webkit-slider-thumb]:relative
-            [&::-webkit-slider-thumb]:z-20
-            [&::-moz-range-thumb]:w-4
-            [&::-moz-range-thumb]:h-4
-            [&::-moz-range-thumb]:rounded-full
-            [&::-moz-range-thumb]:bg-white
-            [&::-moz-range-thumb]:border-2
-            [&::-moz-range-thumb]:border-primary
-            [&::-moz-range-thumb]:shadow-md
-            [&::-moz-range-thumb]:cursor-pointer
-          "
-					style={{ zIndex: draft[0] > maxPrice - 10 ? 5 : 3 }}
+					className="absolute inset-0 w-full h-full appearance-none bg-transparent pointer-events-none z-30
+        [&::-webkit-slider-thumb]:appearance-none
+        [&::-webkit-slider-thumb]:w-4
+        [&::-webkit-slider-thumb]:h-4
+        [&::-webkit-slider-thumb]:rounded-full
+        [&::-webkit-slider-thumb]:bg-white
+        [&::-webkit-slider-thumb]:border-2
+        [&::-webkit-slider-thumb]:border-primary
+        [&::-webkit-slider-thumb]:pointer-events-auto
+        [&::-moz-range-thumb]:w-4
+        [&::-moz-range-thumb]:h-4
+        [&::-moz-range-thumb]:pointer-events-auto"
+					style={{
+						// Bring min to front if it's nearing the max price to prevent getting "trapped"
+						zIndex: draft[0] > maxPrice - 100 ? 40 : 30,
+					}}
 				/>
 
 				{/* Max thumb */}
@@ -90,28 +84,18 @@ export default function PriceFilter({
 					max={maxPrice}
 					value={draft[1]}
 					onChange={handleMax}
-					className="
-            absolute inset-0 w-full h-full
-            appearance-none bg-transparent cursor-pointer
-            [&::-webkit-slider-thumb]:appearance-none
-            [&::-webkit-slider-thumb]:w-4
-            [&::-webkit-slider-thumb]:h-4
-            [&::-webkit-slider-thumb]:rounded-full
-            [&::-webkit-slider-thumb]:bg-white
-            [&::-webkit-slider-thumb]:border-2
-            [&::-webkit-slider-thumb]:border-primary
-            [&::-webkit-slider-thumb]:shadow-md
-            [&::-webkit-slider-thumb]:cursor-pointer
-            [&::-moz-range-thumb]:w-4
-            [&::-moz-range-thumb]:h-4
-            [&::-moz-range-thumb]:rounded-full
-            [&::-moz-range-thumb]:bg-white
-            [&::-moz-range-thumb]:border-2
-            [&::-moz-range-thumb]:border-primary
-            [&::-moz-range-thumb]:shadow-md
-            [&::-moz-range-thumb]:cursor-pointer
-          "
-					style={{ zIndex: 4 }}
+					className="absolute inset-0 w-full h-full appearance-none bg-transparent pointer-events-none z-30
+        [&::-webkit-slider-thumb]:appearance-none
+        [&::-webkit-slider-thumb]:w-4
+        [&::-webkit-slider-thumb]:h-4
+        [&::-webkit-slider-thumb]:rounded-full
+        [&::-webkit-slider-thumb]:bg-white
+        [&::-webkit-slider-thumb]:border-2
+        [&::-webkit-slider-thumb]:border-primary
+        [&::-webkit-slider-thumb]:pointer-events-auto
+        [&::-moz-range-thumb]:w-4
+        [&::-moz-range-thumb]:h-4
+        [&::-moz-range-thumb]:pointer-events-auto"
 				/>
 			</div>
 

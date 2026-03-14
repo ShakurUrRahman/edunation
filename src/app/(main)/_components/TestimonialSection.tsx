@@ -227,7 +227,7 @@ export default function TestimonialsSection({ testimonials }: Props) {
 													</div>
 
 													{/* Animated Shape & Quote Symbol */}
-													<div className="relative md:hidden lg:block">
+													<div className="relative hidden lg:block">
 														{/* The Animated Ring */}
 														<div className="absolute inset-0 bg-primary/20 rounded-full animate-ping scale-150 opacity-20 group-hover:block hidden"></div>
 

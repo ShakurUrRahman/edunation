@@ -8,11 +8,11 @@ import {
 	Video,
 } from "lucide-react";
 import Link from "next/link";
-import { ModuleTitleForm } from "./@lessonModal/_components/module-title-form";
-import { LessonForm } from "./@lessonModal/_components/lesson-form";
+import { ModuleTitleForm } from "./_components/module-title-form";
+import { LessonForm } from "./_components/lesson-form";
 import { getModule } from "@/queries/modules";
 import { replaceMongoIdInArray } from "@/lib/convertData";
-import { ModuleActions } from "./@lessonModal/_components/module-action";
+import { ModuleActions } from "./_components/module-action";
 
 export const dynamic = "force-dynamic";
 

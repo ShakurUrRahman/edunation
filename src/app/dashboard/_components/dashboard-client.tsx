@@ -600,7 +600,7 @@ export default function DashboardClient({
 						) : (
 							recentEnrollments.map((e) => (
 								<div
-									key={e.id}
+									key={e.courseTitle}
 									className="flex items-center gap-3 px-6 py-4 hover:bg-gray-50/50 transition-colors"
 								>
 									<div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary/20 to-green-200 flex items-center justify-center shrink-0">

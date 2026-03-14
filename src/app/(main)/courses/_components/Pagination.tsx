@@ -33,11 +33,16 @@ export default function Pagination({
 		return pages;
 	};
 
+	const handlePageChange = (page: number) => {
+		window.scrollTo({ top: 0, behavior: "smooth" });
+		onPageChange(page);
+	};
+
 	return (
 		<div className="flex items-center justify-center gap-1.5">
 			{/* Prev */}
 			<button
-				onClick={() => onPageChange(currentPage - 1)}
+				onClick={() => handlePageChange(currentPage - 1)}
 				disabled={currentPage === 1}
 				className="
           w-9 h-9 rounded-md
@@ -65,7 +70,7 @@ export default function Pagination({
 				) : (
 					<button
 						key={p}
-						onClick={() => onPageChange(p)}
+						onClick={() => handlePageChange(p as number)}
 						className={`
               w-9 h-9 rounded-md text-sm font-medium
               border-none cursor-pointer
@@ -86,7 +91,7 @@ export default function Pagination({
 
 			{/* Next */}
 			<button
-				onClick={() => onPageChange(currentPage + 1)}
+				onClick={() => handlePageChange(currentPage + 1)}
 				disabled={currentPage === totalPages}
 				className="
           w-9 h-9 rounded-md

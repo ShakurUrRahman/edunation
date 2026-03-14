@@ -1,16 +1,14 @@
-import { getLesson } from "@/queries/lessons"; // your existing query
-import { LessonModalParallel } from "../_components/lesson-modal-parallel";
+import { getLesson } from "@/queries/lessons";
+import { LessonModalIntercepted } from "../_components/lesson-modal-intercepted";
 
 type Props = {
 	params: Promise<{ courseId: string; moduleId: string; lessonId: string }>;
 };
 
-export default async function LessonModalPage({ params }: Props) {
+export default async function InterceptedLessonPage({ params }: Props) {
 	const { courseId, moduleId, lessonId } = await params;
 
-	console.log(courseId, moduleId, lessonId);
-
-	const lesson = await getLesson(lessonId); // fetch lesson server-side
+	const lesson = await getLesson(lessonId);
 
 	const lessonData = {
 		id: lesson.id,
@@ -23,7 +21,7 @@ export default async function LessonModalPage({ params }: Props) {
 	};
 
 	return (
-		<LessonModalParallel
+		<LessonModalIntercepted
 			courseId={courseId}
 			moduleId={moduleId}
 			lesson={lessonData}

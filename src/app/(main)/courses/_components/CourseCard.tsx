@@ -28,6 +28,20 @@ function RatingBadge({ rating, count }: { rating: number; count: number }) {
 	);
 }
 
+// ── Category color map ─────────────────────────────────────────────────────
+const CATEGORY_BG: Record<string, string> = {
+	"Software Development": "#0f2314",
+	"Personal Development": "#171f2a",
+	"Growth Marketing": "#2a1f19",
+	"Business Management": "#152f31",
+	Design: "#1e230f",
+	"Computer Science": "#1e2311",
+};
+
+function getCategoryBg(title?: string): string {
+	return CATEGORY_BG[title ?? ""] ?? "#0f2314";
+}
+
 const CourseCard = ({
 	course,
 	loggedInUser,
@@ -47,18 +61,19 @@ const CourseCard = ({
 		<div
 			className={`
         group relative flex 
-        ${isList ? "flex-col md:flex-row min-h-[220px]" : "flex-col"}
-        bg-[#0f2314] rounded-2xl overflow-hidden
+        ${isList ? "flex-col md:flex-row min-h-[260px]" : "flex-col"} 
+        rounded-2xl overflow-hidden
         border border-white/8
         shadow-[0_4px_24px_rgba(0,0,0,0.35)]
         hover:shadow-[0_8px_48px_rgba(42,157,92,0.18)]
-        hover:-translate-y-1 transition-all duration-400 ease-out
+        hover:-translate-y-1 transition-all duration-400 ease-out 
       `}
+			style={{ background: getCategoryBg(course?.category?.title) }}
 		>
 			<div
 				className={`
             relative overflow-hidden shrink-0
-            ${isList ? "h-48 md:h-auto md:w-72 lg:w-80" : "h-48"}
+            ${isList ? "h-48 md:h-auto md:w-72 lg:w-80" : "h-64"}
          `}
 			>
 				<Link href={`/courses/${course.id}`}>
@@ -67,7 +82,7 @@ const CourseCard = ({
 							src={course.thumbnail}
 							alt={course?.title ?? "Course thumbnail"}
 							fill
-							className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
+							className={`object-cover transition-transform duration-700 ease-out group-hover:scale-105 ${isList ? "object-left" : "object-left sm:object-center"}`}
 							sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
 						/>
 					) : (
@@ -96,7 +111,12 @@ const CourseCard = ({
 					)}
 				</Link>
 
-				<div className="absolute inset-0 bg-gradient-to-t from-[#072e0d] via-[#0f2314]/30 to-transparent" />
+				<div
+					className="absolute inset-0"
+					style={{
+						background: `linear-gradient(to top, ${getCategoryBg(course?.category?.title)} 0%, ${getCategoryBg(course?.category?.title)}4D 40%, transparent 100%)`,
+					}}
+				/>
 
 				{/* Price pill (Positioned differently for list if desired, but top-left/right works) */}
 				<div className="absolute top-3 left-3 right-3 flex items-center justify-between">
