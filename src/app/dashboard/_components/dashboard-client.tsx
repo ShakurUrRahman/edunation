@@ -29,6 +29,8 @@ import {
 import { formatPrice } from "@/lib/formatPrice";
 import Link from "next/link";
 import Image from "next/image";
+import StatCard from "./stat-card";
+import { CustomBarTooltip, timeAgo } from ".";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 interface Props {
@@ -80,64 +82,6 @@ const PIE_COLORS = [
 ];
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
-function timeAgo(date: string | null) {
-	if (!date) return "Recently";
-	const diff = Date.now() - new Date(date).getTime();
-	const d = Math.floor(diff / 86400000);
-	if (d === 0) return "Today";
-	if (d === 1) return "Yesterday";
-	if (d < 7) return `${d}d ago`;
-	if (d < 30) return `${Math.floor(d / 7)}w ago`;
-	return `${Math.floor(d / 30)}mo ago`;
-}
-
-function StatCard({ icon: Icon, label, value, sub, color }: any) {
-	return (
-		<div className="relative bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-shadow overflow-hidden group">
-			<div
-				className={`absolute top-0 right-0 w-32 h-32 rounded-full opacity-5 -translate-y-8 translate-x-8`}
-				style={{ background: color }}
-			/>
-			<div className="flex items-start justify-between">
-				<div>
-					<p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-1">
-						{label}
-					</p>
-					<p className="text-3xl font-black text-gray-900 leading-none">
-						{value}
-					</p>
-					{sub && (
-						<p className="text-xs text-gray-400 mt-1.5">{sub}</p>
-					)}
-				</div>
-				<div
-					className="p-3 rounded-xl"
-					style={{ background: `${color}15` }}
-				>
-					<Icon className="w-5 h-5" style={{ color }} />
-				</div>
-			</div>
-		</div>
-	);
-}
-
-// ── Custom Tooltip ─────────────────────────────────────────────────────────────
-function CustomBarTooltip({ active, payload, label }: any) {
-	if (!active || !payload?.length) return null;
-	return (
-		<div className="bg-gray-900 text-white rounded-xl px-4 py-3 shadow-xl text-sm">
-			<p className="font-bold mb-1">{label}</p>
-			{payload.map((p: any) => (
-				<p key={p.name} className="text-gray-300">
-					{p.name}:{" "}
-					<span className="text-white font-semibold">
-						{p.name === "Revenue" ? formatPrice(p.value) : p.value}
-					</span>
-				</p>
-			))}
-		</div>
-	);
-}
 
 // ── Main Component ────────────────────────────────────────────────────────────
 export default function DashboardClient({
@@ -158,7 +102,7 @@ export default function DashboardClient({
 	return (
 		<div className="min-h-screen hero p-4 md:p-6 lg:p-8">
 			{/* ── Header ────────────────────────────────────────────────────────── */}
-			<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+			<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-8">
 				<div className="flex items-center gap-4">
 					<div className="relative">
 						{instructor.avatar ? (
@@ -190,14 +134,14 @@ export default function DashboardClient({
 				</div>
 				<Link
 					href="/dashboard/courses/add"
-					className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-white text-sm font-bold px-5 py-2.5 rounded-xl transition-colors shadow-sm"
+					className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-white text-sm font-bold px-5 py-2.5 rounded-xl transition-colors shadow-sm w-2xs sm:w-40 md:w-48"
 				>
 					<Sparkles className="w-4 h-4" /> New Course
 				</Link>
 			</div>
 
 			{/* ── Stat Cards ────────────────────────────────────────────────────── */}
-			<div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+			<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-2 mb-6">
 				<StatCard
 					icon={BookOpen}
 					label="Total Courses"

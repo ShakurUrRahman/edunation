@@ -1,19 +1,20 @@
 "use client";
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 
 interface PaginationProps {
 	currentPage: number;
 	totalPages: number;
-	onPageChange: (page: number) => void;
 }
 
 export default function Pagination({
 	currentPage,
 	totalPages,
-	onPageChange,
 }: PaginationProps) {
-	// if (totalPages <= 1) return null;
+	const router = useRouter();
+	const pathname = usePathname();
+	const searchParams = useSearchParams();
 
 	const getPageNumbers = (): (number | "...")[] => {
 		if (totalPages <= 5) {
@@ -35,30 +36,33 @@ export default function Pagination({
 
 	const handlePageChange = (page: number) => {
 		window.scrollTo({ top: 0, behavior: "smooth" });
-		onPageChange(page);
+
+		// Preserve existing query params (category, search, sort etc.)
+		const params = new URLSearchParams(searchParams.toString());
+
+		if (page === 1) {
+			params.delete("page"); // ← page 1 = clean URL /courses
+		} else {
+			params.set("page", String(page));
+		}
+
+		const query = params.toString();
+		router.push(query ? `${pathname}?${query}` : pathname, {
+			scroll: false,
+		});
 	};
 
 	return (
 		<div className="flex items-center justify-center gap-1.5">
-			{/* Prev */}
 			<button
 				onClick={() => handlePageChange(currentPage - 1)}
 				disabled={currentPage === 1}
-				className="
-          w-9 h-9 rounded-md
-          border border-gray-200 bg-white
-          flex items-center justify-center
-          text-gray-500 cursor-pointer
-          hover:bg-gray-50 hover:text-gray-700 hover:border-gray-300
-          disabled:opacity-40 disabled:cursor-not-allowed
-          transition-colors duration-150
-        "
+				className="w-9 h-9 rounded-md border border-gray-200 bg-white flex items-center justify-center text-gray-500 cursor-pointer hover:bg-gray-50 hover:text-gray-700 hover:border-gray-300 disabled:opacity-40 disabled:cursor-not-allowed transition-colors duration-150"
 				aria-label="Previous page"
 			>
 				<ChevronLeft className="w-4 h-4" />
 			</button>
 
-			{/* Page numbers */}
 			{getPageNumbers().map((p, i) =>
 				p === "..." ? (
 					<span
@@ -71,16 +75,11 @@ export default function Pagination({
 					<button
 						key={p}
 						onClick={() => handlePageChange(p as number)}
-						className={`
-              w-9 h-9 rounded-md text-sm font-medium
-              border-none cursor-pointer
-              transition-colors duration-150
-              ${
-					currentPage === p
-						? "bg-primary text-white font-bold shadow-md shadow-primary/25"
-						: "bg-white text-gray-500 shadow-sm hover:bg-gray-50 hover:text-gray-700"
-				}
-            `}
+						className={`w-9 h-9 rounded-md text-sm font-medium border-none cursor-pointer transition-colors duration-150 ${
+							currentPage === p
+								? "bg-primary text-white font-bold shadow-md shadow-primary/25"
+								: "bg-white text-gray-500 shadow-sm hover:bg-gray-50 hover:text-gray-700"
+						}`}
 						aria-label={`Page ${p}`}
 						aria-current={currentPage === p ? "page" : undefined}
 					>
@@ -89,19 +88,10 @@ export default function Pagination({
 				),
 			)}
 
-			{/* Next */}
 			<button
 				onClick={() => handlePageChange(currentPage + 1)}
 				disabled={currentPage === totalPages}
-				className="
-          w-9 h-9 rounded-md
-          bg-primary hover:bg-primary/90
-          border-none
-          flex items-center justify-center
-          text-white cursor-pointer
-          disabled:opacity-40 disabled:cursor-not-allowed
-          transition-colors duration-150
-        "
+				className="w-9 h-9 rounded-md bg-primary hover:bg-primary/90 border-none flex items-center justify-center text-white cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed transition-colors duration-150"
 				aria-label="Next page"
 			>
 				<ChevronRight className="w-4 h-4" />
