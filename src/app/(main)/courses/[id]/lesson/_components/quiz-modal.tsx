@@ -134,7 +134,7 @@ function QuizModal({ courseId, quizSetId, quizzes, open, setOpen, isTaken }) {
 										? "Great job!"
 										: "Keep practicing!"}
 								</p>
-								<p className="text-xs text-gray-500">
+								<p className="text-xs text-gray-500 ">
 									{score} of {totalQuizzes} correct — {pct}%
 								</p>
 							</div>
@@ -147,7 +147,7 @@ function QuizModal({ courseId, quizSetId, quizzes, open, setOpen, isTaken }) {
 							/>
 						</div>
 						<span
-							className={`text-lg font-black ${pct >= 70 ? "text-green-600" : "text-red-500"}`}
+							className={`text-lg font-black mr-4 ${pct >= 70 ? "text-green-600" : "text-red-500"}`}
 						>
 							{pct}%
 						</span>
