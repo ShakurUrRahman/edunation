@@ -26,7 +26,7 @@ const spartan = League_Spartan({
 });
 
 export const metadata: Metadata = {
-	title: "EduNation - Learn Anything, Anywhere",
+	title: "EduNation - Master In-Demand Skills For Your Future",
 	description: "Empowering Education Through Technology",
 };
 

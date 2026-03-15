@@ -39,7 +39,7 @@ export default function Footer() {
 					{/* Logo + About */}
 					<div className="flex flex-col items-start -mt-[13px]">
 						<img
-							src="/assets/logo.png"
+							src="/logo.png"
 							alt="EduNation Logo"
 							className="w-auto h-12 md:h-16 mb-4 -ml-3"
 						/>

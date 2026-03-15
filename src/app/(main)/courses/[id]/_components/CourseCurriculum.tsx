@@ -51,15 +51,34 @@ export default function CourseCurriculum({
 						Course Content
 					</h2>
 					<div className="flex flex-wrap items-center text-gray-500 text-xs md:text-sm gap-y-1 gap-x-2">
-						<span>{modules?.length} chapter(s)</span>
+						<span>
+							{modules?.length}{" "}
+							{modules?.length > 1 ? "chapters" : "chapter"}
+						</span>
 						<span className="hidden xs:inline">•</span>
-						<span>{totalLectures} lecture(s)</span>
+						<span>
+							{totalLectures}{" "}
+							{totalLectures > 1 ? "lectures" : "lecture"}
+						</span>
 						<span className="hidden xs:inline">•</span>
-						<span className="w-full xs:w-auto">
+						<span className=" xs:w-auto">
+							Total{" "}
 							{totalDuration
-								? (totalDuration / 3600).toFixed(1)
-								: 0}{" "}
-							hours total duration
+								? (() => {
+										const totalSeconds = totalDuration;
+
+										const hours = Math.floor(
+											totalSeconds / 3600,
+										);
+										const minutes = Math.floor(
+											(totalSeconds % 3600) / 60,
+										);
+
+										return hours > 0
+											? `${hours} hours ${minutes} minutes`
+											: `${minutes} minutes`;
+									})()
+								: "0 minutes"}
 						</span>
 					</div>
 				</div>
@@ -143,16 +162,33 @@ export default function CourseCurriculum({
 																</span>
 															</div>
 															<span className="text-[10px] md:text-xs text-gray-400 tabular-nums shrink-0 ml-4 mt-0.5">
-																{/* Ideally pass lesson.duration here instead of totalDuration */}
-																{lesson.duration
-																	? (
-																			lesson.duration /
-																			60
-																		).toFixed(
-																			0,
-																		)
-																	: 0}{" "}
-																min
+																<span className="text-[10px] md:text-xs text-gray-400 tabular-nums shrink-0 ml-4 mt-0.5">
+																	<span className="text-[10px] md:text-xs text-gray-400 tabular-nums shrink-0 ml-4 mt-0.5">
+																		{lesson.duration
+																			? (() => {
+																					const totalSeconds =
+																						lesson.duration;
+
+																					const hours =
+																						Math.floor(
+																							totalSeconds /
+																								3600,
+																						);
+																					const minutes =
+																						Math.floor(
+																							(totalSeconds %
+																								3600) /
+																								60,
+																						);
+
+																					return hours >
+																						0
+																						? `${hours} hr ${minutes} min`
+																						: `${minutes} min`;
+																				})()
+																			: "0 min"}
+																	</span>
+																</span>
 															</span>
 														</div>
 													),

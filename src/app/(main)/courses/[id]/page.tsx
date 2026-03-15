@@ -45,11 +45,6 @@ const SingleCoursePage = async ({ params }: PageProps) => {
 
 	// Related: same instructor, different course
 	const allCourses = await getCourseList();
-	// const relatedCourses = allCourses.filter(
-	// 	(c: any) =>
-	// 		c.instructor?._id?.toString() ===
-	// 			course.instructor?._id?.toString() && c.id !== course.id,
-	// );
 
 	return (
 		<>
