@@ -6,31 +6,36 @@ import { useRouter, useSearchParams, usePathname } from "next/navigation";
 interface PaginationProps {
 	currentPage: number;
 	totalPages: number;
+	onPageChange: (page: number) => void;
 }
 
 export default function Pagination({
 	currentPage,
 	totalPages,
+	onPageChange,
 }: PaginationProps) {
 	const router = useRouter();
 	const pathname = usePathname();
 	const searchParams = useSearchParams();
 
+	const current = Number(currentPage); // ← add these two
+	const total = Number(totalPages);
+
 	const getPageNumbers = (): (number | "...")[] => {
-		if (totalPages <= 5) {
-			return Array.from({ length: totalPages }, (_, i) => i + 1);
+		if (total <= 5) {
+			return Array.from({ length: total }, (_, i) => i + 1);
 		}
 		const pages: (number | "...")[] = [1];
-		if (currentPage > 3) pages.push("...");
+		if (current > 3) pages.push("...");
 		for (
-			let i = Math.max(2, currentPage - 1);
-			i <= Math.min(totalPages - 1, currentPage + 1);
+			let i = Math.max(2, current - 1);
+			i <= Math.min(total - 1, current + 1);
 			i++
 		) {
 			pages.push(i);
 		}
-		if (currentPage < totalPages - 2) pages.push("...");
-		pages.push(totalPages);
+		if (current < total - 2) pages.push("...");
+		pages.push(total);
 		return pages;
 	};
 
@@ -45,7 +50,7 @@ export default function Pagination({
 		} else {
 			params.set("page", String(page));
 		}
-
+		onPageChange(page);
 		const query = params.toString();
 		router.push(query ? `${pathname}?${query}` : pathname, {
 			scroll: false,
@@ -55,8 +60,8 @@ export default function Pagination({
 	return (
 		<div className="flex items-center justify-center gap-1.5">
 			<button
-				onClick={() => handlePageChange(currentPage - 1)}
-				disabled={currentPage === 1}
+				onClick={() => handlePageChange(current - 1)}
+				disabled={current === 1}
 				className="w-9 h-9 rounded-md border border-gray-200 bg-white flex items-center justify-center text-gray-500 cursor-pointer hover:bg-gray-50 hover:text-gray-700 hover:border-gray-300 disabled:opacity-40 disabled:cursor-not-allowed transition-colors duration-150"
 				aria-label="Previous page"
 			>
@@ -76,12 +81,12 @@ export default function Pagination({
 						key={p}
 						onClick={() => handlePageChange(p as number)}
 						className={`w-9 h-9 rounded-md text-sm font-medium border-none cursor-pointer transition-colors duration-150 ${
-							currentPage === p
+							current === p
 								? "bg-primary text-white font-bold shadow-md shadow-primary/25"
 								: "bg-white text-gray-500 shadow-sm hover:bg-gray-50 hover:text-gray-700"
 						}`}
 						aria-label={`Page ${p}`}
-						aria-current={currentPage === p ? "page" : undefined}
+						aria-current={current === p ? "page" : undefined}
 					>
 						{p}
 					</button>
@@ -89,8 +94,8 @@ export default function Pagination({
 			)}
 
 			<button
-				onClick={() => handlePageChange(currentPage + 1)}
-				disabled={currentPage === totalPages}
+				onClick={() => handlePageChange(current + 1)}
+				disabled={current === total}
 				className="w-9 h-9 rounded-md bg-primary hover:bg-primary/90 border-none flex items-center justify-center text-white cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed transition-colors duration-150"
 				aria-label="Next page"
 			>
