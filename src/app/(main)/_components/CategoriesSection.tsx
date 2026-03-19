@@ -5,6 +5,7 @@ import { Pagination, Autoplay } from "swiper/modules";
 
 import "swiper/css";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function CategoriesSection({ categories }) {
 	const toSlug = (str: string) =>
@@ -114,10 +115,13 @@ export default function CategoriesSection({ categories }) {
               `}
 							>
 								<div className="absolute -top-10 -right-10 w-32 h-32 bg-white/40 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500" />
-								<img
-									className="w-20 h-20 md:w-24 md:h-24 bottom-2 right-2 absolute z-0 opacity-40 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500"
+								<Image
 									src={`/assets/images/categories/${category.thumbnail}`}
-									alt={category?.title}
+									alt={category?.title || "category image"}
+									width={96} // md:w-24 ≈ 96px
+									height={96}
+									className="w-20 h-20 md:w-24 md:h-24 bottom-2 right-2 absolute z-0 opacity-40 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500"
+									sizes="(max-width: 768px) 80px, 96px"
 								/>
 								{/* Content */}
 								<div className="relative z-10 flex flex-col h-full">

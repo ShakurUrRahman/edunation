@@ -1,3 +1,4 @@
+import Image from "next/image";
 import React from "react";
 
 export default function AboutUsSection() {
@@ -27,18 +28,24 @@ export default function AboutUsSection() {
 								</div>
 							</div>
 
-							<img
+							<Image
 								src="/assets/images/about/about.png"
 								alt="About Us"
 								className="w-full h-auto object-cover min-h-[300px]"
+								width={636}
+								height={300}
+								sizes="100vw"
 							/>
 
 							{/* Book Image & Glow - Adjusted for responsiveness */}
 							<div className="absolute bottom-24 left-1/2 w-full -translate-x-1/2 translate-y-1/2 z-20">
-								<img
+								<Image
 									src="/assets/images/about/book.png"
 									alt="Magic Book"
-									className="w-full"
+									className="w-full h-auto"
+									width={661}
+									height={377}
+									sizes="100vw"
 								/>
 								{/* Glow Light */}
 								<div className="absolute left-1/2 bottom-40 -translate-x-1/2 w-full h-full bg-yellow-300/40 blur-[60px] md:blur-[100px] rounded-full animate-pulse"></div>{" "}

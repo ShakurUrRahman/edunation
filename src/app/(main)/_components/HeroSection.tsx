@@ -117,24 +117,14 @@ export default function HeroSection() {
 					</div>
 
 					{/* RIGHT VISUAL SECTION */}
+					{/* RIGHT VISUAL SECTION */}
 					<div className="relative flex justify-center lg:justify-end items-center order-2 lg:order-2 px-4 md:px-0">
-						<div className="relative w-full ">
+						<div className="relative w-full">
 							{/* Glow Background */}
 							<div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-blue-400/20 rounded-full blur-3xl transform scale-110" />
 
-							{/* Main Image */}
-							<Image
-								src="/hero-student.png"
-								alt="Hero student"
-								width={612}
-								height={407}
-								priority // add this ONLY for above-the-fold images (hero)
-								sizes="(max-width: 768px) 100vw, 50vw"
-								loading="eager"
-							/>
-
-							{/* Floating Card 1: UI/UX (Hides on very small mobile) */}
-							<div className="absolute -top-4 right-48 md:top-10 md:right-3 bg-gradient-to-r from-indigo-600 to-purple-500 p-4 rounded-2xl shadow-xl text-white z-20 animate-bounce-slow ">
+							{/* Floating Card 1: UI/UX — top-left, visible sm+ */}
+							<div className="absolute hidden sm:block -top-6 -left-4 md:-left-8 bg-gradient-to-r from-indigo-600 to-purple-500 p-3 md:p-4 rounded-2xl shadow-xl text-white z-20 animate-bounce-slow">
 								<p className="font-bold text-[10px] md:text-sm">
 									UI/UX Design Masterclass
 								</p>
@@ -143,8 +133,8 @@ export default function HeroSection() {
 								</p>
 							</div>
 
-							{/* Floating Card 2: Progress */}
-							<div className="absolute bottom-16 -right-4 md:-bottom-8 md:-right-8 bg-white/95 backdrop-blur-sm p-3 rounded-2xl shadow-2xl z-20 w-40 md:w-52 border border-white/20">
+							{/* Floating Card 2: Progress — upper-left on mobile, bottom-right on md+ */}
+							<div className="absolute -top-8 -left-4 sm:left-2 md:-bottom-8 md:-right-8 md:top-auto md:left-auto bg-white/95 backdrop-blur-sm p-3 rounded-2xl shadow-2xl z-20 w-40 md:w-52 border border-white/20">
 								<p className="text-[10px] px-1 md:text-sm font-bold text-gray-800">
 									Your Progress
 								</p>
@@ -159,8 +149,8 @@ export default function HeroSection() {
 								</p>
 							</div>
 
-							{/* Floating Card 3: Mentorship (Hidden on mobile) */}
-							<div className="absolute bottom-24 -left-4 md:bottom-52 md:-left-2 bg-white/95 backdrop-blur-sm p-3 md:p-4 rounded-2xl shadow-2xl w-48 z-20 hidden sm:block border border-white/20">
+							{/* Floating Card 3: Mentorship — mid-left, hidden on mobile */}
+							<div className="absolute top-1/2 -translate-y-1/2 -left-4 md:-left-10 bg-white/95 backdrop-blur-sm p-3 md:p-4 rounded-2xl shadow-2xl w-44 z-20 hidden md:block border border-white/20">
 								<div className="flex items-center gap-3">
 									<div className="relative">
 										<div className="p-2 bg-primary/10 rounded-lg">
@@ -181,6 +171,17 @@ export default function HeroSection() {
 									</div>
 								</div>
 							</div>
+
+							{/* Main Image */}
+							<Image
+								src="/hero-student.png"
+								alt="Hero student"
+								width={612}
+								height={407}
+								priority
+								sizes="(max-width: 768px) 100vw, 50vw"
+								className="relative z-10"
+							/>
 						</div>
 					</div>
 				</div>

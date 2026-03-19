@@ -215,7 +215,7 @@ export default function CoursesSection({ courses, categories, loggedInUser }) {
 					<div className="text-center mt-16">
 						<Link
 							href="/courses"
-							className="px-8 py-3 bg-gradient-to-r from-primary to-teal-400 text-white rounded-full hover:shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 inline-block hover:font-semibold"
+							className="px-8 py-3 bg-gradient-to-r from-primary to-teal-400 text-white rounded-full  hover:shadow-xl transition-all duration-300 hover:scale-105 inline-block hover:font-semibold"
 						>
 							View All Courses
 						</Link>

@@ -5,6 +5,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Autoplay } from "swiper/modules";
 import { useRef } from "react";
 import "swiper/css";
+import Image from "next/image";
 
 // ── Types matching your Testimonial schema ────────────────────────────────────
 interface TestimonialUser {
@@ -156,17 +157,21 @@ export default function TestimonialsSection({ testimonials }: Props) {
 							return (
 								<SwiperSlide key={t.id} className="h-full pb-4">
 									<div className="group bg-white/90 backdrop-blur-xl rounded-[2.5rem] overflow-hidden border border-primary/20 h-full shadow-sm hover:shadow-xl transition-all duration-500 relative">
-										<div className="flex flex-col md:flex-row h-fit">
+										<div className="flex flex-col md:flex-row ">
 											{/* Avatar / Image Panel */}
-											<div className="relative md:w-5/12 bg-gradient-to-br from-primary/20 via-primary/5 to-transparent flex items-center justify-center min-h-[220px] overflow-hidden">
+											<div className="relative md:w-5/12 min-h-[320px] overflow-hidden">
 												{t.user.profilePicture ? (
-													<img
+													<Image
 														src={
 															t.user
-																.profilePicture
+																.profilePicture ||
+															"/fallback-avatar.png"
 														}
 														alt={fullName}
-														className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+														fill
+														sizes="(max-width: 768px) 100vw, 40vw"
+														className="object-cover  transition-transform duration-700 group-hover:scale-110"
+														priority
 													/>
 												) : (
 													<div className="w-24 h-24 rounded-full bg-white shadow-xl flex items-center justify-center border-4 border-primary/10">
@@ -178,16 +183,16 @@ export default function TestimonialsSection({ testimonials }: Props) {
 											</div>
 
 											{/* Content Area */}
-											<div className="p-8 md:w-7/12 flex flex-col relative">
+											<div className="p-6 sm:p-8 md:w-7/12 flex flex-col relative">
 												<div className="relative z-10">
 													<div className="flex justify-between items-start mb-4">
 														<div>
-															<h3 className="text-xl font-bold text-gray-900 leading-tight">
+															<h3 className="text-[16px] sm:text-xl font-bold text-gray-900 leading-tight">
 																{fullName}
 															</h3>
 															{t.user
 																.designation && (
-																<p className="text-xs font-bold text-primary uppercase tracking-widest mt-1">
+																<p className="text-[8px] font-bold text-primary uppercase tracking-widest mt-1">
 																	{
 																		t.user
 																			.designation
@@ -203,12 +208,12 @@ export default function TestimonialsSection({ testimonials }: Props) {
 														/>
 													</div>
 
-													<p className="text-gray-600 leading-relaxed text-sm md:text-base italic relative z-10">
+													<p className="text-gray-600 leading-relaxed text-xs md:text-base italic relative z-10">
 														"
-														{t.content.length > 100
+														{t.content.length > 80
 															? t.content.slice(
 																	0,
-																	100,
+																	80,
 																) + "…"
 															: t.content}
 														"
@@ -232,7 +237,7 @@ export default function TestimonialsSection({ testimonials }: Props) {
 														<div className="absolute inset-0 bg-primary/20 rounded-full animate-ping scale-150 opacity-20 group-hover:block hidden"></div>
 
 														{/* The Shape Container */}
-														<div className="relative w-14 h-14 bg-primary text-white flex items-center justify-center rounded-br-[1.5rem] rounded-tl-3xl shadow-lg shadow-primary/30 transform group-hover:-rotate-12 transition-transform duration-500">
+														<div className="relative w-10 h-10 xl:h-14 xl:w-14 bg-primary text-white flex items-center justify-center rounded-br-[1.5rem] rounded-tl-3xl shadow-lg shadow-primary/30 transform group-hover:-rotate-12 transition-transform duration-500">
 															<span className="text-4xl font-serif mt-4">
 																”
 															</span>

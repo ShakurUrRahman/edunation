@@ -218,6 +218,7 @@ export function MainNav({ items, children }) {
 									{loggedInUser?.profilePicture ? (
 										<AvatarImage
 											src={loggedInUser?.profilePicture}
+											alt="Profile image"
 										/>
 									) : (
 										<AvatarFallback
