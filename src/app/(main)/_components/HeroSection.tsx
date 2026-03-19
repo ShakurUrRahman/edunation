@@ -124,7 +124,7 @@ export default function HeroSection() {
 							<div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-blue-400/20 rounded-full blur-3xl transform scale-110" />
 
 							{/* Floating Card 1: UI/UX — top-left, visible sm+ */}
-							<div className="absolute hidden sm:block -top-6 -left-4 md:-left-8 bg-gradient-to-r from-indigo-600 to-purple-500 p-3 md:p-4 rounded-2xl shadow-xl text-white z-20 animate-bounce-slow">
+							<div className="absolute hidden sm:block -top-6 -right-10 sm:top-4 bg-gradient-to-r from-indigo-600 to-purple-500 p-3 md:p-4 rounded-2xl shadow-xl text-white z-20 animate-bounce-slow">
 								<p className="font-bold text-[10px] md:text-sm">
 									UI/UX Design Masterclass
 								</p>
