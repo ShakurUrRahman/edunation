@@ -82,7 +82,11 @@ export const columns = [
 			return (
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
-						<Button variant="ghost" className="h-4 w-8 p-0">
+						<Button
+							variant="ghost"
+							className="h-4 w-8 p-0"
+							aria-label="Open menu"
+						>
 							<span className="sr-only">Open Menu</span>
 							<MoreHorizontal className="h-4 w-4" />
 						</Button>

@@ -1,6 +1,7 @@
 "use client";
 
 import { Facebook, Instagram, Linkedin, Users, Youtube } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
@@ -122,10 +123,14 @@ export default function HeroSection() {
 							<div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-blue-400/20 rounded-full blur-3xl transform scale-110" />
 
 							{/* Main Image */}
-							<img
+							<Image
 								src="/hero-student.png"
-								alt="Student Learning"
-								className="relative w-full h-auto object-contain drop-shadow-2xl z-10"
+								alt="Hero student"
+								width={612}
+								height={407}
+								priority // add this ONLY for above-the-fold images (hero)
+								sizes="(max-width: 768px) 100vw, 50vw"
+								loading="eager"
 							/>
 
 							{/* Floating Card 1: UI/UX (Hides on very small mobile) */}

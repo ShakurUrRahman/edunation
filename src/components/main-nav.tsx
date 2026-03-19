@@ -310,6 +310,7 @@ export function MainNav({ items, children }) {
 					<button
 						className="p-2 lg:hidden"
 						onClick={() => setShowMobileMenu(!showMobileMenu)}
+						aria-label="Open menu"
 					>
 						<motion.div
 							animate={

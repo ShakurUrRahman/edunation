@@ -140,7 +140,7 @@ const CourseCard = ({
 					{totalReviews > 0 ? (
 						<RatingBadge rating={avgRating} count={totalReviews} />
 					) : (
-						<span className="text-[10px] text-white/30 italic">
+						<span className="text-[10px] text-white/60 italic">
 							No ratings yet
 						</span>
 					)}

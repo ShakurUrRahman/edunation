@@ -23,6 +23,7 @@ export const CourseSidebarMobile = ({ children }: Props) => {
 		<>
 			<button
 				onClick={() => setOpen(true)}
+				aria-label="Open menu"
 				className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary/10 hover:bg-primary/20 text-primary transition-colors shrink-0"
 			>
 				<Menu className="w-4 h-4" />

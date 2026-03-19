@@ -133,13 +133,14 @@ export default function Footer() {
 						<div className="flex gap-4 mt-8">
 							{[Facebook, YoutubeIcon, Linkedin, Instagram].map(
 								(Icon, idx) => (
-									<a
+									<Link
 										key={idx}
 										href="#"
+										aria-label="Follow us on Twitter"
 										className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 text-gray-600 hover:bg-primary hover:text-white transition-all duration-300 hover:-translate-y-1"
 									>
 										<Icon size={18} />
-									</a>
+									</Link>
 								),
 							)}
 						</div>
